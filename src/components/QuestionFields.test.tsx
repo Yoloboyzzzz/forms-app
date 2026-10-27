@@ -344,15 +344,63 @@ describe('time', () => {
   });
 });
 
+describe('grids', () => {
+  const options = {
+    rows: [
+      { id: 'r1', label: 'Food' },
+      { id: 'r2', label: 'Service' },
+    ],
+    columns: [
+      { id: 'c1', label: 'Good' },
+      { id: 'c2', label: 'Bad' },
+    ],
+  };
+  const cell = (rowId: string, columnId: string) => testIdFor.gridCell('q1', rowId, columnId);
+  const grid = (type: 'multiple_choice_grid' | 'checkbox_grid', settings = {}) =>
+    makeQuestion('q1', { questionType: type, options, settings });
+
+  it('shows every row with its columns', () => {
+    setup(grid('multiple_choice_grid'));
+    expect(screen.getByText('Food')).toBeTruthy();
+    expect(screen.getByText('Service')).toBeTruthy();
+    [cell('r1', 'c1'), cell('r1', 'c2'), cell('r2', 'c1'), cell('r2', 'c2')].forEach((id) => expect(screen.getByTestId(id)).toBeTruthy());
+  });
+
+  it('picks one column per row and keeps the other rows', () => {
+    const { onChange } = setup(grid('multiple_choice_grid'), { r1: 'c1' });
+    expect(screen.getByTestId(cell('r1', 'c1')).props.accessibilityState).toMatchObject({ selected: true });
+    fireEvent.press(screen.getByTestId(cell('r2', 'c2')));
+    expect(onChange).toHaveBeenLastCalledWith({ r1: 'c1', r2: 'c2' });
+    fireEvent.press(screen.getByTestId(cell('r1', 'c2')));
+    expect(onChange).toHaveBeenLastCalledWith({ r1: 'c2' });
+  });
+
+  it('ticks several columns per row in a checkbox grid and clears the answer when nothing is left', () => {
+    const { onChange } = setup(grid('checkbox_grid'), { r1: ['c1'] });
+    expect(screen.getByTestId(cell('r1', 'c1')).props.accessibilityState).toMatchObject({ checked: true });
+    fireEvent.press(screen.getByTestId(cell('r1', 'c2')));
+    expect(onChange).toHaveBeenLastCalledWith({ r1: ['c1', 'c2'] });
+    fireEvent.press(screen.getByTestId(cell('r1', 'c1')));
+    expect(onChange).toHaveBeenLastCalledWith(undefined);
+  });
+
+  it('starts empty', () => {
+    const { onChange } = setup(grid('checkbox_grid'));
+    fireEvent.press(screen.getByTestId(cell('r2', 'c1')));
+    expect(onChange).toHaveBeenCalledWith({ r2: ['c1'] });
+  });
+
+  it('shuffles rows when asked, keeping all of them', () => {
+    setup(grid('multiple_choice_grid', { shuffleRows: true }));
+    expect(screen.getByText('Food')).toBeTruthy();
+    expect(screen.getByText('Service')).toBeTruthy();
+  });
+});
+
 describe('QuestionRenderer', () => {
   it.each([makeQuestion('q1', { questionType: 'file_upload', settings: {} })])('shows nothing for the not yet supported $questionType type', (question) => {
     const { toJSON } = render(<QuestionRenderer question={question} value={undefined} onChange={jest.fn()} />);
     expect(toJSON()).toBeNull();
   });
 
-  it('shows nothing for grid questions', () => {
-    const grid = makeQuestion('q1', { questionType: 'multiple_choice_grid', options: { rows: [], columns: [] }, settings: {} });
-    const { toJSON } = render(<QuestionRenderer question={grid} value={undefined} onChange={jest.fn()} />);
-    expect(toJSON()).toBeNull();
-  });
 });

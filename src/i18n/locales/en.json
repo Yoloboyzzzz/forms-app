@@ -338,6 +338,21 @@
     },
     "time": {
       "isDuration": "Duration (hours, minutes, seconds)"
+    },
+    "grid": {
+      "rows": "Rows",
+      "columns": "Columns",
+      "rowLabel": "Row {{n}}",
+      "columnLabel": "Column {{n}}",
+      "addRow": "Add row",
+      "addColumn": "Add column",
+      "removeRow": "Remove row",
+      "removeColumn": "Remove column",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "requireEachRow": "Require a response in each row",
+      "limitOnePerColumn": "Limit to one response per column",
+      "shuffleRows": "Shuffle the order of the rows"
     }
   },
   "settings": {
@@ -437,7 +452,9 @@
     "previewClose": "Back to the editor",
     "untitledSection": "Questions",
     "timeInvalid": "Enter a valid time in the format {{pattern}}.",
-    "ratingValue": "{{value}} of {{max}}"
+    "ratingValue": "{{value}} of {{max}}",
+    "gridEachRow": "Answer every row.",
+    "gridOnePerColumn": "Use each column only once."
   },
   "done": {
     "title": "Thank you!",

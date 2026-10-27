@@ -4,6 +4,7 @@ import type { Question } from '@/types/models';
 import type { SectionOption } from '@/utils/sectionActions';
 import { assertNever } from '@/utils/assertNever';
 import { VALIDATION_KINDS_BY_QUESTION } from '@/utils/validation';
+import { GridEditor } from './GridEditor';
 import { OptionListEditor } from './OptionListEditor';
 import { RatingEditor } from './RatingEditor';
 import { ScaleEditor } from './ScaleEditor';
@@ -159,9 +160,18 @@ export function QuestionTypeEditor({ question, onChange, sections = [] }: Questi
           testID={testIdFor.setting(question.id, 'duration')}
         />
       );
-    // Editors for these types follow in plan phase 8.
     case 'multiple_choice_grid':
     case 'checkbox_grid':
+      return (
+        <GridEditor
+          questionId={question.id}
+          options={question.options}
+          settings={question.settings}
+          onChangeOptions={(options) => onChange({ ...question, options })}
+          onChangeSettings={(settings) => onChange({ ...question, settings })}
+        />
+      );
+    // The editor for file uploads follows in plan phase 8.
     case 'file_upload':
       return null;
     default:

@@ -55,6 +55,9 @@ function translateError(error: AnswerError, t: TFunction): string {
   if (error.kind === 'required') {
     return t('fill.required');
   }
+  if (error.kind === 'grid') {
+    return t(error.reason === 'eachRow' ? 'fill.gridEachRow' : 'fill.gridOnePerColumn');
+  }
   return error.failure.customMessage ?? t(error.failure.defaultKey, error.failure.params);
 }
 

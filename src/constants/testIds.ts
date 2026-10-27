@@ -233,6 +233,11 @@ export const testIdFor = {
   summary: (questionId: string): string => `summary-${questionId}`,
   detailAnswer: (questionId: string): string => `response-answer-${questionId}`,
   questionRatingValue: (questionId: string, value: number): string => `question-${questionId}-rating-${value}`,
+  gridCell: (questionId: string, rowId: string, columnId: string): string => `question-${questionId}-grid-${rowId}-${columnId}`,
+  gridLine: (questionId: string, kind: 'row' | 'column', lineId: string): string => `question-${questionId}-${kind}-${lineId}`,
+  gridLineAction: (questionId: string, kind: 'row' | 'column', lineId: string, action: string): string =>
+    `question-${questionId}-${kind}-${lineId}-${action}-button`,
+  gridAdd: (questionId: string, kind: 'row' | 'column'): string => `question-${questionId}-${kind}-add-button`,
   formStatusFilter: (status: string): string => `form-status-filter-${status}`,
   languageOption: (language: string): string => `language-option-${language}`,
   formCard: (formId: string): string => `form-card-${formId}`,

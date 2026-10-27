@@ -43,7 +43,7 @@ export const CORE_QUESTION_TYPES = [
 ] as const satisfies readonly QuestionType[];
 
 /** Question types the editor and fill-in screens support so far (grows with plan phase 8). */
-export const EDITOR_QUESTION_TYPES = [...CORE_QUESTION_TYPES, 'rating', 'time'] as const satisfies readonly QuestionType[];
+export const EDITOR_QUESTION_TYPES = [...CORE_QUESTION_TYPES, 'rating', 'time', 'multiple_choice_grid', 'checkbox_grid'] as const satisfies readonly QuestionType[];
 
 export const RATING_ICONS = ['star', 'heart', 'thumb'] as const;
 export type RatingIcon = (typeof RATING_ICONS)[number];

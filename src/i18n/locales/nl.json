@@ -338,6 +338,21 @@
     },
     "time": {
       "isDuration": "Duur (uren, minuten, seconden)"
+    },
+    "grid": {
+      "rows": "Rijen",
+      "columns": "Kolommen",
+      "rowLabel": "Rij {{n}}",
+      "columnLabel": "Kolom {{n}}",
+      "addRow": "Rij toevoegen",
+      "addColumn": "Kolom toevoegen",
+      "removeRow": "Rij verwijderen",
+      "removeColumn": "Kolom verwijderen",
+      "moveUp": "Naar boven",
+      "moveDown": "Naar beneden",
+      "requireEachRow": "Een antwoord in elke rij verplichten",
+      "limitOnePerColumn": "Beperken tot één antwoord per kolom",
+      "shuffleRows": "De volgorde van de rijen door elkaar halen"
     }
   },
   "settings": {
@@ -437,7 +452,9 @@
     "previewClose": "Terug naar de editor",
     "untitledSection": "Vragen",
     "timeInvalid": "Vul een geldige tijd in met het formaat {{pattern}}.",
-    "ratingValue": "{{value}} van {{max}}"
+    "ratingValue": "{{value}} van {{max}}",
+    "gridEachRow": "Beantwoord elke rij.",
+    "gridOnePerColumn": "Gebruik elke kolom maar één keer."
   },
   "done": {
     "title": "Bedankt!",

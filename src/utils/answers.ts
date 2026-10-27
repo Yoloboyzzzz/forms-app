@@ -4,7 +4,11 @@ import type { AnswerMap } from './branching';
 import { validateSelectionCount, validateText, type ValidationFailure } from './validation';
 
 /** Why an answer is not accepted: it is missing, or it breaks the question's validation rule. */
-export type AnswerError = { kind: 'required' } | { kind: 'rule'; failure: ValidationFailure };
+export type AnswerError =
+  | { kind: 'required' }
+  | { kind: 'rule'; failure: ValidationFailure }
+  /** Grid questions: a row was skipped, or a column was used more than once. */
+  | { kind: 'grid'; reason: 'eachRow' | 'onePerColumn' };
 
 function hasText(value: string | undefined): boolean {
   return value !== undefined && value.trim() !== '';
@@ -21,7 +25,8 @@ export function isAnswered(value: AnswerValue | undefined): boolean {
   }
   if ('optionId' in value) return typeof value.optionId === 'string' && value.optionId !== '';
   if ('other' in value) return typeof value.other === 'string' && hasText(value.other);
-  return Object.keys(value).length > 0; // grid answers: one entry per answered row
+  // grid answers: at least one row has a column picked
+  return Object.values(readGrid(value)).some((cells) => cells.length > 0);
 }
 
 /** The error for one question's answer, or undefined when it is fine. Hidden (inactive) questions never fail. */
@@ -48,12 +53,23 @@ export function getAnswerError(question: Question, value: AnswerValue | undefine
       const failure = validateSelectionCount(rule, count);
       return failure === undefined ? undefined : { kind: 'rule', failure };
     }
+    case 'multiple_choice_grid':
+    case 'checkbox_grid': {
+      const picked = readGrid(value);
+      const rows = question.options.rows;
+      if (question.isRequired && question.settings.requireEachRow === true && rows.some((row) => (picked[row.id] ?? []).length === 0)) {
+        return { kind: 'grid', reason: 'eachRow' };
+      }
+      if (question.settings.limitOnePerColumn === true) {
+        const used = rows.flatMap((row) => picked[row.id] ?? []);
+        if (new Set(used).size !== used.length) return { kind: 'grid', reason: 'onePerColumn' };
+      }
+      return undefined;
+    }
     case 'multiple_choice':
     case 'dropdown':
     case 'linear_scale':
     case 'rating':
-    case 'multiple_choice_grid':
-    case 'checkbox_grid':
     case 'date':
     case 'time':
     case 'file_upload':
@@ -76,6 +92,17 @@ export function getSectionErrors(
     if (error !== undefined) errors[question.id] = error;
   }
   return errors;
+}
+
+/** A grid answer as the picked column ids per row (a single choice grid holds one column per row). */
+export function readGrid(value: AnswerValue | undefined): Record<string, string[]> {
+  if (typeof value !== 'object' || Array.isArray(value)) return {};
+  const result: Record<string, string[]> = {};
+  for (const [rowId, cell] of Object.entries(value)) {
+    if (typeof cell === 'string') result[rowId] = cell === '' ? [] : [cell];
+    else if (Array.isArray(cell)) result[rowId] = cell;
+  }
+  return result;
 }
 
 /** The text of a text-like answer (short answer, paragraph, date, time); empty when unanswered. */

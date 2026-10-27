@@ -1,6 +1,7 @@
 import type { AnswerValue, Question } from '@/types/models';
 import { assertNever } from '@/utils/assertNever';
 import { CheckboxesField } from './CheckboxesField';
+import { ChoiceGridField } from './ChoiceGridField';
 import { DateField } from './DateField';
 import { DropdownField } from './DropdownField';
 import { LinearScaleField } from './LinearScaleField';
@@ -39,9 +40,10 @@ export function QuestionRenderer({ question, value, onChange, errorText }: Quest
       return <RatingField question={question} value={value} onChange={onChange} errorText={errorText} />;
     case 'time':
       return <TimeField question={question} value={value} onChange={onChange} errorText={errorText} />;
-    // These types are not offered in the editor yet (plan phase 8), so there is nothing to show.
     case 'multiple_choice_grid':
     case 'checkbox_grid':
+      return <ChoiceGridField question={question} value={value} onChange={onChange} errorText={errorText} />;
+    // File uploads are not offered in the editor yet (plan phase 8), so there is nothing to show.
     case 'file_upload':
       return null;
     default:

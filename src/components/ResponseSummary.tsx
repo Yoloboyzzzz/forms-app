@@ -53,6 +53,19 @@ function SummaryBody({ summary }: { summary: QuestionSummary }) {
           ))}
         </Stack>
       );
+    case 'grid':
+      return (
+        <Stack gap="md">
+          {summary.rows.map((row) => (
+            <Stack key={row.id} gap="sm">
+              <Text weight="medium">{row.label}</Text>
+              {row.counts.map((entry) => (
+                <Bar key={entry.id} label={entry.label} count={entry.count} total={summary.total} />
+              ))}
+            </Stack>
+          ))}
+        </Stack>
+      );
     case 'text':
       return (
         <Stack gap="sm">

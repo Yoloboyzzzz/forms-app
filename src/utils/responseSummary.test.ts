@@ -100,15 +100,42 @@ describe('summarizeResponses', () => {
     expect(summary).toMatchObject({ kind: 'text', answers: ['14:30'] });
   });
 
+  it('counts the columns picked in each row of a grid', () => {
+    const options = {
+      rows: [
+        { id: 'r1', label: 'Food' },
+        { id: 'r2', label: 'Service' },
+      ],
+      columns: [
+        { id: 'c1', label: 'Good' },
+        { id: 'c2', label: 'Bad' },
+      ],
+    };
+    const mc = makeQuestion('gm', { questionType: 'multiple_choice_grid', options, settings: {} });
+    const boxes = makeQuestion('gb', { questionType: 'checkbox_grid', options, settings: {} });
+    const [single, multi] = summarizeResponses([mc, boxes], [
+      answer('s1', 'gm', { r1: 'c1', r2: 'c2' }),
+      answer('s2', 'gm', { r1: 'c1' }),
+      answer('s1', 'gb', { r1: ['c1', 'c2'], r2: [] }),
+    ]);
+    expect(single).toMatchObject({
+      kind: 'grid',
+      total: 2,
+      rows: [
+        { label: 'Food', counts: [{ count: 2 }, { count: 0 }] },
+        { label: 'Service', counts: [{ count: 0 }, { count: 1 }] },
+      ],
+    });
+    expect(multi).toMatchObject({ rows: [{ counts: [{ count: 1 }, { count: 1 }] }, { counts: [{ count: 0 }, { count: 0 }] }] });
+  });
+
   it('keeps the order of the questions', () => {
     expect(summarizeResponses([text, choice], []).map((summary) => summary.question.id)).toEqual(['tx', 'mc']);
   });
 
   it('has no summary yet for other question types', () => {
-    const grid = makeQuestion('g', { questionType: 'multiple_choice_grid', options: { rows: [], columns: [] }, settings: {} });
     const file = makeQuestion('f', { questionType: 'file_upload', settings: {} });
-    const gridBoxes = makeQuestion('gc', { questionType: 'checkbox_grid', options: { rows: [], columns: [] }, settings: {} });
-    summarizeResponses([grid, file, gridBoxes], []).forEach((summary) => expect(summary.kind).toBe('none'));
+    summarizeResponses([file], []).forEach((summary) => expect(summary.kind).toBe('none'));
   });
 });
 
@@ -154,11 +181,14 @@ describe('describeAnswer', () => {
     expect(describe_(makeQuestion('t', { questionType: 'time', settings: {} }), '10:30')).toBe('10:30');
   });
 
-  it('lists uploaded files and shows grids as data', () => {
+  it('lists uploaded files and describes grid answers by row', () => {
     expect(describe_(makeQuestion('f', { questionType: 'file_upload', settings: {} }), ['a.pdf', 'b.pdf'])).toBe('a.pdf, b.pdf');
     expect(describe_(makeQuestion('f', { questionType: 'file_upload', settings: {} }), 'x')).toBe('');
-    const grid = makeQuestion('g', { questionType: 'multiple_choice_grid', options: { rows: [], columns: [] }, settings: {} });
-    expect(describe_(grid, { r1: 'c1' })).toBe('{"r1":"c1"}');
+    const options = { rows: [{ id: 'r1', label: 'Food' }, { id: 'r2', label: 'Service' }], columns: [{ id: 'c1', label: 'Good' }, { id: 'c2', label: 'Bad' }] };
+    const grid = makeQuestion('g', { questionType: 'multiple_choice_grid', options, settings: {} });
+    expect(describe_(grid, { r1: 'c1', r2: 'c2' })).toBe('Food: Good; Service: Bad');
+    expect(describe_(grid, { r1: 'c1' })).toBe('Food: Good');
+    expect(describe_(makeQuestion('g', { questionType: 'checkbox_grid', options, settings: {} }), { r1: ['c1', 'c2'] })).toBe('Food: Good, Bad');
     expect(describe_(grid, 'x')).toBe('');
     expect(describe_(grid, ['x'])).toBe('');
   });

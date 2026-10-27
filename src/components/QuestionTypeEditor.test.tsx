@@ -166,15 +166,11 @@ describe('QuestionTypeEditor', () => {
     expect(onChange).toHaveBeenCalledWith({ ...question, settings: { isDuration: true } });
   });
 
-  it.each(['multiple_choice_grid', 'checkbox_grid', 'file_upload'] as const)(
+  it.each(['file_upload'] as const)(
     'has no type specific settings yet for %s',
     (type) => {
       const base = makeQuestion('q1', { questionType: 'short_answer' });
-      const question = (
-        type === 'file_upload'
-          ? { ...base, questionType: type, settings: {} }
-          : { ...base, questionType: type, options: { rows: [], columns: [] }, settings: {} }
-      ) as Question; // test data for types the editor does not support yet
+      const question: Question = { ...base, questionType: type, settings: {} };
       const { toJSON } = render(<QuestionTypeEditor question={question} onChange={jest.fn()} />);
       expect(toJSON()).toBeNull();
     },

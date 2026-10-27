@@ -1,6 +1,6 @@
 import type { AnswerValue, Question, ResponseAnswer } from '@/types/models';
 import { assertNever } from './assertNever';
-import { readCheckboxes, readChoice, readNumber, readText } from './answers';
+import { readCheckboxes, readChoice, readGrid, readNumber, readText } from './answers';
 
 export interface OptionCount {
   id: string;
@@ -26,6 +26,13 @@ export type QuestionSummary =
       counts: { value: number; count: number }[];
     }
   | { kind: 'text'; question: Question; total: number; answers: string[] }
+  | {
+      kind: 'grid';
+      question: Question;
+      total: number;
+      /** Per row: how often each column was picked. */
+      rows: { id: string; label: string; counts: OptionCount[] }[];
+    }
   /** Question types without a summary yet (plan phase 8). */
   | { kind: 'none'; question: Question };
 
@@ -80,7 +87,22 @@ export function summarizeResponses(questions: readonly Question[], answers: read
         return { kind: 'text', question, total: texts.length, answers: texts };
       }
       case 'multiple_choice_grid':
-      case 'checkbox_grid':
+      case 'checkbox_grid': {
+        const rows = question.options.rows.map((row) => ({
+          id: row.id,
+          label: row.label,
+          counts: question.options.columns.map((column) => ({ id: column.id, label: column.label, count: 0 })),
+        }));
+        for (const value of values) {
+          const picked = readGrid(value);
+          for (const row of rows) {
+            for (const entry of row.counts) {
+              if ((picked[row.id] ?? []).includes(entry.id)) entry.count += 1;
+            }
+          }
+        }
+        return { kind: 'grid', question, total: values.length, rows };
+      }
       case 'file_upload':
         return { kind: 'none', question };
       default:
@@ -125,8 +147,17 @@ export function describeAnswer(question: Question, value: AnswerValue | undefine
     case 'file_upload':
       return Array.isArray(value) ? value.join(', ') : '';
     case 'multiple_choice_grid':
-    case 'checkbox_grid':
-      return typeof value === 'object' && !Array.isArray(value) ? JSON.stringify(value) : '';
+    case 'checkbox_grid': {
+      const picked = readGrid(value);
+      return question.options.rows
+        .flatMap((row) => {
+          const labels = question.options.columns
+            .filter((column) => (picked[row.id] ?? []).includes(column.id))
+            .map((column) => column.label);
+          return labels.length === 0 ? [] : [`${row.label}: ${labels.join(', ')}`];
+        })
+        .join('; ');
+    }
     default:
       return assertNever(question);
   }

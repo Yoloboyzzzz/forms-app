@@ -1,6 +1,15 @@
 import { makeQuestion } from '@/testUtils/factories';
 import type { AnswerValue, Question } from '@/types/models';
-import { getAnswerError, getSectionErrors, isAnswered, readCheckboxes, readChoice, readNumber, readText } from './answers';
+import {
+  getAnswerError,
+  getSectionErrors,
+  isAnswered,
+  readCheckboxes,
+  readChoice,
+  readGrid,
+  readNumber,
+  readText,
+} from './answers';
 
 describe('isAnswered', () => {
   it.each<[string, AnswerValue | undefined, boolean]>([
@@ -21,6 +30,8 @@ describe('isAnswered', () => {
     ['nothing ticked but other filled', { optionIds: [], other: 'x' }, true],
     ['an answered grid', { r1: 'c1' }, true],
     ['an empty grid', {}, false],
+    ['a checkbox grid with only empty rows', { r1: [] }, false],
+    ['a checkbox grid with a tick', { r1: ['c1'] }, true],
   ])('%s', (_name, value, expected) => {
     expect(isAnswered(value)).toBe(expected);
   });
@@ -86,14 +97,58 @@ describe('getAnswerError', () => {
     ['dropdown', { optionId: 'o1' }],
     ['linear_scale', 3],
     ['rating', 3],
-    ['multiple_choice_grid', { r1: 'c1' }],
-    ['checkbox_grid', { r1: ['c1'] }],
     ['date', '2026-11-04'],
     ['time', '10:30'],
     ['file_upload', ['a.pdf']],
   ])('accepts an answer to a %s question', (type, value) => {
     const question = makeQuestion('q1', { questionType: type } as Parameters<typeof makeQuestion>[1]); // options are not read by this check
     expect(getAnswerError(question, value)).toBeUndefined();
+  });
+});
+
+describe('getAnswerError: grids', () => {
+  const rows = [
+    { id: 'r1', label: 'Row 1' },
+    { id: 'r2', label: 'Row 2' },
+  ];
+  const columns = [
+    { id: 'c1', label: 'Col 1' },
+    { id: 'c2', label: 'Col 2' },
+  ];
+  const grid = (type: 'multiple_choice_grid' | 'checkbox_grid', settings = {}, extra = {}) =>
+    makeQuestion('g', { questionType: type, options: { rows, columns }, settings, ...extra });
+
+  it('needs at least one row answered when required', () => {
+    expect(getAnswerError(grid('multiple_choice_grid', {}, { isRequired: true }), undefined)).toEqual({ kind: 'required' });
+    expect(getAnswerError(grid('multiple_choice_grid', {}, { isRequired: true }), { r1: 'c1' })).toBeUndefined();
+  });
+
+  it('can require every row, only for required questions', () => {
+    const question = grid('multiple_choice_grid', { requireEachRow: true }, { isRequired: true });
+    expect(getAnswerError(question, { r1: 'c1' })).toEqual({ kind: 'grid', reason: 'eachRow' });
+    expect(getAnswerError(question, { r1: 'c1', r2: 'c2' })).toBeUndefined();
+    expect(getAnswerError(grid('multiple_choice_grid', { requireEachRow: true }), { r1: 'c1' })).toBeUndefined();
+  });
+
+  it('treats a checkbox grid row without ticks as unanswered', () => {
+    const question = grid('checkbox_grid', { requireEachRow: true }, { isRequired: true });
+    expect(getAnswerError(question, { r1: ['c1'], r2: [] })).toEqual({ kind: 'grid', reason: 'eachRow' });
+    expect(getAnswerError(question, { r1: ['c1'], r2: ['c1', 'c2'] })).toBeUndefined();
+  });
+
+  it('can limit each column to one row', () => {
+    const question = grid('multiple_choice_grid', { limitOnePerColumn: true });
+    expect(getAnswerError(question, { r1: 'c1', r2: 'c1' })).toEqual({ kind: 'grid', reason: 'onePerColumn' });
+    expect(getAnswerError(question, { r1: 'c1', r2: 'c2' })).toBeUndefined();
+  });
+
+  it('accepts grids without rules and answers of another shape', () => {
+    expect(getAnswerError(grid('checkbox_grid'), { r1: ['c1'] })).toBeUndefined();
+    // an answer of the wrong shape counts as no row answered
+    expect(getAnswerError(grid('multiple_choice_grid', { requireEachRow: true }, { isRequired: true }), 'x')).toEqual({
+      kind: 'grid',
+      reason: 'eachRow',
+    });
   });
 });
 
@@ -112,6 +167,20 @@ describe('getSectionErrors', () => {
 
   it('is empty when everything is fine', () => {
     expect(getSectionErrors(questions, 's1', { a: 'x', c: 'y' })).toEqual({});
+  });
+});
+
+describe('readGrid', () => {
+  it('reads one column per row of a single choice grid and the ticks of a checkbox grid', () => {
+    expect(readGrid({ r1: 'c1', r2: '' })).toEqual({ r1: ['c1'], r2: [] });
+    expect(readGrid({ r1: ['c1', 'c2'], r2: [] })).toEqual({ r1: ['c1', 'c2'], r2: [] });
+  });
+
+  it('is empty for other shapes', () => {
+    expect(readGrid(undefined)).toEqual({});
+    expect(readGrid('x')).toEqual({});
+    expect(readGrid(['a'])).toEqual({});
+    expect(readGrid(4)).toEqual({});
   });
 });
 
