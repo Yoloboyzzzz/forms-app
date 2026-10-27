@@ -20,6 +20,7 @@
     ".expo/types/**/*.ts"
   ],
   "exclude": [
-    "cypress"
+    "cypress",
+    "**/*.stories.tsx"
   ]
 }
