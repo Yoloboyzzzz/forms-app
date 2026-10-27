@@ -142,14 +142,38 @@ describe('QuestionTypeEditor', () => {
     expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { includeTime: true } });
   });
 
-  it.each(['rating', 'multiple_choice_grid', 'checkbox_grid', 'time', 'file_upload'] as const)(
+  it('edits the settings of a rating question', () => {
+    const question = makeQuestion('q1', { questionType: 'rating', settings: { max: 5, icon: 'star' } });
+    const { onChange } = setup(question);
+    fireEvent.press(screen.getByTestId(setting('rating-max')));
+    fireEvent.press(screen.getByTestId(`${setting('rating-max')}-option-7`));
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { max: 7, icon: 'star' } });
+    fireEvent.press(screen.getByTestId(setting('rating-icon')));
+    fireEvent.press(screen.getByTestId(`${setting('rating-icon')}-option-heart`));
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { max: 5, icon: 'heart' } });
+  });
+
+  it('shows the default rating settings', () => {
+    setup(makeQuestion('q1', { questionType: 'rating', settings: {} }));
+    expect(screen.getByTestId(setting('rating-max')).props.accessibilityValue).toEqual({ text: '5' });
+    expect(screen.getByTestId(setting('rating-icon')).props.accessibilityValue).toEqual({ text: 'Star' });
+  });
+
+  it('lets a time question be a duration', () => {
+    const question = makeQuestion('q1', { questionType: 'time', settings: {} });
+    const { onChange } = setup(question);
+    toggle(setting('duration'), true);
+    expect(onChange).toHaveBeenCalledWith({ ...question, settings: { isDuration: true } });
+  });
+
+  it.each(['multiple_choice_grid', 'checkbox_grid', 'file_upload'] as const)(
     'has no type specific settings yet for %s',
     (type) => {
       const base = makeQuestion('q1', { questionType: 'short_answer' });
       const question = (
-        type === 'multiple_choice_grid' || type === 'checkbox_grid'
-          ? { ...base, questionType: type, options: { rows: [], columns: [] }, settings: {} }
-          : { ...base, questionType: type, settings: {} }
+        type === 'file_upload'
+          ? { ...base, questionType: type, settings: {} }
+          : { ...base, questionType: type, options: { rows: [], columns: [] }, settings: {} }
       ) as Question; // test data for types the editor does not support yet
       const { toJSON } = render(<QuestionTypeEditor question={question} onChange={jest.fn()} />);
       expect(toJSON()).toBeNull();

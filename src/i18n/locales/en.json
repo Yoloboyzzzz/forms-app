@@ -326,7 +326,19 @@
     "published": "The form is published.",
     "archived": "The form is archived.",
     "duplicated": "A copy was created.",
-    "publishNeedsQuestion": "Add at least one active question before publishing."
+    "publishNeedsQuestion": "Add at least one active question before publishing.",
+    "rating": {
+      "max": "Number of icons",
+      "icon": "Icon",
+      "icons": {
+        "star": "Star",
+        "heart": "Heart",
+        "thumb": "Thumbs up"
+      }
+    },
+    "time": {
+      "isDuration": "Duration (hours, minutes, seconds)"
+    }
   },
   "settings": {
     "title": "Form settings",
@@ -423,7 +435,9 @@
     "previewBanner": "Preview: nothing you fill in is saved.",
     "previewDone": "End of the preview.",
     "previewClose": "Back to the editor",
-    "untitledSection": "Questions"
+    "untitledSection": "Questions",
+    "timeInvalid": "Enter a valid time in the format {{pattern}}.",
+    "ratingValue": "{{value}} of {{max}}"
   },
   "done": {
     "title": "Thank you!",

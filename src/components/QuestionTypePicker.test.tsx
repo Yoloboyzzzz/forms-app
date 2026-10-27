@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import i18n from '@/i18n';
 import { testIdFor, testIds } from '@/constants/testIds';
-import { CORE_QUESTION_TYPES } from '@/types/enums';
+import { EDITOR_QUESTION_TYPES } from '@/types/enums';
 import { QuestionTypePicker } from './QuestionTypePicker';
 
 jest.mock('expo-localization', () => ({ getLocales: () => [{ languageCode: 'en' }] }));
@@ -11,9 +11,9 @@ beforeEach(async () => {
 });
 
 describe('QuestionTypePicker', () => {
-  it('offers every core type by default', () => {
+  it('offers every supported type by default', () => {
     render(<QuestionTypePicker visible onPick={jest.fn()} onClose={jest.fn()} />);
-    CORE_QUESTION_TYPES.forEach((type) => expect(screen.getByTestId(testIdFor.questionTypeOption(type))).toBeTruthy());
+    EDITOR_QUESTION_TYPES.forEach((type) => expect(screen.getByTestId(testIdFor.questionTypeOption(type))).toBeTruthy());
     expect(screen.getByText('Multiple choice')).toBeTruthy();
   });
 

@@ -57,8 +57,9 @@ export function summarizeResponses(questions: readonly Question[], answers: read
         }
         return { kind: 'choice', question, total: values.length, counts, otherAnswers };
       }
-      case 'linear_scale': {
-        const min = question.settings.min ?? 1;
+      case 'linear_scale':
+      case 'rating': {
+        const min = question.questionType === 'linear_scale' ? (question.settings.min ?? 1) : 1;
         const max = question.settings.max ?? 5;
         const numbers = values.flatMap((value) => {
           const n = readNumber(value);
@@ -73,14 +74,13 @@ export function summarizeResponses(questions: readonly Question[], answers: read
       }
       case 'short_answer':
       case 'paragraph':
-      case 'date': {
+      case 'date':
+      case 'time': {
         const texts = values.map(readText).filter((text) => text.trim() !== '');
         return { kind: 'text', question, total: texts.length, answers: texts };
       }
-      case 'rating':
       case 'multiple_choice_grid':
       case 'checkbox_grid':
-      case 'time':
       case 'file_upload':
         return { kind: 'none', question };
       default:

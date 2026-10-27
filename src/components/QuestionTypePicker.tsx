@@ -4,7 +4,7 @@ import { QUESTION_TYPE_ICONS } from '@/constants/questionTypes';
 import { testIdFor, testIds } from '@/constants/testIds';
 import { useThemedStyles } from '@/hooks/useThemedStyles';
 import type { Theme } from '@/theme';
-import { CORE_QUESTION_TYPES, type QuestionType } from '@/types/enums';
+import { EDITOR_QUESTION_TYPES, type QuestionType } from '@/types/enums';
 import { Icon, Text } from './primitives';
 
 interface QuestionTypePickerProps {
@@ -16,7 +16,7 @@ interface QuestionTypePickerProps {
 }
 
 /** Modal list of question types. */
-export function QuestionTypePicker({ visible, onPick, onClose, types = CORE_QUESTION_TYPES }: QuestionTypePickerProps) {
+export function QuestionTypePicker({ visible, onPick, onClose, types = EDITOR_QUESTION_TYPES }: QuestionTypePickerProps) {
   const { t } = useTranslation();
   const styles = useThemedStyles(createStyles);
 

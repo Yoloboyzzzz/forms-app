@@ -269,12 +269,83 @@ describe('date', () => {
   });
 });
 
+describe('rating', () => {
+  const question = (settings = {}) => makeQuestion('q1', { questionType: 'rating', settings });
+  const rating = (n: number) => testIdFor.questionRatingValue('q1', n);
+
+  it('shows five icons by default and fills up to the rating', () => {
+    setup(question(), 3);
+    [1, 2, 3, 4, 5].forEach((n) => expect(screen.getByTestId(rating(n))).toBeTruthy());
+    expect(screen.queryByTestId(rating(6))).toBeNull();
+    expect(screen.getAllByText('star', { includeHiddenElements: true })).toHaveLength(3);
+    expect(screen.getAllByText('star-outline', { includeHiddenElements: true })).toHaveLength(2);
+  });
+
+  it('uses the configured number and icon', () => {
+    setup(question({ max: 3, icon: 'heart' }), 1);
+    expect(screen.queryByTestId(rating(4))).toBeNull();
+    expect(screen.getAllByText('heart', { includeHiddenElements: true })).toHaveLength(1);
+    expect(screen.getAllByText('heart-outline', { includeHiddenElements: true })).toHaveLength(2);
+  });
+
+  it('can use thumbs', () => {
+    setup(question({ icon: 'thumb' }), 5);
+    expect(screen.getAllByText('thumbs-up', { includeHiddenElements: true })).toHaveLength(5);
+  });
+
+  it('reports the chosen rating and clears it when pressed again', () => {
+    const { onChange } = setup(question(), 2);
+    fireEvent.press(screen.getByTestId(rating(4)));
+    expect(onChange).toHaveBeenLastCalledWith(4);
+    fireEvent.press(screen.getByTestId(rating(2)));
+    expect(onChange).toHaveBeenLastCalledWith(undefined);
+  });
+
+  it('labels each icon for screen readers', () => {
+    setup(question({ max: 3 }));
+    expect(screen.getByLabelText('2 of 3')).toBeTruthy();
+  });
+});
+
+describe('time', () => {
+  const question = (settings = {}) => makeQuestion('q1', { questionType: 'time', settings });
+
+  it('reports a valid time', () => {
+    const { onChange } = setup(question());
+    fireEvent.changeText(screen.getByTestId(input()), '9:05');
+    expect(onChange).toHaveBeenCalledWith('09:05');
+  });
+
+  it('asks for hours, minutes and seconds for a duration', () => {
+    const { onChange } = setup(question({ isDuration: true }));
+    expect(screen.getByTestId(input()).props.placeholder).toBe('HH:mm:ss');
+    fireEvent.changeText(screen.getByTestId(input()), '1:15:00');
+    expect(onChange).toHaveBeenCalledWith('01:15:00');
+  });
+
+  it('shows a stored value', () => {
+    setup(question(), '14:30');
+    expect(screen.getByTestId(input()).props.value).toBe('14:30');
+  });
+
+  it('explains an invalid time and does not report it', () => {
+    const { onChange } = setup(question());
+    fireEvent.changeText(screen.getByTestId(input()), '25:00');
+    expect(onChange).not.toHaveBeenCalled();
+    expect(screen.getByTestId(`${input()}-error`)).toHaveTextContent('Enter a valid time in the format HH:mm.');
+  });
+
+  it('clears the answer when emptied, and the error once valid', () => {
+    const { onChange } = setup(question(), '14:30');
+    fireEvent.changeText(screen.getByTestId(input()), 'x');
+    fireEvent.changeText(screen.getByTestId(input()), '');
+    expect(onChange).toHaveBeenLastCalledWith(undefined);
+    expect(screen.queryByTestId(`${input()}-error`)).toBeNull();
+  });
+});
+
 describe('QuestionRenderer', () => {
-  it.each([
-    makeQuestion('q1', { questionType: 'rating', settings: {} }),
-    makeQuestion('q1', { questionType: 'time', settings: {} }),
-    makeQuestion('q1', { questionType: 'file_upload', settings: {} }),
-  ])('shows nothing for the not yet supported $questionType type', (question) => {
+  it.each([makeQuestion('q1', { questionType: 'file_upload', settings: {} })])('shows nothing for the not yet supported $questionType type', (question) => {
     const { toJSON } = render(<QuestionRenderer question={question} value={undefined} onChange={jest.fn()} />);
     expect(toJSON()).toBeNull();
   });

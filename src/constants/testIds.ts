@@ -232,6 +232,7 @@ export const testIdFor = {
   responseRow: (assignmentId: string): string => `response-row-${assignmentId}`,
   summary: (questionId: string): string => `summary-${questionId}`,
   detailAnswer: (questionId: string): string => `response-answer-${questionId}`,
+  questionRatingValue: (questionId: string, value: number): string => `question-${questionId}-rating-${value}`,
   formStatusFilter: (status: string): string => `form-status-filter-${status}`,
   languageOption: (language: string): string => `language-option-${language}`,
   formCard: (formId: string): string => `form-card-${formId}`,

@@ -5,6 +5,7 @@ import type { SectionOption } from '@/utils/sectionActions';
 import { assertNever } from '@/utils/assertNever';
 import { VALIDATION_KINDS_BY_QUESTION } from '@/utils/validation';
 import { OptionListEditor } from './OptionListEditor';
+import { RatingEditor } from './RatingEditor';
 import { ScaleEditor } from './ScaleEditor';
 import { Stack, Switch } from './primitives';
 import { ValidationRuleEditor } from './ValidationRuleEditor';
@@ -141,11 +142,26 @@ export function QuestionTypeEditor({ question, onChange, sections = [] }: Questi
           />
         </Stack>
       );
-    // Editors for these types follow in plan phase 8.
     case 'rating':
+      return (
+        <RatingEditor
+          questionId={question.id}
+          settings={question.settings}
+          onChange={(settings) => onChange({ ...question, settings })}
+        />
+      );
+    case 'time':
+      return (
+        <Switch
+          label={t('editor.time.isDuration')}
+          value={question.settings.isDuration ?? false}
+          onValueChange={(isDuration) => onChange({ ...question, settings: { ...question.settings, isDuration } })}
+          testID={testIdFor.setting(question.id, 'duration')}
+        />
+      );
+    // Editors for these types follow in plan phase 8.
     case 'multiple_choice_grid':
     case 'checkbox_grid':
-    case 'time':
     case 'file_upload':
       return null;
     default:

@@ -102,9 +102,11 @@ describe('ResponseSummary', () => {
     expect(screen.getByTestId(testIdFor.summary('tx'))).toHaveTextContent(/Great form/);
   });
 
-  it('says there is no summary for types that do not have one yet', () => {
-    render(<ResponseSummary questions={questions} answers={answers} />);
-    expect(screen.getByTestId(testIdFor.summary('rt'))).toHaveTextContent(/No summary for this question type yet\./);
+  it('shows ratings with an average, and says there is no summary for types without one yet', () => {
+    const upload = makeQuestion('up', { title: 'File', questionType: 'file_upload', settings: {} });
+    render(<ResponseSummary questions={[questions[3], upload]} answers={[{ submissionId: 's1', questionId: 'rt', value: 4 }]} />);
+    expect(screen.getByTestId(testIdFor.summary('rt'))).toHaveTextContent(/Average: 4\.0/);
+    expect(screen.getByTestId(testIdFor.summary('up'))).toHaveTextContent(/No summary for this question type yet\./);
   });
 
   it('shows zero answers without breaking', () => {

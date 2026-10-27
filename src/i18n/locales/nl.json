@@ -326,7 +326,19 @@
     "published": "Het formulier is gepubliceerd.",
     "archived": "Het formulier is gearchiveerd.",
     "duplicated": "Er is een kopie gemaakt.",
-    "publishNeedsQuestion": "Voeg minstens één actieve vraag toe voor je publiceert."
+    "publishNeedsQuestion": "Voeg minstens één actieve vraag toe voor je publiceert.",
+    "rating": {
+      "max": "Aantal icoontjes",
+      "icon": "Icoon",
+      "icons": {
+        "star": "Ster",
+        "heart": "Hartje",
+        "thumb": "Duim omhoog"
+      }
+    },
+    "time": {
+      "isDuration": "Duur (uren, minuten, seconden)"
+    }
   },
   "settings": {
     "title": "Formulierinstellingen",
@@ -423,7 +435,9 @@
     "previewBanner": "Voorbeeld: wat je invult wordt niet opgeslagen.",
     "previewDone": "Einde van het voorbeeld.",
     "previewClose": "Terug naar de editor",
-    "untitledSection": "Vragen"
+    "untitledSection": "Vragen",
+    "timeInvalid": "Vul een geldige tijd in met het formaat {{pattern}}.",
+    "ratingValue": "{{value}} van {{max}}"
   },
   "done": {
     "title": "Bedankt!",

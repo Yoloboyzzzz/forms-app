@@ -87,17 +87,28 @@ describe('summarizeResponses', () => {
     expect(summaries[1]).toMatchObject({ kind: 'text', total: 1 });
   });
 
+  it('summarises ratings like a scale from 1 to the number of icons', () => {
+    const rating = makeQuestion('rt', { questionType: 'rating', settings: { max: 4 } });
+    const [summary] = summarizeResponses([rating], [answer('s1', 'rt', 4), answer('s2', 'rt', 2)]);
+    expect(summary).toMatchObject({ kind: 'scale', total: 2, average: 3 });
+    expect(summary.kind === 'scale' && summary.counts.map((entry) => entry.value)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('lists time answers as text', () => {
+    const time = makeQuestion('tm', { questionType: 'time', settings: {} });
+    const [summary] = summarizeResponses([time], [answer('s1', 'tm', '14:30')]);
+    expect(summary).toMatchObject({ kind: 'text', answers: ['14:30'] });
+  });
+
   it('keeps the order of the questions', () => {
     expect(summarizeResponses([text, choice], []).map((summary) => summary.question.id)).toEqual(['tx', 'mc']);
   });
 
   it('has no summary yet for other question types', () => {
-    const rating = makeQuestion('r', { questionType: 'rating', settings: {} });
     const grid = makeQuestion('g', { questionType: 'multiple_choice_grid', options: { rows: [], columns: [] }, settings: {} });
-    const time = makeQuestion('t', { questionType: 'time', settings: {} });
     const file = makeQuestion('f', { questionType: 'file_upload', settings: {} });
     const gridBoxes = makeQuestion('gc', { questionType: 'checkbox_grid', options: { rows: [], columns: [] }, settings: {} });
-    summarizeResponses([rating, grid, time, file, gridBoxes], []).forEach((summary) => expect(summary.kind).toBe('none'));
+    summarizeResponses([grid, file, gridBoxes], []).forEach((summary) => expect(summary.kind).toBe('none'));
   });
 });
 
