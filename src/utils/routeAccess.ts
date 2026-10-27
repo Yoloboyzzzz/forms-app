@@ -1,3 +1,4 @@
+import type { Href } from 'expo-router';
 import { routes } from '@/constants/routes';
 import type { AuthSession, Profile } from '@/types/models';
 
@@ -8,12 +9,12 @@ export type RouteAccess =
   | { status: 'allowed' }
   /** The profile is still loading; render nothing yet. */
   | { status: 'wait' }
-  | { status: 'redirect'; href: string };
+  | { status: 'redirect'; href: Href };
 
 const allowed: RouteAccess = { status: 'allowed' };
 const wait: RouteAccess = { status: 'wait' };
 
-function redirect(href: string): RouteAccess {
+function redirect(href: Href): RouteAccess {
   return { status: 'redirect', href };
 }
 
@@ -43,6 +44,6 @@ export function getRouteAccess(area: RouteArea, session?: AuthSession, profile?:
 }
 
 /** Home screen of a role; used by the index route. */
-export function getHomeRoute(profile: Profile): string {
+export function getHomeRoute(profile: Profile): Href {
   return profile.role === 'admin' ? routes.admin.forms : routes.user.forms;
 }

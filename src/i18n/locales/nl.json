@@ -47,5 +47,27 @@
     "passwordTooShort": "Het wachtwoord moet minstens 8 tekens bevatten.",
     "passwordsDoNotMatch": "De wachtwoorden komen niet overeen.",
     "codeInvalid": "De code bestaat uit 6 cijfers."
+  },
+  "changePassword": {
+    "titleForced": "Kies een nieuw wachtwoord",
+    "titleVoluntary": "Wachtwoord wijzigen",
+    "forcedHint": "Je meldt je voor het eerst aan met een tijdelijk wachtwoord. Kies nu je eigen wachtwoord om verder te gaan.",
+    "newPassword": "Nieuw wachtwoord",
+    "confirmPassword": "Bevestig nieuw wachtwoord",
+    "submit": "Wachtwoord opslaan",
+    "saved": "Je wachtwoord is gewijzigd."
+  },
+  "forgotPassword": {
+    "title": "Wachtwoord vergeten",
+    "emailHint": "Vul je e-mailadres in. Je krijgt een code van 6 cijfers.",
+    "email": "E-mailadres",
+    "sendCode": "Code versturen",
+    "neutralMessage": "Heeft dit e-mailadres een account, dan ontvang je een e-mail met een code.",
+    "code": "Code uit de e-mail",
+    "newPassword": "Nieuw wachtwoord",
+    "confirmPassword": "Bevestig nieuw wachtwoord",
+    "submit": "Wachtwoord instellen",
+    "resend": "Nieuwe code versturen",
+    "backToLogin": "Terug naar inloggen"
   }
 }

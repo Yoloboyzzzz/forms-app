@@ -47,5 +47,27 @@
     "passwordTooShort": "The password must be at least 8 characters.",
     "passwordsDoNotMatch": "The passwords do not match.",
     "codeInvalid": "The code has 6 digits."
+  },
+  "changePassword": {
+    "titleForced": "Choose a new password",
+    "titleVoluntary": "Change password",
+    "forcedHint": "You are signing in for the first time with a temporary password. Choose your own password to continue.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "submit": "Save password",
+    "saved": "Your password has been changed."
+  },
+  "forgotPassword": {
+    "title": "Forgot password",
+    "emailHint": "Enter your email address. You will receive a 6-digit code.",
+    "email": "Email address",
+    "sendCode": "Send code",
+    "neutralMessage": "If this address has an account, you will receive an email with a code.",
+    "code": "Code from the email",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "submit": "Set password",
+    "resend": "Send a new code",
+    "backToLogin": "Back to log in"
   }
 }
