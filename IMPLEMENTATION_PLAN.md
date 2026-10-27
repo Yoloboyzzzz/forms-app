@@ -136,7 +136,7 @@ Core question types for the PWA: `short_answer`, `paragraph`, `multiple_choice`,
   `feat: add sections and branching`
 - [x] **4.8 Settings page** (`settings.tsx`): accepting responses, close date, limit to 1 response, edit after submit, shuffle question order, progress bar, confirmation message.
   `feat: add form settings`
-- [ ] **4.9 Preview** *(waits for the fill-in components, step 6.3)* (`preview.tsx`): renders the fill-in components (Phase 6) without saving. Wire it up after 6.3 if needed.
+- [x] **4.9 Preview** (`preview.tsx`): renders the fill-in components (Phase 6) without saving. Wire it up after 6.3 if needed.
   `feat: add form preview`
 - [x] **4.10 Publish / archive / duplicate** actions with confirmations and feedback.
   `feat: publish, archive and duplicate forms`
@@ -158,15 +158,15 @@ Core question types for the PWA: `short_answer`, `paragraph`, `multiple_choice`,
 
 ## Phase 6 – Filling in (P1)
 
-- [ ] **6.1 submissionService**: get-or-create draft, save one answer (upsert), delete answer, submit, reopen, get my submission with answers. Map DB errors (missing required, limit one response, closed form) to i18n keys. Tests.
+- [x] **6.1 submissionService**: get-or-create draft, save one answer (upsert), delete answer, submit, reopen, get my submission with answers. Map DB errors (missing required, limit one response, closed form) to i18n keys. Tests.
   `feat: add submission service`
-- [ ] **6.2 useFillStore**: current assignment, form, draft answers, current section, path history (back button), debounced autosave (~1 s), saving/saved/offline state. Tests (fake timers).
+- [x] **6.2 useFillStore**: current assignment, form, draft answers, current section, path history (back button), debounced autosave (~1 s), saving/saved/offline state. Tests (fake timers).
   `feat: add fill-in store with autosave`
-- [ ] **6.3 Question renderers** for the core types (`QuestionRenderer` + one component per type), each with validation messages, a11y labels, testIDs, stories and tests.
+- [x] **6.3 Question renderers** for the core types (`QuestionRenderer` + one component per type), each with validation messages, a11y labels, testIDs, stories and tests.
   `feat: add question renderers for core types`
-- [ ] **6.4 Fill page** (`user/forms/[assignmentId].tsx`): section by section, `ProgressHeader`, next/back following branching, validation before next, submit with confirm, `OfflineBanner` (NetInfo) disables submit offline.
+- [x] **6.4 Fill page** (`user/forms/[assignmentId].tsx`): section by section, `ProgressHeader`, next/back following branching, validation before next, submit with confirm, `OfflineBanner` (NetInfo) disables submit offline.
   `feat: fill in forms section by section`
-- [ ] **6.5 Confirmation page** (`done.tsx`) with the form's confirmation message; "edit response" when allowed; "submit another" never (limit one) unless the setting is off.
+- [x] **6.5 Confirmation page** (`done.tsx`) with the form's confirmation message; "edit response" when allowed; "submit another" never (limit one) unless the setting is off.
   `feat: add submission confirmation`
 - [ ] **6.6 E2E**: fill every core type, draft survives reload, branching skips a section, required/validation errors, submit, cannot submit twice, edit after submit when allowed, closed form blocked.
   `test: add fill-in e2e tests`

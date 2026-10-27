@@ -40,6 +40,7 @@ export default function FormEditorScreen() {
         <Stack padding="md">
           <FormActionsBar
             onSettings={() => router.push(routes.admin.formSettings(formId))}
+            onPreview={() => router.push(routes.admin.formPreview(formId))}
             onAssign={() => router.push(routes.admin.formAssign(formId))}
             onPublish={editor.detail.form.status === 'draft' ? () => editor.requestAction('publish') : undefined}
             onArchive={editor.detail.form.status === 'archived' ? undefined : () => editor.requestAction('archive')}
