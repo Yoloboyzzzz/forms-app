@@ -173,9 +173,9 @@ Core question types for the PWA: `short_answer`, `paragraph`, `multiple_choice`,
 
 ## Phase 7 – Responses (basic) and PWA delivery (P1)
 
-- [ ] **7.1 Responses page** (`admin/forms/[formId]/responses.tsx`): list of submissions (user, status, date) + `SubmissionDetail` page. A simple per-question summary (counts for choice questions) if time allows; charts are Phase 8.
+- [x] **7.1 Responses page** (`admin/forms/[formId]/responses.tsx`): list of submissions (user, status, date) + `SubmissionDetail` page. A simple per-question summary (counts for choice questions) if time allows; charts are Phase 8.
   `feat: let admins view responses`
-- [ ] **7.2 PWA**: web manifest (name, short name, icons, theme colour, start URL, display standalone), register `public/sw.js`, check "Add to Home Screen" works.
+- [x] **7.2 PWA**: web manifest (name, short name, icons, theme colour, start URL, display standalone), register `public/sw.js`, check "Add to Home Screen" works.
   `feat: add pwa manifest and service worker`
 - [ ] **7.3 Polish pass**: every screen has loading/empty/error states; all strings translated (nl + en); dark mode check; a11y labels; no styles in pages (grep `StyleSheet` in `app/`); no `console.log`.
   `chore: polish pass for pwa release`
