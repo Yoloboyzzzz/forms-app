@@ -56,24 +56,24 @@ The PWA scope is tight (8 days). The **P1** set is the smallest version that ful
 - [x] **0.10 Constants.** `src/constants/testIds.ts` (static ids + helpers for dynamic ids) and `src/constants/routes.ts`.
   `feat: add test id and route constants`
 - [x] **0.11 🧑 Henry – Supabase project.** Create the project (EU), put URL + publishable key in `.env`, turn off sign-ups, keep email/password only, minimum password length 8, set the *Reset Password* email template to include `{{ .Token }}` (nl + en text). Also create a second project (or use the same one for now) for E2E tests (AGENTS.md D14).
-- [ ] **0.12 Apply database.** Apply `supabase/migrations/*` (CLI `npx supabase db push`, or the SQL editor), deploy both Edge Functions, create the first admin by hand (AGENTS.md §7.1), generate `src/types/supabase.ts`.
+- [ ] **0.12 Apply database.** *(Status: migrations pushed, both Edge Functions deployed, types generated. Still open: first admin by hand, Henry, later.)* Apply `supabase/migrations/*` (CLI `npx supabase db push`, or the SQL editor), deploy both Edge Functions, create the first admin by hand (AGENTS.md §7.1), generate `src/types/supabase.ts`.
   `chore: generate supabase types`
-- [ ] **0.13 Seed + test accounts.** `supabase/seed.sql` with demo forms (no real personal data). Create the E2E test accounts (admin, user, user2) with `must_change_password = false`, fill `cypress.env.json` locally.
+- [ ] **0.13 Seed + test accounts.** *(`seed.sql` written; run it and create the E2E accounts once the first admin exists.)* `supabase/seed.sql` with demo forms (no real personal data). Create the E2E test accounts (admin, user, user2) with `must_change_password = false`, fill `cypress.env.json` locally.
   `chore: add seed data`
 
 **Done when:** `npm run web` starts, `npm test` and `npx tsc --noEmit` pass, Supabase has the schema, types are generated.
 
 ## Phase 1 – Foundations (P1)
 
-- [ ] **1.1 Types.** `src/types/enums.ts`, `models.ts` (discriminated unions for question options/settings/answer values, AGENTS.md §7.5), keep `database.ts` as aliases of the generated types. Replace the starter `Item`/`User` types where needed (keep files that are still referenced until they are no longer used).
+- [x] **1.1 Types.** `src/types/enums.ts`, `models.ts` (discriminated unions for question options/settings/answer values, AGENTS.md §7.5), keep `database.ts` as aliases of the generated types. Replace the starter `Item`/`User` types where needed (keep files that are still referenced until they are no longer used).
   `feat: add domain types for forms`
-- [ ] **1.2 Mappers + parsers.** `src/services/mappers/` for every table: row → model, model → insert/update payload, safe `jsonb` parsers (no `any`, no unexplained `as`). 100% unit-tested, including invalid JSON.
+- [x] **1.2 Mappers + parsers.** `src/services/mappers/` for every table: row → model, model → insert/update payload, safe `jsonb` parsers (no `any`, no unexplained `as`). 100% unit-tested, including invalid JSON.
   `feat: add row mappers and jsonb parsers`
-- [ ] **1.3 Supabase client.** `src/services/supabase/client.ts` + `authStorage.ts` (web: default; native: encrypted large secure store), `src/services/errors.ts` (`ServiceError` with i18n key + code). Tests for the error mapping.
+- [x] **1.3 Supabase client.** `src/services/supabase/client.ts` + `authStorage.ts` (web: default; native: encrypted large secure store), `src/services/errors.ts` (`ServiceError` with i18n key + code). Tests for the error mapping.
   `feat: add supabase client and service errors`
-- [ ] **1.4 Primitives upgrade.** Move every primitive to theme tokens, forward `testID`, `accessibilityLabel`, `accessibilityRole`; fill the empty style objects; touch targets ≥ 44/48; `minHeight` instead of `height`. Add missing stories and a unit test per primitive. Split this into a few commits (e.g. text/layout, inputs, feedback).
+- [x] **1.4 Primitives upgrade.** Move every primitive to theme tokens, forward `testID`, `accessibilityLabel`, `accessibilityRole`; fill the empty style objects; touch targets ≥ 44/48; `minHeight` instead of `height`. Add missing stories and a unit test per primitive. Split this into a few commits (e.g. text/layout, inputs, feedback).
   `refactor: move primitives to theme tokens and add a11y props`
-- [ ] **1.5 New primitives** needed later: `Button` (replaces/extends `StyledButton`: variants, loading, disabled), `TextArea`, `Select`/`Dropdown`, `Switch`, `ProgressBar`, `ConfirmDialog`, `OfflineBanner`. Story + test each.
+- [x] **1.5 New primitives** needed later: `Button` (replaces/extends `StyledButton`: variants, loading, disabled), `TextArea`, `Select`/`Dropdown`, `Switch`, `ProgressBar`, `ConfirmDialog`, `OfflineBanner`. Story + test each.
   `feat: add button, textarea, select, switch and dialog primitives`
 
 **Done when:** Storybook shows all primitives in light and dark mode; coverage thresholds pass.
