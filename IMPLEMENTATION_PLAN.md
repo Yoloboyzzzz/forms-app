@@ -145,13 +145,13 @@ Core question types for the PWA: `short_answer`, `paragraph`, `multiple_choice`,
 
 ## Phase 5 – Assignments (P1)
 
-- [ ] **5.1 assignmentService** (assign many users, unassign, list per form, list mine with form + submission status). Tests.
+- [x] **5.1 assignmentService** (assign many users, unassign, list per form, list mine with form + submission status). Tests.
   `feat: add assignment service`
-- [ ] **5.2 Assign page** (`admin/forms/[formId]/assign.tsx`): `AssignUserList` with search, select, optional due date, unassign with confirm.
+- [x] **5.2 Assign page** (`admin/forms/[formId]/assign.tsx`): `AssignUserList` with search, select, optional due date, unassign with confirm.
   `feat: let admins assign forms to users`
-- [ ] **5.3 useAssignmentsStore** (user's assigned forms) + **My forms** page (`user/forms/index.tsx`): to do / submitted tabs, `AssignmentCard` with due date and status, pull-to-refresh, empty state.
+- [x] **5.3 useAssignmentsStore** (user's assigned forms) + **My forms** page (`user/forms/index.tsx`): to do / submitted tabs, `AssignmentCard` with due date and status, pull-to-refresh, empty state.
   `feat: show assigned forms to users`
-- [ ] **5.4 E2E**: user only sees assigned published forms; unassigned form by URL shows a not-found state; user2 sees nothing of user1.
+- [x] **5.4 E2E** *(written, not yet run; the not-found check passes once step 6.4 exists)*: user only sees assigned published forms; unassigned form by URL shows a not-found state; user2 sees nothing of user1.
   `test: add assignment e2e tests`
 
 🏁 **Milestone B (≈ 01.11): admins can build and assign forms.** Show Henry.
