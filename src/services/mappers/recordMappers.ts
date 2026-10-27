@@ -56,6 +56,22 @@ export function toFormInsert(draft: { title: string; description?: string }, cre
   return { title: draft.title, description: draft.description ?? null, created_by: createdBy };
 }
 
+/** Insert payload for a copy of a form: same settings, a new title and owner, always a draft. */
+export function toFormCopyInsert(form: Form, title: string, createdBy: string): FormInsert {
+  return {
+    title,
+    description: form.description ?? null,
+    is_accepting_responses: form.isAcceptingResponses,
+    closes_at: form.closesAt === undefined ? null : form.closesAt.toISOString(),
+    limit_one_response: form.limitOneResponse,
+    allow_edit_after_submit: form.allowEditAfterSubmit,
+    shuffle_question_order: form.shuffleQuestionOrder,
+    show_progress_bar: form.showProgressBar,
+    confirmation_message: form.confirmationMessage ?? null,
+    created_by: createdBy,
+  };
+}
+
 export type FormPatch = Partial<Pick<Form, 'title' | 'description'> & FormSettings>;
 
 /**

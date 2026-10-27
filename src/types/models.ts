@@ -328,6 +328,13 @@ export interface Answer {
   updatedAt: Date;
 }
 
+/** A form with everything needed to edit or fill it in. Sections and questions are sorted by `orderIndex`. */
+export interface FormDetail {
+  form: Form;
+  sections: FormSection[];
+  questions: Question[];
+}
+
 // ------------------------------------------------------ assignments, submissions
 
 export interface Assignment {

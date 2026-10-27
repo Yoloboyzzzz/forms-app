@@ -21,6 +21,7 @@ describe('toServiceError', () => {
     [{ code: 'otp_expired', message: 'x' }, 'invalidCode'],
     [{ code: 'same_password', message: 'x' }, 'samePassword'],
     [{ code: 'invalid_input', message: 'x' }, 'invalidInput'],
+    [{ code: '23503', message: 'x' }, 'inUse'],
     [{ status: 403, message: 'x' }, 'forbidden'],
     [{ status: 429, message: 'x' }, 'rateLimited'],
     [{ message: 'Network request failed' }, 'network'],

@@ -9,7 +9,7 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg))',
   ],
-  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.stories.tsx', '!src/**/*.d.ts', '!src/types/supabase.ts'],
+  collectCoverageFrom: ['src/**/*.{ts,tsx}', '!src/**/*.stories.tsx', '!src/**/*.d.ts', '!src/types/supabase.ts', '!src/**/testUtils/**'],
   // Per-folder thresholds (src/utils, src/services, src/state at 90%) are added together with those folders:
   // jest fails when a threshold path matches no files.
   coverageThreshold: {

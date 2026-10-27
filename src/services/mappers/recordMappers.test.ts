@@ -3,6 +3,7 @@ import {
   toAssignment,
   toAssignmentInsert,
   toForm,
+  toFormCopyInsert,
   toFormInsert,
   toFormUpdate,
   toProfile,
@@ -88,6 +89,37 @@ describe('forms', () => {
   it('builds an insert payload', () => {
     expect(toFormInsert({ title: 'T' }, 'u1')).toEqual({ title: 'T', description: null, created_by: 'u1' });
     expect(toFormInsert({ title: 'T', description: 'd' }, 'u1').description).toBe('d');
+  });
+
+  it('copies settings into a draft insert for a new owner', () => {
+    const source = toForm({
+      ...formRow,
+      description: 'd',
+      closes_at: TS,
+      confirmation_message: 'bye',
+      limit_one_response: false,
+      allow_edit_after_submit: true,
+      shuffle_question_order: true,
+      show_progress_bar: false,
+      is_accepting_responses: false,
+    });
+    expect(toFormCopyInsert(source, 'Copy', 'u2')).toEqual({
+      title: 'Copy',
+      description: 'd',
+      is_accepting_responses: false,
+      closes_at: new Date(TS).toISOString(),
+      limit_one_response: false,
+      allow_edit_after_submit: true,
+      shuffle_question_order: true,
+      show_progress_bar: false,
+      confirmation_message: 'bye',
+      created_by: 'u2',
+    });
+    expect(toFormCopyInsert(toForm(formRow), 'Copy', 'u2')).toMatchObject({
+      description: null,
+      closes_at: null,
+      confirmation_message: null,
+    });
   });
 
   it('builds an update payload from present keys only', () => {
