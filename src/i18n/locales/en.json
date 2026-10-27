@@ -21,7 +21,8 @@
     "weakPassword": "This password is too weak. Choose a longer password.",
     "rateLimited": "Too many attempts. Wait a moment and try again.",
     "invalidCode": "The code is invalid or has expired.",
-    "samePassword": "Choose a different password than your current one."
+    "samePassword": "Choose a different password than your current one.",
+    "invalidInput": "Check the details you entered."
   },
   "admin": {
     "forms": {

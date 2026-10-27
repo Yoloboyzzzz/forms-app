@@ -21,7 +21,8 @@
     "weakPassword": "Dit wachtwoord is te zwak. Kies een langer wachtwoord.",
     "rateLimited": "Te veel pogingen. Wacht even en probeer opnieuw.",
     "invalidCode": "De code is ongeldig of verlopen.",
-    "samePassword": "Kies een ander wachtwoord dan je huidige."
+    "samePassword": "Kies een ander wachtwoord dan je huidige.",
+    "invalidInput": "Controleer de ingevulde gegevens."
   },
   "admin": {
     "forms": {

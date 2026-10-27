@@ -10,7 +10,8 @@ export type ServiceErrorCode =
   | 'weakPassword'
   | 'rateLimited'
   | 'invalidCode'
-  | 'samePassword';
+  | 'samePassword'
+  | 'invalidInput';
 
 /** Typed error thrown by every service. `messageKey` is an i18n key; the UI translates it. */
 export class ServiceError extends Error {
@@ -41,6 +42,7 @@ const CODE_MAP: Record<string, ServiceErrorCode> = {
   otp_expired: 'invalidCode',
   otp_disabled: 'invalidCode',
   same_password: 'samePassword',
+  invalid_input: 'invalidInput',
 };
 
 const NETWORK_PATTERN = /network|failed to fetch|fetch failed/i;

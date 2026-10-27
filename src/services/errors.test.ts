@@ -20,6 +20,7 @@ describe('toServiceError', () => {
     [{ code: 'over_email_send_rate_limit', message: 'x' }, 'rateLimited'],
     [{ code: 'otp_expired', message: 'x' }, 'invalidCode'],
     [{ code: 'same_password', message: 'x' }, 'samePassword'],
+    [{ code: 'invalid_input', message: 'x' }, 'invalidInput'],
     [{ status: 403, message: 'x' }, 'forbidden'],
     [{ status: 429, message: 'x' }, 'rateLimited'],
     [{ message: 'Network request failed' }, 'network'],
