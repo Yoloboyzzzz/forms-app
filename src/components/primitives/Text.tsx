@@ -1,8 +1,6 @@
 import { Text as RNText, StyleSheet } from 'react-native';
 import { useThemedStyles } from '@/hooks/useThemedStyles';
-import type { Theme } from '@/theme';
-
-export type TextColor = 'default' | 'muted' | 'primary' | 'error' | 'success' | 'warning' | 'inverse';
+import type { TextColor, Theme } from '@/theme';
 
 interface TextProps {
   children: React.ReactNode;
