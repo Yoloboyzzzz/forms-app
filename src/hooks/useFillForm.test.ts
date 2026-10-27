@@ -12,6 +12,14 @@ let mockOnline = true;
 
 jest.mock('@/hooks/useIsOnline', () => ({ useIsOnline: () => mockOnline }));
 jest.mock('@/services/storageService', () => ({ deleteFiles: jest.fn(), uploadAnswerFile: jest.fn() }));
+jest.mock('@/services/authService', () => ({
+  changePassword: jest.fn(),
+  getSession: jest.fn(),
+  onAuthStateChange: jest.fn(),
+  signIn: jest.fn(),
+  signOut: jest.fn(),
+}));
+jest.mock('@/services/profileService', () => ({ getMyProfile: jest.fn(), updateMyName: jest.fn() }));
 const mockPick = jest.fn();
 jest.mock('@/hooks/usePickFiles', () => ({ usePickFiles: () => mockPick }));
 jest.mock('@/services/submissionService', () => ({
