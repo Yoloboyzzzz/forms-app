@@ -318,5 +318,28 @@
     "jumpContinue": "Continue to the next section",
     "jumpSubmit": "Submit the form",
     "jumpLabel": "After \"{{option}}\""
+  },
+  "settings": {
+    "title": "Form settings",
+    "isAcceptingResponses": "Accepting responses",
+    "closesAt": "Closes on (optional)",
+    "closesAtHint": "Format: 2026-11-04 or 2026-11-04 14:30",
+    "closesAtInvalid": "Use the format 2026-11-04 or 2026-11-04 14:30.",
+    "limitOneResponse": "Limit to 1 response per person",
+    "allowEditAfterSubmit": "Allow editing after submitting",
+    "shuffleQuestionOrder": "Shuffle the order of the questions",
+    "showProgressBar": "Show a progress bar",
+    "confirmationMessage": "Confirmation message",
+    "confirmationHint": "Shown after someone submits the form.",
+    "back": "Back to the editor"
+  },
+  "editorActions": {
+    "settings": "Settings",
+    "preview": "Preview",
+    "assign": "Assign",
+    "responses": "Responses",
+    "publish": "Publish",
+    "archive": "Archive",
+    "duplicate": "Duplicate"
   }
 }

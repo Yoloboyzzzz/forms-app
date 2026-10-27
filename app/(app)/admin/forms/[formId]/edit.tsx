@@ -1,8 +1,10 @@
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { FormActionsBar } from '@/components/FormActionsBar';
 import { FormEditorView } from '@/components/FormEditorView';
 import { Button, ConfirmDialog, EmptyState, Screen, Skeleton, Stack, Toast } from '@/components/primitives';
 import { QuestionTypePicker } from '@/components/QuestionTypePicker';
+import { routes } from '@/constants/routes';
 import { testIds } from '@/constants/testIds';
 import { useFormEditor } from '@/hooks/useFormEditor';
 
@@ -32,17 +34,22 @@ export default function FormEditorScreen() {
       );
     }
     return (
-      <FormEditorView
-        detail={editor.detail}
-        saveState={editor.saveState}
-        saveErrorKey={editor.saveErrorKey}
-        onRetrySave={editor.retrySave}
-        onChangeForm={editor.changeForm}
-        questionHandlers={editor.questionHandlers}
-        sectionHandlers={editor.sectionHandlers}
-        onAddQuestion={editor.openPicker}
-        onAddSection={() => void editor.addSection()}
-      />
+      <>
+        <Stack padding="md">
+          <FormActionsBar onSettings={() => router.push(routes.admin.formSettings(formId))} />
+        </Stack>
+        <FormEditorView
+          detail={editor.detail}
+          saveState={editor.saveState}
+          saveErrorKey={editor.saveErrorKey}
+          onRetrySave={editor.retrySave}
+          onChangeForm={editor.changeForm}
+          questionHandlers={editor.questionHandlers}
+          sectionHandlers={editor.sectionHandlers}
+          onAddQuestion={editor.openPicker}
+          onAddSection={() => void editor.addSection()}
+        />
+      </>
     );
   }
 

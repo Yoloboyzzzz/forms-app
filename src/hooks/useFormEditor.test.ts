@@ -10,6 +10,7 @@ const mockStore = {
   saveState: 'idle',
   saveErrorKey: undefined as string | undefined,
   load: jest.fn(),
+  open: jest.fn(),
   flush: jest.fn(),
   updateForm: jest.fn(),
   updateQuestion: jest.fn(),
@@ -39,6 +40,7 @@ beforeEach(() => {
   mockStore.detail = makeDetail();
   mockStore.errorKey = undefined;
   mockStore.load = jest.fn().mockResolvedValue(undefined);
+  mockStore.open = jest.fn().mockResolvedValue(undefined);
   mockStore.flush = jest.fn().mockResolvedValue(undefined);
   mockStore.updateForm = jest.fn();
   mockStore.updateQuestion = jest.fn();
@@ -58,7 +60,7 @@ afterEach(() => jest.useRealTimers());
 describe('useFormEditor', () => {
   it('loads the form on mount and saves pending edits on leave', () => {
     const { unmount } = renderHook(() => useFormEditor('f1'));
-    expect(mockStore.load).toHaveBeenCalledWith('f1');
+    expect(mockStore.open).toHaveBeenCalledWith('f1');
     unmount();
     expect(mockStore.flush).toHaveBeenCalledTimes(1);
   });
@@ -69,7 +71,7 @@ describe('useFormEditor', () => {
     expect(result.current.detail).toBe(mockStore.detail);
     expect(result.current.errorKey).toBe('errors.notFound');
     act(() => result.current.reload());
-    expect(mockStore.load).toHaveBeenCalledTimes(2);
+    expect(mockStore.load).toHaveBeenCalledWith('f1');
   });
 
   it('passes edits and retries to the store', () => {

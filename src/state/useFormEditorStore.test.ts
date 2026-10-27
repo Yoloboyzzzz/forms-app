@@ -114,6 +114,38 @@ describe('load', () => {
   });
 });
 
+describe('open', () => {
+  it('keeps the form that is already loaded', async () => {
+    state().updateQuestion({ ...question('a', 's1', 0), title: 'Unsaved' });
+
+    await state().open('f1');
+
+    expect(getFormDetail).not.toHaveBeenCalled();
+    expect(state().detail?.questions.find((item) => item.id === 'a')?.title).toBe('Unsaved');
+  });
+
+  it('saves pending edits, then loads another form', async () => {
+    jest.mocked(updateQuestion).mockResolvedValue(question('a', 's1', 0));
+    jest.mocked(getFormDetail).mockResolvedValue({ ...detail(), form: { ...form, id: 'f2' } });
+    state().updateQuestion({ ...question('a', 's1', 0), title: 'Unsaved' });
+
+    await state().open('f2');
+
+    expect(updateQuestion).toHaveBeenCalledTimes(1);
+    expect(getFormDetail).toHaveBeenCalledWith('f2');
+    expect(state().detail?.form.id).toBe('f2');
+  });
+
+  it('loads when nothing is loaded yet', async () => {
+    useFormEditorStore.setState({ detail: undefined });
+    jest.mocked(getFormDetail).mockResolvedValue(detail());
+
+    await state().open('f1');
+
+    expect(getFormDetail).toHaveBeenCalledWith('f1');
+  });
+});
+
 describe('debounced saving', () => {
   it('applies a question edit at once and saves it once after the pause', async () => {
     jest.mocked(updateQuestion).mockResolvedValue(question('a', 's1', 0));

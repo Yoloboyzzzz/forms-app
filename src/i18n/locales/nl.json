@@ -318,5 +318,28 @@
     "jumpContinue": "Verder naar de volgende sectie",
     "jumpSubmit": "Het formulier indienen",
     "jumpLabel": "Na \"{{option}}\""
+  },
+  "settings": {
+    "title": "Formulierinstellingen",
+    "isAcceptingResponses": "Antwoorden accepteren",
+    "closesAt": "Sluit op (optioneel)",
+    "closesAtHint": "Formaat: 2026-11-04 of 2026-11-04 14:30",
+    "closesAtInvalid": "Gebruik het formaat 2026-11-04 of 2026-11-04 14:30.",
+    "limitOneResponse": "Beperk tot 1 antwoord per persoon",
+    "allowEditAfterSubmit": "Bewerken toestaan na het indienen",
+    "shuffleQuestionOrder": "De volgorde van de vragen door elkaar halen",
+    "showProgressBar": "Een voortgangsbalk tonen",
+    "confirmationMessage": "Bevestigingsbericht",
+    "confirmationHint": "Wordt getoond nadat iemand het formulier heeft ingediend.",
+    "back": "Terug naar de editor"
+  },
+  "editorActions": {
+    "settings": "Instellingen",
+    "preview": "Voorbeeld",
+    "assign": "Toewijzen",
+    "responses": "Antwoorden",
+    "publish": "Publiceren",
+    "archive": "Archiveren",
+    "duplicate": "Dupliceren"
   }
 }

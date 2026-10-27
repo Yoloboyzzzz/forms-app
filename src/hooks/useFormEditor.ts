@@ -60,7 +60,7 @@ export function useFormEditor(formId: string): UseFormEditor {
   const [noticeKey, setNoticeKey] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    void store().load(formId);
+    void store().open(formId);
     // Leaving the screen must not lose the last edits.
     return () => {
       void store().flush();

@@ -47,7 +47,13 @@ interface FormEditorState {
   saveState: SaveState;
   /** i18n key of the last failed save. */
   saveErrorKey?: string;
+  /** Always fetches the form again, dropping unsaved edits. */
   load: (formId: string) => Promise<void>;
+  /**
+   * Makes the form available to a screen. Keeps what is already loaded for the same form, so moving
+   * between editor, settings and preview never loses edits; saves pending edits of another form first.
+   */
+  open: (formId: string) => Promise<void>;
   /** Applies the change at once and saves it after a short pause. */
   updateForm: (patch: FormPatch) => void;
   /** Applies the change at once and saves it after a short pause. */
@@ -134,6 +140,15 @@ export const useFormEditorStore = create<FormEditorState>((set, get) => {
       } finally {
         set({ isLoading: false });
       }
+    },
+
+    open: async (formId) => {
+      const current = get().detail;
+      if (current?.form.id === formId) {
+        return;
+      }
+      await get().flush();
+      await get().load(formId);
     },
 
     updateForm: (patch) => {
