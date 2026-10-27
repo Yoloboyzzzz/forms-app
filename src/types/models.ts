@@ -399,3 +399,14 @@ export interface ResponseDetail {
   /** Answers by question id. */
   answers: Record<string, AnswerValue>;
 }
+
+/** A file the user picked on the device, before it is uploaded. */
+export interface PickedFile {
+  uri: string;
+  name: string;
+  mimeType?: string;
+  /** Size in bytes, when the picker knows it. */
+  size?: number;
+  /** The browser File object on web; its content is used instead of reading the uri. */
+  file?: Blob;
+}

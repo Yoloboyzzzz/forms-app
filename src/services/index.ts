@@ -7,3 +7,4 @@ export * from './questionService';
 export * from './assignmentService';
 export * from './submissionService';
 export * from './responseService';
+export * from './storageService';
