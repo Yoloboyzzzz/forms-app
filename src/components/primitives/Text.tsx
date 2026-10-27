@@ -13,6 +13,8 @@ interface TextProps {
   heading?: boolean;
   /** Announces changes politely (validation and status messages). */
   live?: boolean;
+  /** Read by screen readers instead of the text itself (for example for a lone "*"). */
+  accessibilityLabel?: string;
   testID?: string;
 }
 
@@ -25,6 +27,7 @@ export function Text({
   numberOfLines,
   heading = false,
   live = false,
+  accessibilityLabel,
   testID,
 }: TextProps) {
   const styles = useThemedStyles(createStyles);
@@ -35,6 +38,7 @@ export function Text({
       numberOfLines={numberOfLines}
       accessibilityRole={heading ? 'header' : undefined}
       accessibilityLiveRegion={live ? 'polite' : undefined}
+      accessibilityLabel={accessibilityLabel}
       testID={testID}
     >
       {children}

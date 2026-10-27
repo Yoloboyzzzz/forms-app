@@ -63,6 +63,12 @@ describe('Select', () => {
     expect(screen.queryByTestId('sel-option-a')).toBeNull();
   });
 
+  it('can hide the visible label but keeps it for screen readers', () => {
+    setup({ hideLabel: true });
+    expect(screen.queryByText('Letter')).toBeNull();
+    expect(screen.getByLabelText('Letter')).toBeTruthy();
+  });
+
   it('works without a testID', () => {
     setup({ testID: undefined, error: 'Bad' });
     fireEvent.press(screen.getByLabelText('Letter'));

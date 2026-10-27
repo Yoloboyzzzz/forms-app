@@ -18,6 +18,11 @@ describe('Text', () => {
     expect(screen.getByTestId('t')).toHaveStyle({ fontSize: 20, fontWeight: '700', textAlign: 'center' });
   });
 
+  it('can be read out differently', () => {
+    render(<Text testID="t" accessibilityLabel="required">*</Text>);
+    expect(screen.getByLabelText('required')).toBeTruthy();
+  });
+
   it('marks headings and live regions for assistive tech', () => {
     render(<Text testID="t" heading live>Title</Text>);
     const node = screen.getByTestId('t');

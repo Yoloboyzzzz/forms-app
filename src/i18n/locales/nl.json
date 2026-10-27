@@ -391,5 +391,15 @@
     },
     "dueOn": "Af tegen {{date}}",
     "noDueDate": "Geen deadline"
+  },
+  "fill": {
+    "required": "Deze vraag is verplicht.",
+    "requiredMark": "verplicht",
+    "other": "Anders",
+    "otherPlaceholder": "Jouw antwoord",
+    "clear": "Keuze wissen",
+    "choose": "Kies",
+    "dateInvalid": "Vul een geldige datum in met het formaat {{pattern}}.",
+    "scaleValue": "{{value}}"
   }
 }

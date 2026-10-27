@@ -18,6 +18,8 @@ interface SelectProps {
   placeholder?: string;
   error?: string;
   disabled?: boolean;
+  /** Keeps the label for screen readers but does not draw it. */
+  hideLabel?: boolean;
   /** Translated label for the backdrop that closes the list. */
   closeLabel?: string;
   /** Goes on the trigger; options get `${testID}-option-${value}`, the error `${testID}-error`. */
@@ -32,6 +34,7 @@ export function Select({
   placeholder,
   error,
   disabled = false,
+  hideLabel = false,
   closeLabel,
   testID,
 }: SelectProps) {
@@ -42,7 +45,7 @@ export function Select({
 
   return (
     <View style={styles.container}>
-      <Text size="sm" weight="medium">{label}</Text>
+      {!hideLabel && <Text size="sm" weight="medium">{label}</Text>}
       <Pressable
         onPress={() => setOpen(true)}
         disabled={disabled}

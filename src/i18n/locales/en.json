@@ -391,5 +391,15 @@
     },
     "dueOn": "Due on {{date}}",
     "noDueDate": "No due date"
+  },
+  "fill": {
+    "required": "This question is required.",
+    "requiredMark": "required",
+    "other": "Other",
+    "otherPlaceholder": "Your answer",
+    "clear": "Clear selection",
+    "choose": "Choose",
+    "dateInvalid": "Enter a valid date in the format {{pattern}}.",
+    "scaleValue": "{{value}}"
   }
 }

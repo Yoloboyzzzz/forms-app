@@ -53,6 +53,12 @@ describe('InputField', () => {
     expect(input.props.returnKeyType).toBe('next');
   });
 
+  it('can hide the visible label but keeps it for screen readers', () => {
+    setup({ hideLabel: true });
+    expect(screen.queryByText('Email')).toBeNull();
+    expect(screen.getByLabelText('Email')).toBeTruthy();
+  });
+
   it('submits from the keyboard', () => {
     const onSubmitEditing = jest.fn();
     setup({ onSubmitEditing });

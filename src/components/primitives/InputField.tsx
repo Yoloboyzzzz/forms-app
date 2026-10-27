@@ -14,6 +14,8 @@ interface InputFieldProps {
   error?: string;
   disabled?: boolean;
   multiline?: boolean;
+  /** Keeps the label for screen readers but does not draw it (the surrounding component shows the text). */
+  hideLabel?: boolean;
   keyboardType?: TextInputProps['keyboardType'];
   autoComplete?: TextInputProps['autoComplete'];
   textContentType?: TextInputProps['textContentType'];
@@ -34,6 +36,7 @@ export function InputField({
   error,
   disabled = false,
   multiline = false,
+  hideLabel = false,
   keyboardType,
   autoComplete,
   textContentType,
@@ -49,7 +52,7 @@ export function InputField({
 
   return (
     <View style={styles.container}>
-      <Text size="sm" weight="medium">{label}</Text>
+      {!hideLabel && <Text size="sm" weight="medium">{label}</Text>}
       <TextInput
         value={value}
         onChangeText={onChangeText}

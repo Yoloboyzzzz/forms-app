@@ -77,3 +77,30 @@ export function getSectionErrors(
   }
   return errors;
 }
+
+/** The text of a text-like answer (short answer, paragraph, date, time); empty when unanswered. */
+export function readText(value: AnswerValue | undefined): string {
+  return typeof value === 'string' ? value : '';
+}
+
+/** The number of a scale or rating answer, or undefined when unanswered. */
+export function readNumber(value: AnswerValue | undefined): number | undefined {
+  return typeof value === 'number' ? value : undefined;
+}
+
+/** What a multiple choice or dropdown answer holds: the picked option and/or the "other" text. */
+export function readChoice(value: AnswerValue | undefined): { optionId?: string; other?: string } {
+  if (typeof value !== 'object' || Array.isArray(value)) return {};
+  return {
+    optionId: 'optionId' in value && typeof value.optionId === 'string' ? value.optionId : undefined,
+    other: 'other' in value && typeof value.other === 'string' ? value.other : undefined,
+  };
+}
+
+/** What a checkboxes answer holds: the ticked options and the "other" text. */
+export function readCheckboxes(value: AnswerValue | undefined): { optionIds: string[]; other?: string } {
+  if (typeof value !== 'object' || Array.isArray(value) || !('optionIds' in value) || !Array.isArray(value.optionIds)) {
+    return { optionIds: [] };
+  }
+  return { optionIds: value.optionIds, other: typeof value.other === 'string' ? value.other : undefined };
+}

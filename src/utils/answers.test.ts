@@ -1,6 +1,6 @@
 import { makeQuestion } from '@/testUtils/factories';
 import type { AnswerValue, Question } from '@/types/models';
-import { getAnswerError, getSectionErrors, isAnswered } from './answers';
+import { getAnswerError, getSectionErrors, isAnswered, readCheckboxes, readChoice, readNumber, readText } from './answers';
 
 describe('isAnswered', () => {
   it.each<[string, AnswerValue | undefined, boolean]>([
@@ -112,5 +112,37 @@ describe('getSectionErrors', () => {
 
   it('is empty when everything is fine', () => {
     expect(getSectionErrors(questions, 's1', { a: 'x', c: 'y' })).toEqual({});
+  });
+});
+
+describe('answer readers', () => {
+  it('reads text', () => {
+    expect(readText('hi')).toBe('hi');
+    expect(readText(undefined)).toBe('');
+    expect(readText(4)).toBe('');
+  });
+
+  it('reads numbers', () => {
+    expect(readNumber(4)).toBe(4);
+    expect(readNumber(0)).toBe(0);
+    expect(readNumber('4')).toBeUndefined();
+    expect(readNumber(undefined)).toBeUndefined();
+  });
+
+  it('reads a choice, with the picked option or the other text', () => {
+    expect(readChoice({ optionId: 'o1' })).toEqual({ optionId: 'o1', other: undefined });
+    expect(readChoice({ other: 'x' })).toEqual({ optionId: undefined, other: 'x' });
+    expect(readChoice('text')).toEqual({});
+    expect(readChoice(undefined)).toEqual({});
+    expect(readChoice(['a'])).toEqual({});
+  });
+
+  it('reads ticked boxes', () => {
+    expect(readCheckboxes({ optionIds: ['a'], other: 'x' })).toEqual({ optionIds: ['a'], other: 'x' });
+    expect(readCheckboxes({ optionIds: ['a'] })).toEqual({ optionIds: ['a'], other: undefined });
+    expect(readCheckboxes(undefined)).toEqual({ optionIds: [] });
+    expect(readCheckboxes('x')).toEqual({ optionIds: [] });
+    expect(readCheckboxes(['a'])).toEqual({ optionIds: [] });
+    expect(readCheckboxes({ optionId: 'a' })).toEqual({ optionIds: [] });
   });
 });
