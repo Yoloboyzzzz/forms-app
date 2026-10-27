@@ -15,7 +15,8 @@ export const routes = {
     formPreview: (formId: string): `/admin/forms/${string}/preview` => `/admin/forms/${formId}/preview`,
     formAssign: (formId: string): `/admin/forms/${string}/assign` => `/admin/forms/${formId}/assign`,
     formResponses: (formId: string): `/admin/forms/${string}/responses` => `/admin/forms/${formId}/responses`,
-    submission: (submissionId: string): `/admin/submissions/${string}` => `/admin/submissions/${submissionId}`,
+    submission: (formId: string, submissionId: string): `/admin/forms/${string}/responses/${string}` =>
+      `/admin/forms/${formId}/responses/${submissionId}`,
     profile: '/admin/profile',
     users: '/admin/users',
     newUser: '/admin/users/new',

@@ -432,5 +432,31 @@
     "editFailed": "You cannot edit this response.",
     "backToForms": "Back to my forms",
     "alreadySubmitted": "You already submitted this form."
+  },
+  "responses": {
+    "title": "Responses",
+    "back": "Back to the editor",
+    "backToList": "Back to the responses",
+    "tabSummary": "Summary",
+    "tabList": "Responses",
+    "tabs": "Show",
+    "submittedOf": "{{submitted}} of {{total}} submitted",
+    "empty": "This form is not assigned to anyone yet.",
+    "noAnswers": "No responses yet.",
+    "loadError": "The responses could not be loaded.",
+    "status": {
+      "notStarted": "Not started",
+      "draft": "In progress",
+      "submitted": "Submitted"
+    },
+    "submittedOn": "Submitted on {{date}}",
+    "answers": "{{count}} answers",
+    "average": "Average: {{value}}",
+    "otherAnswers": "Other answers",
+    "textAnswers": "Answers",
+    "noSummary": "No summary for this question type yet.",
+    "unanswered": "No answer",
+    "detailTitle": "Response of {{name}}",
+    "deactivatedQuestion": "(deactivated question)"
   }
 }

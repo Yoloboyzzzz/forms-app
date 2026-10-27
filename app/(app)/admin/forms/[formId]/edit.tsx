@@ -42,6 +42,7 @@ export default function FormEditorScreen() {
             onSettings={() => router.push(routes.admin.formSettings(formId))}
             onPreview={() => router.push(routes.admin.formPreview(formId))}
             onAssign={() => router.push(routes.admin.formAssign(formId))}
+            onResponses={() => router.push(routes.admin.formResponses(formId))}
             onPublish={editor.detail.form.status === 'draft' ? () => editor.requestAction('publish') : undefined}
             onArchive={editor.detail.form.status === 'archived' ? undefined : () => editor.requestAction('archive')}
             onDuplicate={() => editor.requestAction('duplicate')}

@@ -432,5 +432,31 @@
     "editFailed": "Je kunt dit antwoord niet bewerken.",
     "backToForms": "Terug naar mijn formulieren",
     "alreadySubmitted": "Je hebt dit formulier al ingediend."
+  },
+  "responses": {
+    "title": "Antwoorden",
+    "back": "Terug naar de editor",
+    "backToList": "Terug naar de antwoorden",
+    "tabSummary": "Overzicht",
+    "tabList": "Antwoorden",
+    "tabs": "Tonen",
+    "submittedOf": "{{submitted}} van {{total}} ingediend",
+    "empty": "Dit formulier is nog aan niemand toegewezen.",
+    "noAnswers": "Nog geen antwoorden.",
+    "loadError": "De antwoorden konden niet worden geladen.",
+    "status": {
+      "notStarted": "Niet gestart",
+      "draft": "Bezig",
+      "submitted": "Ingediend"
+    },
+    "submittedOn": "Ingediend op {{date}}",
+    "answers": "{{count}} antwoorden",
+    "average": "Gemiddelde: {{value}}",
+    "otherAnswers": "Andere antwoorden",
+    "textAnswers": "Antwoorden",
+    "noSummary": "Voor dit vraagtype is er nog geen overzicht.",
+    "unanswered": "Geen antwoord",
+    "detailTitle": "Antwoord van {{name}}",
+    "deactivatedQuestion": "(gedeactiveerde vraag)"
   }
 }

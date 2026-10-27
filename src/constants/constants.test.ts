@@ -35,7 +35,7 @@ describe('routes', () => {
     expect(routes.admin.formPreview('f1')).toBe('/admin/forms/f1/preview');
     expect(routes.admin.formAssign('f1')).toBe('/admin/forms/f1/assign');
     expect(routes.admin.formResponses('f1')).toBe('/admin/forms/f1/responses');
-    expect(routes.admin.submission('s1')).toBe('/admin/submissions/s1');
+    expect(routes.admin.submission('f1', 's1')).toBe('/admin/forms/f1/responses/s1');
     expect(routes.user.fill('a1')).toBe('/user/forms/a1');
     expect(routes.user.done('a1')).toBe('/user/forms/a1/done');
   });
