@@ -30,6 +30,12 @@ export const testIds = {
     submitButton: 'forgot-password-submit-button',
     errorText: 'forgot-password-error-text',
   },
+  adminForms: {
+    screen: 'admin-forms-screen',
+  },
+  userForms: {
+    screen: 'user-forms-screen',
+  },
 } as const;
 
 export const testIdFor = {

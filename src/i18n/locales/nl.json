@@ -22,5 +22,15 @@
     "rateLimited": "Te veel pogingen. Wacht even en probeer opnieuw.",
     "invalidCode": "De code is ongeldig of verlopen.",
     "samePassword": "Kies een ander wachtwoord dan je huidige."
+  },
+  "admin": {
+    "forms": {
+      "title": "Formulieren"
+    }
+  },
+  "user": {
+    "forms": {
+      "title": "Mijn formulieren"
+    }
   }
 }

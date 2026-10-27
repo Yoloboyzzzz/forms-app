@@ -22,5 +22,15 @@
     "rateLimited": "Too many attempts. Wait a moment and try again.",
     "invalidCode": "The code is invalid or has expired.",
     "samePassword": "Choose a different password than your current one."
+  },
+  "admin": {
+    "forms": {
+      "title": "Forms"
+    }
+  },
+  "user": {
+    "forms": {
+      "title": "My forms"
+    }
   }
 }
