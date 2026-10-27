@@ -32,5 +32,20 @@
     "forms": {
       "title": "My forms"
     }
+  },
+  "login": {
+    "title": "Welcome back",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "submit": "Log in",
+    "forgotPassword": "Forgot password?"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "emailInvalid": "Enter a valid email address.",
+    "passwordTooShort": "The password must be at least 8 characters.",
+    "passwordsDoNotMatch": "The passwords do not match.",
+    "codeInvalid": "The code has 6 digits."
   }
 }

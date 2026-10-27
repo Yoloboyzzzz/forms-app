@@ -1,59 +1,25 @@
-import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
-import { useAuthStore } from '../src/state/useAuthStore';
-import { InputField } from '../src/components/primitives/InputField';
-import { Button } from '../src/components/primitives/Button';
-import { Stack } from '../src/components/primitives/Stack';
-import { Text } from '../src/components/primitives/Text';
+import { LoginForm } from '@/components/LoginForm';
+import { Screen } from '@/components/primitives';
+import { RouteGuard } from '@/components/RouteGuard';
+import { routes } from '@/constants/routes';
+import { useLogin } from '@/hooks/useLogin';
+import { useRouteAccess } from '@/hooks/useRouteAccess';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const signIn = useAuthStore((state) => state.signIn);
-  const isLoading = useAuthStore((state) => state.isLoading);
-
-  const handleLogin = async () => {
-    setError('');
-    try {
-      await signIn(email, password);
-      router.replace('/');
-    } catch {
-      setError('Login failed. Check your credentials.');
-    }
-  };
+  const access = useRouteAccess('public');
+  const { signIn, isLoading, errorKey } = useLogin();
 
   return (
-    <View style={styles.container}>
-      <Stack gap="lg" padding="lg">
-        <Text size="xl" weight="bold" align="center">Welcome back</Text>
-        <InputField
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="you@example.com"
-          testID="email-input"
-        />
-        <InputField
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          testID="password-input"
-          error={error !== '' ? error : undefined}
-        />
-        <Button
-          label="Log in"
-          onPress={handleLogin}
+    <RouteGuard access={access}>
+      <Screen padding="none">
+        <LoginForm
+          onSubmit={signIn}
+          onForgotPassword={() => router.push(routes.forgotPassword)}
           isLoading={isLoading}
-          testID="login-button"
+          errorKey={errorKey}
         />
-      </Stack>
-    </View>
+      </Screen>
+    </RouteGuard>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-});

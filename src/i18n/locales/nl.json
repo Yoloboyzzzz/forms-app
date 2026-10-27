@@ -32,5 +32,20 @@
     "forms": {
       "title": "Mijn formulieren"
     }
+  },
+  "login": {
+    "title": "Welkom terug",
+    "email": "E-mailadres",
+    "emailPlaceholder": "jij@voorbeeld.be",
+    "password": "Wachtwoord",
+    "submit": "Inloggen",
+    "forgotPassword": "Wachtwoord vergeten?"
+  },
+  "validation": {
+    "required": "Dit veld is verplicht.",
+    "emailInvalid": "Vul een geldig e-mailadres in.",
+    "passwordTooShort": "Het wachtwoord moet minstens 8 tekens bevatten.",
+    "passwordsDoNotMatch": "De wachtwoorden komen niet overeen.",
+    "codeInvalid": "De code bestaat uit 6 cijfers."
   }
 }
