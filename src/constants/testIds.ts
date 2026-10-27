@@ -33,6 +33,22 @@ export const testIds = {
     submitButton: 'forgot-password-submit-button',
     errorText: 'forgot-password-error-text',
   },
+  profile: {
+    screen: 'profile-screen',
+    nameInput: 'profile-name-input',
+    saveNameButton: 'profile-save-name-button',
+    nameSavedMessage: 'profile-name-saved-message',
+    changePasswordToggle: 'profile-change-password-toggle',
+    passwordSavedMessage: 'profile-password-saved-message',
+    logoutButton: 'profile-logout-button',
+    emailText: 'profile-email-text',
+  },
+  tabs: {
+    adminForms: 'tab-admin-forms',
+    adminProfile: 'tab-admin-profile',
+    userForms: 'tab-user-forms',
+    userProfile: 'tab-user-profile',
+  },
   adminForms: {
     screen: 'admin-forms-screen',
   },
@@ -42,6 +58,7 @@ export const testIds = {
 } as const;
 
 export const testIdFor = {
+  languageOption: (language: string): string => `language-option-${language}`,
   formCard: (formId: string): string => `form-card-${formId}`,
   questionInput: (questionId: string): string => `question-${questionId}-input`,
   questionOption: (questionId: string, optionId: string): string => `question-${questionId}-option-${optionId}`,

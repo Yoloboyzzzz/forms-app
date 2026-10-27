@@ -24,6 +24,7 @@ describe('testIds', () => {
     expect(testIdFor.questionOption('q1', 'o1')).toBe('question-q1-option-o1');
     expect(testIdFor.assignmentCard('a1')).toBe('assignment-card-a1');
     expect(testIdFor.userListItem('u1')).toBe('user-list-item-u1');
+    expect(testIdFor.languageOption('nl')).toBe('language-option-nl');
   });
 });
 

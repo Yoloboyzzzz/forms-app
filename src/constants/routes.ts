@@ -7,7 +7,6 @@ export const routes = {
   changePassword: '/change-password',
   forgotPassword: '/forgot-password',
   home: '/',
-  profile: '/profile',
   admin: {
     forms: '/admin/forms',
     newForm: '/admin/forms/new',
@@ -17,11 +16,13 @@ export const routes = {
     formAssign: (formId: string): `/admin/forms/${string}/assign` => `/admin/forms/${formId}/assign`,
     formResponses: (formId: string): `/admin/forms/${string}/responses` => `/admin/forms/${formId}/responses`,
     submission: (submissionId: string): `/admin/submissions/${string}` => `/admin/submissions/${submissionId}`,
+    profile: '/admin/profile',
     users: '/admin/users',
     newUser: '/admin/users/new',
   },
   user: {
     forms: '/user/forms',
+    profile: '/user/profile',
     fill: (assignmentId: string): `/user/forms/${string}` => `/user/forms/${assignmentId}`,
     done: (assignmentId: string): `/user/forms/${string}/done` => `/user/forms/${assignmentId}/done`,
   },

@@ -69,5 +69,25 @@
     "submit": "Set password",
     "resend": "Send a new code",
     "backToLogin": "Back to log in"
+  },
+  "tabs": {
+    "forms": "Forms",
+    "myForms": "My forms",
+    "profile": "Profile"
+  },
+  "role": {
+    "admin": "Admin",
+    "user": "User"
+  },
+  "profile": {
+    "title": "Profile",
+    "name": "Name",
+    "email": "Email address",
+    "role": "Role",
+    "language": "Language",
+    "saveName": "Save name",
+    "nameSaved": "Your name has been saved.",
+    "changePassword": "Change password",
+    "hidePasswordForm": "Cancel"
   }
 }

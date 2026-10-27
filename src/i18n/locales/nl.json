@@ -69,5 +69,25 @@
     "submit": "Wachtwoord instellen",
     "resend": "Nieuwe code versturen",
     "backToLogin": "Terug naar inloggen"
+  },
+  "tabs": {
+    "forms": "Formulieren",
+    "myForms": "Mijn formulieren",
+    "profile": "Profiel"
+  },
+  "role": {
+    "admin": "Beheerder",
+    "user": "Gebruiker"
+  },
+  "profile": {
+    "title": "Profiel",
+    "name": "Naam",
+    "email": "E-mailadres",
+    "role": "Rol",
+    "language": "Taal",
+    "saveName": "Naam opslaan",
+    "nameSaved": "Je naam is opgeslagen.",
+    "changePassword": "Wachtwoord wijzigen",
+    "hidePasswordForm": "Annuleren"
   }
 }
