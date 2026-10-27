@@ -1,0 +1,43 @@
+{
+  "name": "ucll-mobile-starter",
+  "version": "1.0.0",
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "web": "expo start --web",
+    "tunnel": "expo start --tunnel",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "dependencies": {
+    "@expo/metro-runtime": "~4.0.1",
+    "@expo/vector-icons": "~14.0.4",
+    "expo": "~52.0.46",
+    "expo-asset": "^56.0.15",
+    "expo-constants": "~17.0.8",
+    "expo-font": "^56.0.5",
+    "expo-linking": "~7.0.5",
+    "expo-router": "~4.0.17",
+    "expo-status-bar": "~2.0.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.9",
+    "react-native-safe-area-context": "4.12.0",
+    "react-native-screens": "~4.4.0",
+    "react-native-web": "~0.19.13",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@storybook/react": "^10.5.10",
+    "@storybook/react-vite": "^10.5.10",
+    "@types/react": "~18.3.12",
+    "cypress": "^13.17.0",
+    "storybook": "^10.5.10",
+    "typescript": "^5.3.3",
+    "vite": "^5.4.11"
+  },
+  "private": true
+}

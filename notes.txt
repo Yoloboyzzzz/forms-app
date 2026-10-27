@@ -1,0 +1,6 @@
+Style as much as possible in components. Not in the page.
+Create test IDs for cypress E2E tests.
+Work in components as much as possible.
+No hardcoded credentials, put everything env files.
+In src/state you have to save all states that persist across different windows. Otherwise the state can be saved locally if it resets on page switch.
+In src/service have all interactions with the backend. everything goes through services, not a single api call is send outside it. If it should be saved across different pages: create a state that saves the info from the call to persist across pages.
