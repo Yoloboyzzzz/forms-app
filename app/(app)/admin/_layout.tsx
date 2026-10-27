@@ -13,6 +13,7 @@ export default function AdminLayout() {
       <AppTabs
         tabs={[
           { name: 'forms', title: t('tabs.forms'), icon: 'document-text', testID: testIds.tabs.adminForms },
+          { name: 'users', title: t('tabs.users'), icon: 'people', testID: testIds.tabs.adminUsers },
           { name: 'profile', title: t('tabs.profile'), icon: 'person-circle', testID: testIds.tabs.adminProfile },
         ]}
       />

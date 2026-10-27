@@ -74,7 +74,8 @@
   "tabs": {
     "forms": "Formulieren",
     "myForms": "Mijn formulieren",
-    "profile": "Profiel"
+    "profile": "Profiel",
+    "users": "Gebruikers"
   },
   "role": {
     "admin": "Beheerder",
@@ -90,5 +91,42 @@
     "nameSaved": "Je naam is opgeslagen.",
     "changePassword": "Wachtwoord wijzigen",
     "hidePasswordForm": "Annuleren"
+  },
+  "users": {
+    "title": "Gebruikers",
+    "newUser": "Nieuwe gebruiker",
+    "empty": "Nog geen gebruikers.",
+    "loadError": "De gebruikers konden niet worden geladen.",
+    "mustChangePassword": "Moet wachtwoord nog wijzigen",
+    "resetPassword": "Wachtwoord resetten",
+    "makeAdmin": "Beheerder maken",
+    "makeUser": "Gebruiker maken",
+    "resetConfirmTitle": "Wachtwoord resetten?",
+    "resetConfirmMessage": "{{name}} krijgt een nieuw tijdelijk wachtwoord en moet het bij de volgende aanmelding wijzigen.",
+    "roleConfirmTitle": "Rol wijzigen?",
+    "roleConfirmToAdmin": "{{name}} wordt beheerder en kan alle formulieren en gebruikers beheren.",
+    "roleConfirmToUser": "{{name}} wordt gewone gebruiker en verliest de beheerdersrechten.",
+    "reset": "Resetten",
+    "change": "Wijzigen",
+    "you": "(jij)"
+  },
+  "tempPassword": {
+    "titleCreated": "Account aangemaakt",
+    "titleReset": "Wachtwoord gereset",
+    "message": "Geef dit tijdelijke wachtwoord aan {{name}}. Het wordt niet opnieuw getoond. {{name}} moet het bij de eerste aanmelding wijzigen.",
+    "copy": "Kopieer wachtwoord",
+    "copied": "Gekopieerd",
+    "close": "Sluiten",
+    "label": "Tijdelijk wachtwoord"
+  },
+  "createUser": {
+    "title": "Nieuwe gebruiker",
+    "fullName": "Volledige naam",
+    "email": "E-mailadres",
+    "role": "Rol",
+    "password": "Tijdelijk wachtwoord",
+    "generate": "Genereer wachtwoord",
+    "copy": "Kopieer",
+    "submit": "Account aanmaken"
   }
 }

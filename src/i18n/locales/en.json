@@ -74,7 +74,8 @@
   "tabs": {
     "forms": "Forms",
     "myForms": "My forms",
-    "profile": "Profile"
+    "profile": "Profile",
+    "users": "Users"
   },
   "role": {
     "admin": "Admin",
@@ -90,5 +91,42 @@
     "nameSaved": "Your name has been saved.",
     "changePassword": "Change password",
     "hidePasswordForm": "Cancel"
+  },
+  "users": {
+    "title": "Users",
+    "newUser": "New user",
+    "empty": "No users yet.",
+    "loadError": "The users could not be loaded.",
+    "mustChangePassword": "Still has to change password",
+    "resetPassword": "Reset password",
+    "makeAdmin": "Make admin",
+    "makeUser": "Make user",
+    "resetConfirmTitle": "Reset password?",
+    "resetConfirmMessage": "{{name}} gets a new temporary password and has to change it at the next sign-in.",
+    "roleConfirmTitle": "Change role?",
+    "roleConfirmToAdmin": "{{name}} becomes an admin and can manage all forms and users.",
+    "roleConfirmToUser": "{{name}} becomes a regular user and loses admin rights.",
+    "reset": "Reset",
+    "change": "Change",
+    "you": "(you)"
+  },
+  "tempPassword": {
+    "titleCreated": "Account created",
+    "titleReset": "Password reset",
+    "message": "Give this temporary password to {{name}}. It is not shown again. {{name}} has to change it at first sign-in.",
+    "copy": "Copy password",
+    "copied": "Copied",
+    "close": "Close",
+    "label": "Temporary password"
+  },
+  "createUser": {
+    "title": "New user",
+    "fullName": "Full name",
+    "email": "Email address",
+    "role": "Role",
+    "password": "Temporary password",
+    "generate": "Generate password",
+    "copy": "Copy",
+    "submit": "Create account"
   }
 }
