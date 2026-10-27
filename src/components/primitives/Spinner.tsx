@@ -1,14 +1,25 @@
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import { useTheme } from '@/hooks/useTheme';
+import { resolveTextColor, type TextColor } from '@/theme';
 
 interface SpinnerProps {
   size?: 'small' | 'large';
-  color?: string;
+  color?: TextColor;
+  /** Translated description, for example "Loading". */
+  label?: string;
+  testID?: string;
 }
 
-export function Spinner({ size = 'small', color }: SpinnerProps) {
-  return <ActivityIndicator size={size} color={color} style={styles.base} />;
-}
+export function Spinner({ size = 'small', color = 'primary', label, testID }: SpinnerProps) {
+  const theme = useTheme();
 
-const styles = StyleSheet.create({
-  base: {},
-});
+  return (
+    <ActivityIndicator
+      size={size}
+      color={resolveTextColor(theme.colors, color)}
+      accessibilityRole="progressbar"
+      accessibilityLabel={label}
+      testID={testID}
+    />
+  );
+}
