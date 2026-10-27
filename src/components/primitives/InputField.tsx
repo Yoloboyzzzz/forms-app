@@ -32,7 +32,7 @@ export function InputField({
         testID={testID}
         autoCapitalize="none"
       />
-      {error !== undefined && <Text size="sm" color="red">{error}</Text>}
+      {error !== undefined && <Text size="sm" color="error">{error}</Text>}
     </View>
   );
 }

@@ -1,47 +1,66 @@
 import { Text as RNText, StyleSheet } from 'react-native';
+import { useThemedStyles } from '@/hooks/useThemedStyles';
+import type { Theme } from '@/theme';
+
+export type TextColor = 'default' | 'muted' | 'primary' | 'error' | 'success' | 'warning' | 'inverse';
 
 interface TextProps {
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   weight?: 'normal' | 'medium' | 'bold';
-  color?: string;
+  color?: TextColor;
   align?: 'left' | 'center' | 'right';
   numberOfLines?: number;
+  /** Marks the text as a heading for screen readers. */
+  heading?: boolean;
+  /** Announces changes politely (validation and status messages). */
+  live?: boolean;
+  testID?: string;
 }
 
 export function Text({
   children,
   size = 'md',
   weight = 'normal',
-  color,
+  color = 'default',
   align = 'left',
   numberOfLines,
+  heading = false,
+  live = false,
+  testID,
 }: TextProps) {
+  const styles = useThemedStyles(createStyles);
+
   return (
     <RNText
-      style={[
-        styles.base,
-        styles[size],
-        styles[weight],
-        { textAlign: align },
-        color !== undefined && { color },
-      ]}
+      style={[styles[size], styles[weight], styles[`color_${color}`], styles[`align_${align}`]]}
       numberOfLines={numberOfLines}
+      accessibilityRole={heading ? 'header' : undefined}
+      accessibilityLiveRegion={live ? 'polite' : undefined}
+      testID={testID}
     >
       {children}
     </RNText>
   );
 }
 
-const styles = StyleSheet.create({
-  base: {
-    color: '#111827',
-  },
-  sm: { fontSize: 12, lineHeight: 16 },
-  md: { fontSize: 14, lineHeight: 20 },
-  lg: { fontSize: 16, lineHeight: 24 },
-  xl: { fontSize: 20, lineHeight: 28 },
-  normal: { fontWeight: '400' },
-  medium: { fontWeight: '500' },
-  bold: { fontWeight: '700' },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    sm: theme.fontSizes.sm,
+    md: theme.fontSizes.md,
+    lg: theme.fontSizes.lg,
+    xl: theme.fontSizes.xl,
+    normal: { fontWeight: theme.fontWeights.normal },
+    medium: { fontWeight: theme.fontWeights.medium },
+    bold: { fontWeight: theme.fontWeights.bold },
+    color_default: { color: theme.colors.text },
+    color_muted: { color: theme.colors.textMuted },
+    color_primary: { color: theme.colors.primary },
+    color_error: { color: theme.colors.error },
+    color_success: { color: theme.colors.success },
+    color_warning: { color: theme.colors.warning },
+    color_inverse: { color: theme.colors.textInverse },
+    align_left: { textAlign: 'left' },
+    align_center: { textAlign: 'center' },
+    align_right: { textAlign: 'right' },
+  });
