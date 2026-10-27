@@ -13,6 +13,14 @@
   },
   "errors": {
     "unknown": "Something went wrong. Please try again later.",
-    "network": "No connection. Check your internet and try again."
+    "network": "No connection. Check your internet and try again.",
+    "forbidden": "You do not have access to this.",
+    "notFound": "Not found.",
+    "duplicate": "This already exists.",
+    "invalidCredentials": "Invalid email or password.",
+    "weakPassword": "This password is too weak. Choose a longer password.",
+    "rateLimited": "Too many attempts. Wait a moment and try again.",
+    "invalidCode": "The code is invalid or has expired.",
+    "samePassword": "Choose a different password than your current one."
   }
 }

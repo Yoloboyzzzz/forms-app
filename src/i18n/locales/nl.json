@@ -13,6 +13,14 @@
   },
   "errors": {
     "unknown": "Er ging iets mis. Probeer het later opnieuw.",
-    "network": "Geen verbinding. Controleer je internet en probeer opnieuw."
+    "network": "Geen verbinding. Controleer je internet en probeer opnieuw.",
+    "forbidden": "Je hebt hier geen toegang toe.",
+    "notFound": "Niet gevonden.",
+    "duplicate": "Dit bestaat al.",
+    "invalidCredentials": "Ongeldig e-mailadres of wachtwoord.",
+    "weakPassword": "Dit wachtwoord is te zwak. Kies een langer wachtwoord.",
+    "rateLimited": "Te veel pogingen. Wacht even en probeer opnieuw.",
+    "invalidCode": "De code is ongeldig of verlopen.",
+    "samePassword": "Kies een ander wachtwoord dan je huidige."
   }
 }
