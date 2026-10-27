@@ -25,11 +25,6 @@
     "invalidInput": "Controleer de ingevulde gegevens.",
     "inUse": "Dit kan niet, want er zijn al antwoorden of het wordt nog gebruikt."
   },
-  "admin": {
-    "forms": {
-      "title": "Formulieren"
-    }
-  },
   "user": {
     "forms": {
       "title": "Mijn formulieren"
@@ -129,5 +124,76 @@
     "generate": "Genereer wachtwoord",
     "copy": "Kopieer",
     "submit": "Account aanmaken"
+  },
+  "form": {
+    "status": {
+      "draft": "Concept",
+      "published": "Gepubliceerd",
+      "archived": "Gearchiveerd"
+    },
+    "untitled": "Zonder titel",
+    "updatedOn": "Gewijzigd op {{date}}"
+  },
+  "forms": {
+    "title": "Formulieren",
+    "newForm": "Nieuw formulier",
+    "filter": {
+      "all": "Alle",
+      "draft": "Concepten",
+      "published": "Gepubliceerd",
+      "archived": "Gearchiveerd"
+    },
+    "empty": "Nog geen formulieren.",
+    "emptyFiltered": "Geen formulieren met deze status.",
+    "emptyHint": "Maak je eerste formulier aan.",
+    "loadError": "De formulieren konden niet worden geladen.",
+    "new": {
+      "title": "Nieuw formulier",
+      "formTitle": "Titel",
+      "description": "Beschrijving (optioneel)",
+      "submit": "Formulier aanmaken"
+    }
+  },
+  "questionType": {
+    "short_answer": "Kort antwoord",
+    "paragraph": "Alinea",
+    "multiple_choice": "Meerkeuze",
+    "checkboxes": "Selectievakjes",
+    "dropdown": "Keuzelijst",
+    "linear_scale": "Lineaire schaal",
+    "rating": "Beoordeling",
+    "multiple_choice_grid": "Meerkeuzeraster",
+    "checkbox_grid": "Selectievakjesraster",
+    "date": "Datum",
+    "time": "Tijd",
+    "file_upload": "Bestand uploaden"
+  },
+  "editor": {
+    "title": "Formulier bewerken",
+    "loadError": "Het formulier kon niet worden geladen.",
+    "formTitle": "Titel van het formulier",
+    "formDescription": "Beschrijving",
+    "addQuestion": "Vraag toevoegen",
+    "pickType": "Kies een vraagtype",
+    "questionTitle": "Vraag",
+    "questionDescription": "Toelichting (optioneel)",
+    "required": "Verplicht",
+    "moveUp": "Naar boven",
+    "moveDown": "Naar beneden",
+    "duplicate": "Dupliceren",
+    "delete": "Verwijderen",
+    "deactivated": "Gedeactiveerd",
+    "newQuestionTitle": "Vraag zonder titel",
+    "optionLabel": "Optie {{n}}",
+    "empty": "Deze sectie heeft nog geen vragen.",
+    "saving": "Opslaan…",
+    "saved": "Opgeslagen",
+    "unsaved": "Niet-opgeslagen wijzigingen",
+    "saveFailed": "Opslaan mislukt",
+    "retrySave": "Opnieuw proberen",
+    "deleteTitle": "Vraag verwijderen?",
+    "deleteMessage": "Deze vraag wordt verwijderd. Heeft ze al antwoorden, dan wordt ze gedeactiveerd en blijven de antwoorden bewaard.",
+    "deactivatedNotice": "De vraag heeft al antwoorden en is gedeactiveerd in plaats van verwijderd.",
+    "section": "Sectie {{n}}"
   }
 }

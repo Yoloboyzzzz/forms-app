@@ -1,0 +1,72 @@
+import { useLocalSearchParams } from 'expo-router';
+import { useTranslation } from 'react-i18next';
+import { FormEditorView } from '@/components/FormEditorView';
+import { Button, ConfirmDialog, EmptyState, Screen, Skeleton, Stack, Toast } from '@/components/primitives';
+import { QuestionTypePicker } from '@/components/QuestionTypePicker';
+import { testIds } from '@/constants/testIds';
+import { useFormEditor } from '@/hooks/useFormEditor';
+
+export default function FormEditorScreen() {
+  const { t } = useTranslation();
+  const { formId } = useLocalSearchParams<{ formId: string }>();
+  const editor = useFormEditor(formId);
+
+  function renderContent() {
+    if (editor.errorKey !== undefined) {
+      return (
+        <EmptyState
+          title={t('editor.loadError')}
+          description={t(editor.errorKey)}
+          action={<Button label={t('common.retry')} onPress={editor.reload} testID={testIds.editor.retryLoadButton} />}
+          testID={testIds.editor.loadError}
+        />
+      );
+    }
+    if (editor.detail === undefined || editor.isLoading) {
+      return (
+        <Stack gap="sm" padding="md" testID={testIds.editor.loading}>
+          <Skeleton height={48} radius="md" />
+          <Skeleton height={160} radius="md" />
+          <Skeleton height={160} radius="md" />
+        </Stack>
+      );
+    }
+    return (
+      <FormEditorView
+        detail={editor.detail}
+        saveState={editor.saveState}
+        saveErrorKey={editor.saveErrorKey}
+        onRetrySave={editor.retrySave}
+        onChangeForm={editor.changeForm}
+        questionHandlers={editor.questionHandlers}
+        onAddQuestion={editor.openPicker}
+      />
+    );
+  }
+
+  const messageKey = editor.actionErrorKey ?? editor.noticeKey;
+
+  return (
+    <Screen padding="none">
+      {renderContent()}
+      <QuestionTypePicker visible={editor.pickerSectionId !== undefined} onPick={editor.addQuestion} onClose={editor.closePicker} />
+      <ConfirmDialog
+        visible={editor.deleteTarget !== undefined}
+        title={t('editor.deleteTitle')}
+        message={t('editor.deleteMessage')}
+        confirmLabel={t('editor.delete')}
+        cancelLabel={t('common.cancel')}
+        destructive
+        onConfirm={() => void editor.confirmDelete()}
+        onCancel={editor.cancelDelete}
+        testID={testIds.editor.deleteDialog}
+      />
+      <Toast
+        message={messageKey === undefined ? '' : t(messageKey)}
+        variant={editor.actionErrorKey === undefined ? 'default' : 'error'}
+        visible={messageKey !== undefined}
+        testID={testIds.editor.notice}
+      />
+    </Screen>
+  );
+}

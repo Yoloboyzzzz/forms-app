@@ -1,0 +1,136 @@
+import * as Crypto from 'expo-crypto';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { QuestionHandlers } from '@/components/SectionEditor';
+import { toServiceError } from '@/services/errors';
+import type { FormPatch } from '@/services/mappers/recordMappers';
+import { useFormEditorStore } from '@/state/useFormEditorStore';
+import type { QuestionType } from '@/types/enums';
+import type { FormDetail, Question } from '@/types/models';
+import type { SaveState } from '@/state/useFormEditorStore';
+
+const MESSAGE_DURATION_MS = 4000;
+
+interface UseFormEditor {
+  detail?: FormDetail;
+  isLoading: boolean;
+  errorKey?: string;
+  reload: () => void;
+  saveState: SaveState;
+  saveErrorKey?: string;
+  retrySave: () => void;
+  changeForm: (patch: FormPatch) => void;
+  questionHandlers: QuestionHandlers;
+  /** Section the question type picker is open for. */
+  pickerSectionId?: string;
+  openPicker: (sectionId: string) => void;
+  closePicker: () => void;
+  addQuestion: (type: QuestionType) => Promise<void>;
+  deleteTarget?: Question;
+  cancelDelete: () => void;
+  confirmDelete: () => Promise<void>;
+  isWorking: boolean;
+  /** i18n key of the last failed action. */
+  actionErrorKey?: string;
+  /** i18n key of an informational message (for example "question was deactivated"). */
+  noticeKey?: string;
+  dismissMessages: () => void;
+}
+
+/** Glue for the form editor screen: loads the form, autosaves on leave and runs structural edits with feedback. */
+export function useFormEditor(formId: string): UseFormEditor {
+  const { t } = useTranslation();
+  const detail = useFormEditorStore((state) => state.detail);
+  const isLoading = useFormEditorStore((state) => state.isLoading);
+  const errorKey = useFormEditorStore((state) => state.errorKey);
+  const saveState = useFormEditorStore((state) => state.saveState);
+  const saveErrorKey = useFormEditorStore((state) => state.saveErrorKey);
+  const store = useFormEditorStore.getState;
+
+  const [pickerSectionId, setPickerSectionId] = useState<string | undefined>(undefined);
+  const [deleteTarget, setDeleteTarget] = useState<Question | undefined>(undefined);
+  const [isWorking, setIsWorking] = useState(false);
+  const [actionErrorKey, setActionErrorKey] = useState<string | undefined>(undefined);
+  const [noticeKey, setNoticeKey] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    void store().load(formId);
+    // Leaving the screen must not lose the last edits.
+    return () => {
+      void store().flush();
+    };
+  }, [formId, store]);
+
+  // Messages disappear on their own so they do not pile up over the editor.
+  useEffect(() => {
+    if (actionErrorKey === undefined && noticeKey === undefined) return undefined;
+    const timeout = setTimeout(() => {
+      setActionErrorKey(undefined);
+      setNoticeKey(undefined);
+    }, MESSAGE_DURATION_MS);
+    return () => clearTimeout(timeout);
+  }, [actionErrorKey, noticeKey]);
+
+  async function run(action: () => Promise<void>): Promise<void> {
+    setActionErrorKey(undefined);
+    setNoticeKey(undefined);
+    setIsWorking(true);
+    try {
+      await action();
+    } catch (error) {
+      setActionErrorKey(toServiceError(error).messageKey);
+    } finally {
+      setIsWorking(false);
+    }
+  }
+
+  return {
+    detail,
+    isLoading,
+    errorKey,
+    reload: () => void store().load(formId),
+    saveState,
+    saveErrorKey,
+    retrySave: () => void store().flush(),
+    changeForm: (patch) => store().updateForm(patch),
+    questionHandlers: {
+      onChange: (question) => store().updateQuestion(question),
+      onMove: (questionId, direction) => void run(() => store().moveQuestion(questionId, direction)),
+      onDuplicate: (questionId) => void run(() => store().duplicateQuestion(questionId)),
+      onDelete: setDeleteTarget,
+    },
+    pickerSectionId,
+    openPicker: setPickerSectionId,
+    closePicker: () => setPickerSectionId(undefined),
+    addQuestion: async (type) => {
+      const sectionId = pickerSectionId;
+      setPickerSectionId(undefined);
+      if (sectionId === undefined) return;
+      await run(async () => {
+        await store().addQuestion(sectionId, type, {
+          title: t('editor.newQuestionTitle'),
+          newId: () => Crypto.randomUUID(),
+          optionLabel: (n) => t('editor.optionLabel', { n }),
+        });
+      });
+    },
+    deleteTarget,
+    cancelDelete: () => setDeleteTarget(undefined),
+    confirmDelete: async () => {
+      const target = deleteTarget;
+      setDeleteTarget(undefined);
+      if (target === undefined) return;
+      await run(async () => {
+        const outcome = await store().removeQuestion(target.id);
+        if (outcome === 'deactivated') setNoticeKey('editor.deactivatedNotice');
+      });
+    },
+    isWorking,
+    actionErrorKey,
+    noticeKey,
+    dismissMessages: () => {
+      setActionErrorKey(undefined);
+      setNoticeKey(undefined);
+    },
+  };
+}

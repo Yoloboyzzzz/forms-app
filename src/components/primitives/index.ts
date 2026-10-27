@@ -8,6 +8,7 @@ export { Container } from './Container';
 export { Divider } from './Divider';
 export { EmptyState } from './EmptyState';
 export { Icon } from './Icon';
+export { IconButton } from './IconButton';
 export { InputField } from './InputField';
 export { Menu } from './Menu';
 export { Nav } from './Nav';

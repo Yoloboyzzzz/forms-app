@@ -25,11 +25,6 @@
     "invalidInput": "Check the details you entered.",
     "inUse": "This is not possible because it already has answers or is still in use."
   },
-  "admin": {
-    "forms": {
-      "title": "Forms"
-    }
-  },
   "user": {
     "forms": {
       "title": "My forms"
@@ -129,5 +124,76 @@
     "generate": "Generate password",
     "copy": "Copy",
     "submit": "Create account"
+  },
+  "form": {
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "untitled": "Untitled",
+    "updatedOn": "Updated on {{date}}"
+  },
+  "forms": {
+    "title": "Forms",
+    "newForm": "New form",
+    "filter": {
+      "all": "All",
+      "draft": "Drafts",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "empty": "No forms yet.",
+    "emptyFiltered": "No forms with this status.",
+    "emptyHint": "Create your first form.",
+    "loadError": "The forms could not be loaded.",
+    "new": {
+      "title": "New form",
+      "formTitle": "Title",
+      "description": "Description (optional)",
+      "submit": "Create form"
+    }
+  },
+  "questionType": {
+    "short_answer": "Short answer",
+    "paragraph": "Paragraph",
+    "multiple_choice": "Multiple choice",
+    "checkboxes": "Checkboxes",
+    "dropdown": "Dropdown",
+    "linear_scale": "Linear scale",
+    "rating": "Rating",
+    "multiple_choice_grid": "Multiple choice grid",
+    "checkbox_grid": "Checkbox grid",
+    "date": "Date",
+    "time": "Time",
+    "file_upload": "File upload"
+  },
+  "editor": {
+    "title": "Edit form",
+    "loadError": "The form could not be loaded.",
+    "formTitle": "Form title",
+    "formDescription": "Description",
+    "addQuestion": "Add question",
+    "pickType": "Choose a question type",
+    "questionTitle": "Question",
+    "questionDescription": "Description (optional)",
+    "required": "Required",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "deactivated": "Deactivated",
+    "newQuestionTitle": "Untitled question",
+    "optionLabel": "Option {{n}}",
+    "empty": "This section has no questions yet.",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "unsaved": "Unsaved changes",
+    "saveFailed": "Saving failed",
+    "retrySave": "Try again",
+    "deleteTitle": "Delete question?",
+    "deleteMessage": "This question will be deleted. If it already has answers, it is deactivated instead and the answers are kept.",
+    "deactivatedNotice": "The question already has answers and was deactivated instead of deleted.",
+    "section": "Section {{n}}"
   }
 }
