@@ -6,8 +6,6 @@ import { Text } from '../../../src/components/primitives/Text';
 export default function DetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  console.log('Detail screen opened for item:', id);
-
   return (
     <Screen padding="lg">
       <Stack gap="md">
