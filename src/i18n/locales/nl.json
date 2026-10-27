@@ -1,0 +1,18 @@
+{
+  "common": {
+    "loading": "Laden…",
+    "retry": "Opnieuw proberen",
+    "cancel": "Annuleren",
+    "confirm": "Bevestigen",
+    "save": "Opslaan",
+    "logout": "Uitloggen"
+  },
+  "language": {
+    "nl": "Nederlands",
+    "en": "English"
+  },
+  "errors": {
+    "unknown": "Er ging iets mis. Probeer het later opnieuw.",
+    "network": "Geen verbinding. Controleer je internet en probeer opnieuw."
+  }
+}

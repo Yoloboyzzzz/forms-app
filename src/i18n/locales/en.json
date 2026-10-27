@@ -1,0 +1,18 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "retry": "Try again",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "logout": "Log out"
+  },
+  "language": {
+    "nl": "Nederlands",
+    "en": "English"
+  },
+  "errors": {
+    "unknown": "Something went wrong. Please try again later.",
+    "network": "No connection. Check your internet and try again."
+  }
+}
