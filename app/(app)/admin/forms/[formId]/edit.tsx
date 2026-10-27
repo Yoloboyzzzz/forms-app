@@ -11,7 +11,9 @@ import { useFormEditor } from '@/hooks/useFormEditor';
 export default function FormEditorScreen() {
   const { t } = useTranslation();
   const { formId } = useLocalSearchParams<{ formId: string }>();
-  const editor = useFormEditor(formId);
+  const editor = useFormEditor(formId, {
+    onDuplicated: (copyId) => router.replace(routes.admin.formEdit(copyId)),
+  });
 
   function renderContent() {
     if (editor.errorKey !== undefined) {
@@ -36,7 +38,13 @@ export default function FormEditorScreen() {
     return (
       <>
         <Stack padding="md">
-          <FormActionsBar onSettings={() => router.push(routes.admin.formSettings(formId))} />
+          <FormActionsBar
+            onSettings={() => router.push(routes.admin.formSettings(formId))}
+            onPublish={editor.detail.form.status === 'draft' ? () => editor.requestAction('publish') : undefined}
+            onArchive={editor.detail.form.status === 'archived' ? undefined : () => editor.requestAction('archive')}
+            onDuplicate={() => editor.requestAction('duplicate')}
+            isWorking={editor.isWorking}
+          />
         </Stack>
         <FormEditorView
           detail={editor.detail}
@@ -71,6 +79,17 @@ export default function FormEditorScreen() {
         testID={testIds.editor.deleteDialog}
       />
       <ConfirmDialog
+        visible={editor.pendingAction !== undefined}
+        title={t(`editor.${editor.pendingAction ?? 'publish'}Title`)}
+        message={t(`editor.${editor.pendingAction ?? 'publish'}Message`)}
+        confirmLabel={t(`editorActions.${editor.pendingAction ?? 'publish'}`)}
+        cancelLabel={t('common.cancel')}
+        destructive={editor.pendingAction === 'archive'}
+        onConfirm={() => void editor.confirmAction()}
+        onCancel={editor.cancelAction}
+        testID={testIds.editorActions.confirmDialog}
+      />
+      <ConfirmDialog
         visible={editor.sectionToDelete !== undefined}
         title={t('editor.deleteSectionTitle')}
         message={t('editor.deleteSectionMessage')}
@@ -83,7 +102,7 @@ export default function FormEditorScreen() {
       />
       <Toast
         message={messageKey === undefined ? '' : t(messageKey)}
-        variant={editor.actionErrorKey === undefined ? 'default' : 'error'}
+        variant={editor.actionErrorKey === undefined ? editor.noticeVariant : 'error'}
         visible={messageKey !== undefined}
         testID={testIds.editor.notice}
       />

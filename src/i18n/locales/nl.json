@@ -317,7 +317,18 @@
     "branching": "Naar een sectie gaan op basis van het antwoord",
     "jumpContinue": "Verder naar de volgende sectie",
     "jumpSubmit": "Het formulier indienen",
-    "jumpLabel": "Na \"{{option}}\""
+    "jumpLabel": "Na \"{{option}}\"",
+    "publishTitle": "Dit formulier publiceren?",
+    "publishMessage": "Toegewezen gebruikers kunnen het dan invullen. Controleer de vragen: zodra mensen geantwoord hebben, kunnen vragen alleen nog gedeactiveerd worden.",
+    "archiveTitle": "Dit formulier archiveren?",
+    "archiveMessage": "Gebruikers zien het niet meer. De antwoorden blijven bewaard.",
+    "duplicateTitle": "Dit formulier dupliceren?",
+    "duplicateMessage": "Er wordt een nieuw concept gemaakt met dezelfde instellingen, secties en vragen. Toewijzingen en antwoorden worden niet gekopieerd.",
+    "copyTitle": "Kopie van {{title}}",
+    "published": "Het formulier is gepubliceerd.",
+    "archived": "Het formulier is gearchiveerd.",
+    "duplicated": "Er is een kopie gemaakt.",
+    "publishNeedsQuestion": "Voeg minstens één actieve vraag toe voor je publiceert."
   },
   "settings": {
     "title": "Formulierinstellingen",

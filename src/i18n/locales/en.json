@@ -317,7 +317,18 @@
     "branching": "Go to section based on answer",
     "jumpContinue": "Continue to the next section",
     "jumpSubmit": "Submit the form",
-    "jumpLabel": "After \"{{option}}\""
+    "jumpLabel": "After \"{{option}}\"",
+    "publishTitle": "Publish this form?",
+    "publishMessage": "Assigned users will be able to fill it in. Make sure the questions are right: once people have answered, questions can only be deactivated.",
+    "archiveTitle": "Archive this form?",
+    "archiveMessage": "Users no longer see it. The responses are kept.",
+    "duplicateTitle": "Duplicate this form?",
+    "duplicateMessage": "A new draft is created with the same settings, sections and questions. Assignments and responses are not copied.",
+    "copyTitle": "Copy of {{title}}",
+    "published": "The form is published.",
+    "archived": "The form is archived.",
+    "duplicated": "A copy was created.",
+    "publishNeedsQuestion": "Add at least one active question before publishing."
   },
   "settings": {
     "title": "Form settings",

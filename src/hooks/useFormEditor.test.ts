@@ -23,13 +23,23 @@ const mockStore = {
   moveSection: jest.fn(),
   addSection: jest.fn(),
   removeSection: jest.fn(),
+  publish: jest.fn(),
+  archive: jest.fn(),
 };
+const mockForms = { duplicate: jest.fn() };
+const mockAuth: { session?: { userId: string } } = { session: { userId: 'u1' } };
 
 jest.mock('@/state/useFormEditorStore', () => {
   const useFormEditorStore = (selector: (state: typeof mockStore) => unknown) => selector(mockStore);
   useFormEditorStore.getState = () => mockStore;
   return { useFormEditorStore };
 });
+jest.mock('@/state/useFormsStore', () => ({
+  useFormsStore: (selector: (state: typeof mockForms) => unknown) => selector(mockForms),
+}));
+jest.mock('@/state/useAuthStore', () => ({
+  useAuthStore: (selector: (state: typeof mockAuth) => unknown) => selector(mockAuth),
+}));
 jest.mock('expo-crypto', () => ({ randomUUID: () => 'generated-id' }));
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string, options?: { n?: number }) => (options?.n === undefined ? key : `${key}:${options.n}`) }),
@@ -53,6 +63,10 @@ beforeEach(() => {
   mockStore.moveSection = jest.fn().mockResolvedValue(undefined);
   mockStore.addSection = jest.fn().mockResolvedValue(undefined);
   mockStore.removeSection = jest.fn().mockResolvedValue(undefined);
+  mockStore.publish = jest.fn().mockResolvedValue(undefined);
+  mockStore.archive = jest.fn().mockResolvedValue(undefined);
+  mockForms.duplicate = jest.fn().mockResolvedValue({ id: 'copy' });
+  mockAuth.session = { userId: 'u1' };
 });
 
 afterEach(() => jest.useRealTimers());
@@ -237,6 +251,85 @@ describe('useFormEditor', () => {
       await act(async () => result.current.confirmDeleteSection());
 
       expect(result.current.actionErrorKey).toBe('errors.inUse');
+    });
+  });
+
+  describe('publish, archive and duplicate', () => {
+    it('asks first, then publishes and says so', async () => {
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.requestAction('publish'));
+      expect(result.current.pendingAction).toBe('publish');
+      expect(mockStore.publish).not.toHaveBeenCalled();
+
+      await act(async () => result.current.confirmAction());
+
+      expect(mockStore.publish).toHaveBeenCalledTimes(1);
+      expect(result.current).toMatchObject({ pendingAction: undefined, noticeKey: 'editor.published', noticeVariant: 'success' });
+    });
+
+    it('archives', async () => {
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.requestAction('archive'));
+      await act(async () => result.current.confirmAction());
+      expect(mockStore.archive).toHaveBeenCalledTimes(1);
+      expect(result.current.noticeKey).toBe('editor.archived');
+    });
+
+    it('duplicates with a translated title and reports the copy', async () => {
+      const onDuplicated = jest.fn();
+      const { result } = renderHook(() => useFormEditor('f1', { onDuplicated }));
+      act(() => result.current.requestAction('duplicate'));
+
+      await act(async () => result.current.confirmAction());
+
+      expect(mockStore.flush).toHaveBeenCalled();
+      expect(mockForms.duplicate).toHaveBeenCalledWith('f1', 'editor.copyTitle', 'u1');
+      expect(onDuplicated).toHaveBeenCalledWith('copy');
+      expect(result.current.noticeKey).toBe('editor.duplicated');
+    });
+
+    it('does not duplicate without a signed-in user', async () => {
+      mockAuth.session = undefined;
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.requestAction('duplicate'));
+      await act(async () => result.current.confirmAction());
+      expect(mockForms.duplicate).not.toHaveBeenCalled();
+    });
+
+    it('explains that a form without questions cannot be published', async () => {
+      mockStore.publish.mockRejectedValue(new ServiceError('invalidInput'));
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.requestAction('publish'));
+
+      await act(async () => result.current.confirmAction());
+
+      expect(result.current.actionErrorKey).toBe('editor.publishNeedsQuestion');
+    });
+
+    it('shows other errors as they are', async () => {
+      mockStore.archive.mockRejectedValue(new ServiceError('network'));
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.requestAction('archive'));
+
+      await act(async () => result.current.confirmAction());
+
+      expect(result.current.actionErrorKey).toBe('errors.network');
+    });
+
+    it('can be cancelled, and ignores confirming without a request', async () => {
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.requestAction('publish'));
+      act(() => result.current.cancelAction());
+      await act(async () => result.current.confirmAction());
+      expect(mockStore.publish).not.toHaveBeenCalled();
+    });
+
+    it('ignores confirming when no form is loaded', async () => {
+      mockStore.detail = undefined;
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.requestAction('publish'));
+      await act(async () => result.current.confirmAction());
+      expect(mockStore.publish).not.toHaveBeenCalled();
     });
   });
 });

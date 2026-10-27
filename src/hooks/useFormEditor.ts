@@ -2,14 +2,23 @@ import * as Crypto from 'expo-crypto';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { QuestionHandlers, SectionHandlers } from '@/components/SectionEditor';
-import { toServiceError } from '@/services/errors';
+import { ServiceError, toServiceError } from '@/services/errors';
 import type { FormPatch } from '@/services/mappers/recordMappers';
+import { useAuthStore } from '@/state/useAuthStore';
 import { useFormEditorStore } from '@/state/useFormEditorStore';
+import { useFormsStore } from '@/state/useFormsStore';
 import type { QuestionType } from '@/types/enums';
 import type { FormDetail, FormSection, Question } from '@/types/models';
 import type { SaveState } from '@/state/useFormEditorStore';
 
 const MESSAGE_DURATION_MS = 4000;
+
+export type FormAction = 'publish' | 'archive' | 'duplicate';
+
+interface UseFormEditorOptions {
+  /** Called with the id of the new draft after a form was duplicated. */
+  onDuplicated?: (formId: string) => void;
+}
 
 interface UseFormEditor {
   detail?: FormDetail;
@@ -39,11 +48,17 @@ interface UseFormEditor {
   actionErrorKey?: string;
   /** i18n key of an informational message (for example "question was deactivated"). */
   noticeKey?: string;
+  noticeVariant: 'default' | 'success';
+  /** The publish, archive or duplicate action waiting for confirmation. */
+  pendingAction?: FormAction;
+  requestAction: (action: FormAction) => void;
+  cancelAction: () => void;
+  confirmAction: () => Promise<void>;
   dismissMessages: () => void;
 }
 
 /** Glue for the form editor screen: loads the form, autosaves on leave and runs structural edits with feedback. */
-export function useFormEditor(formId: string): UseFormEditor {
+export function useFormEditor(formId: string, options: UseFormEditorOptions = {}): UseFormEditor {
   const { t } = useTranslation();
   const detail = useFormEditorStore((state) => state.detail);
   const isLoading = useFormEditorStore((state) => state.isLoading);
@@ -51,6 +66,8 @@ export function useFormEditor(formId: string): UseFormEditor {
   const saveState = useFormEditorStore((state) => state.saveState);
   const saveErrorKey = useFormEditorStore((state) => state.saveErrorKey);
   const store = useFormEditorStore.getState;
+  const duplicateForm = useFormsStore((state) => state.duplicate);
+  const userId = useAuthStore((state) => state.session?.userId);
 
   const [pickerSectionId, setPickerSectionId] = useState<string | undefined>(undefined);
   const [deleteTarget, setDeleteTarget] = useState<Question | undefined>(undefined);
@@ -58,6 +75,8 @@ export function useFormEditor(formId: string): UseFormEditor {
   const [isWorking, setIsWorking] = useState(false);
   const [actionErrorKey, setActionErrorKey] = useState<string | undefined>(undefined);
   const [noticeKey, setNoticeKey] = useState<string | undefined>(undefined);
+  const [noticeVariant, setNoticeVariant] = useState<'default' | 'success'>('default');
+  const [pendingAction, setPendingAction] = useState<FormAction | undefined>(undefined);
 
   useEffect(() => {
     void store().open(formId);
@@ -146,12 +165,49 @@ export function useFormEditor(formId: string): UseFormEditor {
       if (target === undefined) return;
       await run(async () => {
         const outcome = await store().removeQuestion(target.id);
-        if (outcome === 'deactivated') setNoticeKey('editor.deactivatedNotice');
+        if (outcome === 'deactivated') {
+          setNoticeVariant('default');
+          setNoticeKey('editor.deactivatedNotice');
+        }
       });
     },
     isWorking,
     actionErrorKey,
     noticeKey,
+    noticeVariant,
+    pendingAction,
+    requestAction: setPendingAction,
+    cancelAction: () => setPendingAction(undefined),
+    confirmAction: async () => {
+      const action = pendingAction;
+      setPendingAction(undefined);
+      const current = store().detail;
+      if (action === undefined || current === undefined) return;
+      await run(async () => {
+        try {
+          if (action === 'publish') {
+            await store().publish();
+            setNoticeKey('editor.published');
+          } else if (action === 'archive') {
+            await store().archive();
+            setNoticeKey('editor.archived');
+          } else if (userId !== undefined) {
+            await store().flush();
+            const copy = await duplicateForm(current.form.id, t('editor.copyTitle', { title: current.form.title }), userId);
+            setNoticeKey('editor.duplicated');
+            options.onDuplicated?.(copy.id);
+          }
+          setNoticeVariant('success');
+        } catch (error) {
+          // A form without any active question cannot be published; say so in plain words.
+          if (action === 'publish' && error instanceof ServiceError && error.code === 'invalidInput') {
+            setActionErrorKey('editor.publishNeedsQuestion');
+            return;
+          }
+          throw error;
+        }
+      });
+    },
     dismissMessages: () => {
       setActionErrorKey(undefined);
       setNoticeKey(undefined);
