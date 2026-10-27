@@ -15,6 +15,8 @@ Plan for building the forms app with an AI coding agent (Claude Code CLI). It is
 
 Priority labels: **P1** = needed for the PWA deadline. **P2** = after the PWA deadline (native phase), unless there is time left before 04.11.
 
+> **Storybook deferred (Henry, 2026-10-27).** Stories and the Storybook setup are postponed to the end of the project (new step **10.0**). Until then, skip the "story" part of AGENTS.md §5.2/§8.5 and of every step; `*.stories.tsx` are excluded from `tsc`. Existing stories stay untouched.
+
 ## Timeline
 
 | Dates | Phase | Goal |
@@ -214,6 +216,7 @@ Each item is its own set of small commits (`feat:` + `test:`).
 
 ## Phase 10 – Release 1.0.0 (P2, by 31.12.2026)
 
+- [ ] **10.0 Storybook.** Fix the Storybook/tsconfig resolution, re-include `*.stories.tsx` in `tsc`, write stories (default, loading, error, empty, disabled) for every component, light + dark.
 - [ ] **10.1** Full test run (typecheck, unit + coverage, Cypress, SQL tests, manual device run).
 - [ ] **10.2** Custom SMTP configured in Supabase (🧑 Henry), production project checked: RLS on everywhere, sign-ups off, no test accounts left.
 - [ ] **10.3** `README.md` (install, env, run, test, build), `CHANGELOG.md` `1.0.0`, ADRs in `docs/adr/` for the main decisions.
