@@ -25,11 +25,6 @@
     "invalidInput": "Check the details you entered.",
     "inUse": "This is not possible because it already has answers or is still in use."
   },
-  "user": {
-    "forms": {
-      "title": "My forms"
-    }
-  },
   "login": {
     "title": "Welcome back",
     "email": "Email address",
@@ -373,5 +368,25 @@
     "submitNone": "Select people to assign",
     "done": "Assigned.",
     "loadError": "The assignments could not be loaded."
+  },
+  "myForms": {
+    "title": "My forms",
+    "todo": "To do",
+    "submitted": "Submitted",
+    "emptyTodo": "Nothing to do right now.",
+    "emptyTodoHint": "Forms assigned to you show up here.",
+    "emptySubmitted": "You have not submitted any form yet.",
+    "loadError": "Your forms could not be loaded.",
+    "tabs": "Filter forms"
+  },
+  "assignment": {
+    "status": {
+      "notStarted": "Not started",
+      "inProgress": "In progress",
+      "submitted": "Submitted",
+      "overdue": "Overdue"
+    },
+    "dueOn": "Due on {{date}}",
+    "noDueDate": "No due date"
   }
 }

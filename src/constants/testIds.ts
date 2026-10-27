@@ -148,6 +148,13 @@ export const testIds = {
   },
   userForms: {
     screen: 'user-forms-screen',
+    list: 'user-forms-list',
+    empty: 'user-forms-empty',
+    loading: 'user-forms-loading',
+    loadError: 'user-forms-load-error',
+    retryButton: 'user-forms-retry-button',
+    tabTodo: 'user-forms-tab-todo',
+    tabSubmitted: 'user-forms-tab-submitted',
   },
 } as const;
 

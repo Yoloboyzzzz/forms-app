@@ -25,11 +25,6 @@
     "invalidInput": "Controleer de ingevulde gegevens.",
     "inUse": "Dit kan niet, want er zijn al antwoorden of het wordt nog gebruikt."
   },
-  "user": {
-    "forms": {
-      "title": "Mijn formulieren"
-    }
-  },
   "login": {
     "title": "Welkom terug",
     "email": "E-mailadres",
@@ -373,5 +368,25 @@
     "submitNone": "Selecteer mensen om toe te wijzen",
     "done": "Toegewezen.",
     "loadError": "De toewijzingen konden niet worden geladen."
+  },
+  "myForms": {
+    "title": "Mijn formulieren",
+    "todo": "Te doen",
+    "submitted": "Ingediend",
+    "emptyTodo": "Momenteel niets te doen.",
+    "emptyTodoHint": "Formulieren die aan jou zijn toegewezen verschijnen hier.",
+    "emptySubmitted": "Je hebt nog geen formulier ingediend.",
+    "loadError": "Je formulieren konden niet worden geladen.",
+    "tabs": "Formulieren filteren"
+  },
+  "assignment": {
+    "status": {
+      "notStarted": "Niet gestart",
+      "inProgress": "Bezig",
+      "submitted": "Ingediend",
+      "overdue": "Te laat"
+    },
+    "dueOn": "Af tegen {{date}}",
+    "noDueDate": "Geen deadline"
   }
 }

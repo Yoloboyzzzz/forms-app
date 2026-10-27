@@ -18,6 +18,7 @@ export { ProgressBar } from './ProgressBar';
 export { Radio } from './Radio';
 export { Row } from './Row';
 export { Screen } from './Screen';
+export { SegmentedControl, type SegmentedOption } from './SegmentedControl';
 export { Select } from './Select';
 export type { SelectOption } from './Select';
 export { Skeleton } from './Skeleton';
