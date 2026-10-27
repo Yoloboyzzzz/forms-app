@@ -177,7 +177,7 @@ Core question types for the PWA: `short_answer`, `paragraph`, `multiple_choice`,
   `feat: let admins view responses`
 - [x] **7.2 PWA**: web manifest (name, short name, icons, theme colour, start URL, display standalone), register `public/sw.js`, check "Add to Home Screen" works.
   `feat: add pwa manifest and service worker`
-- [ ] **7.3 Polish pass**: every screen has loading/empty/error states; all strings translated (nl + en); dark mode check; a11y labels; no styles in pages (grep `StyleSheet` in `app/`); no `console.log`.
+- [x] **7.3 Polish pass** *(audited: no styles in pages, no console, every `t()` key in nl and en; dark mode and a11y only checked through tokens/roles in tests, not on a device)*: every screen has loading/empty/error states; all strings translated (nl + en); dark mode check; a11y labels; no styles in pages (grep `StyleSheet` in `app/`); no `console.log`.
   `chore: polish pass for pwa release`
 - [ ] **7.4 Full test run**: `npm run typecheck`, `npm run test:coverage` (thresholds pass), full Cypress run against `npx expo export -p web` served locally. Fix what fails, one commit per fix.
   `test: full test run for pwa`
