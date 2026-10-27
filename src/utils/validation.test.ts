@@ -1,11 +1,16 @@
 import type { ValidationRule } from '@/types/models';
 import {
   createRule,
+  maxText,
   ruleInputs,
   validateSelectionCount,
   validateText,
+  valueText,
   VALIDATION_OPERATORS,
+  withErrorMessage,
+  withMax,
   withOperator,
+  withValue,
 } from './validation';
 
 const keyOf = (rule: ValidationRule, answer: string) => validateText(rule, answer)?.defaultKey;
@@ -212,5 +217,48 @@ describe('ruleInputs', () => {
     expect(ruleInputs({ kind: 'length', operator: 'max', value: 1 })).toEqual({ value: true, max: false });
     expect(ruleInputs({ kind: 'regex', operator: 'matches', value: '' })).toEqual({ value: true, max: false });
     expect(ruleInputs({ kind: 'checkboxCount', operator: 'atLeast', value: 1 })).toEqual({ value: true, max: false });
+  });
+});
+
+describe('value helpers', () => {
+  it('shows values as text', () => {
+    expect(valueText({ kind: 'number', operator: 'gt', value: 3 })).toBe('3');
+    expect(valueText({ kind: 'number', operator: 'gt' })).toBe('');
+    expect(maxText({ kind: 'number', operator: 'between', value: 1, valueMax: 9 })).toBe('9');
+    expect(maxText({ kind: 'number', operator: 'between', value: 1 })).toBe('');
+    expect(maxText({ kind: 'length', operator: 'max', value: 5 })).toBe('');
+  });
+
+  it('parses typed numbers, with a decimal comma', () => {
+    expect(withValue({ kind: 'number', operator: 'gt' }, '2,5')).toEqual({ kind: 'number', operator: 'gt', value: 2.5 });
+    expect(withValue({ kind: 'number', operator: 'gt', value: 2 }, 'abc')).toEqual({ kind: 'number', operator: 'gt', value: undefined });
+  });
+
+  it('keeps text values, and clears an empty one', () => {
+    expect(withValue({ kind: 'text', operator: 'contains' }, 'abc')).toMatchObject({ value: 'abc' });
+    expect(withValue({ kind: 'text', operator: 'contains', value: 'abc' }, '')).toMatchObject({ value: undefined });
+    expect(withValue({ kind: 'regex', operator: 'matches', value: 'a' }, '')).toMatchObject({ value: '' });
+  });
+
+  it('keeps the old number for length and selection counts while the field is not a number', () => {
+    expect(withValue({ kind: 'length', operator: 'max', value: 5 }, '8')).toMatchObject({ value: 8 });
+    expect(withValue({ kind: 'length', operator: 'max', value: 5 }, '')).toMatchObject({ value: 5 });
+    expect(withValue({ kind: 'checkboxCount', operator: 'atLeast', value: 1 }, '3')).toMatchObject({ value: 3 });
+    expect(withValue({ kind: 'checkboxCount', operator: 'atLeast', value: 1 }, 'x')).toMatchObject({ value: 1 });
+  });
+
+  it('sets the upper bound on number rules only', () => {
+    expect(withMax({ kind: 'number', operator: 'between', value: 1 }, '9')).toMatchObject({ valueMax: 9 });
+    const length: ValidationRule = { kind: 'length', operator: 'max', value: 5 };
+    expect(withMax(length, '9')).toBe(length);
+  });
+
+  it('sets and clears the custom message', () => {
+    expect(withErrorMessage({ kind: 'text', operator: 'isEmail' }, 'Use your work email')).toMatchObject({
+      errorMessage: 'Use your work email',
+    });
+    expect(withErrorMessage({ kind: 'text', operator: 'isEmail', errorMessage: 'x' }, '')).toMatchObject({
+      errorMessage: undefined,
+    });
   });
 });

@@ -3,6 +3,7 @@ import { testIdFor } from '@/constants/testIds';
 import type { FormSection, Question } from '@/types/models';
 import type { MoveDirection } from '@/utils/ordering';
 import { QuestionEditor } from './QuestionEditor';
+import { QuestionTypeEditor } from './QuestionTypeEditor';
 import { Button, Stack, Text } from './primitives';
 
 export interface QuestionHandlers {
@@ -42,7 +43,9 @@ export function SectionEditor({ section, position, questions, questionHandlers, 
           canMoveDown={index < questions.length - 1}
           onDuplicate={() => questionHandlers.onDuplicate(question.id)}
           onDelete={() => questionHandlers.onDelete(question)}
-        />
+        >
+          <QuestionTypeEditor question={question} onChange={questionHandlers.onChange} />
+        </QuestionEditor>
       ))}
       <Button
         label={t('editor.addQuestion')}

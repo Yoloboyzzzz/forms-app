@@ -1,0 +1,133 @@
+import { fireEvent, render, screen } from '@testing-library/react-native';
+import i18n from '@/i18n';
+import { testIdFor } from '@/constants/testIds';
+import { makeQuestion } from '@/testUtils/factories';
+import type { Question } from '@/types/models';
+import { QuestionTypeEditor } from './QuestionTypeEditor';
+
+jest.mock('expo-localization', () => ({ getLocales: () => [{ languageCode: 'en' }] }));
+jest.mock('@/hooks/useNewId', () => ({ useNewId: () => () => 'new-id' }));
+
+const options = [{ id: 'o1', label: 'One' }];
+
+function setup(question: Question) {
+  const onChange = jest.fn();
+  render(<QuestionTypeEditor question={question} onChange={onChange} />);
+  return { onChange };
+}
+
+const setting = (name: string) => testIdFor.setting('q1', name);
+const toggle = (testID: string, value: boolean) => fireEvent(screen.getByTestId(testID), 'valueChange', value);
+
+beforeEach(async () => {
+  await i18n.changeLanguage('en');
+});
+
+describe('QuestionTypeEditor', () => {
+  it.each(['short_answer', 'paragraph'] as const)('offers validation for %s questions', (type) => {
+    const question = makeQuestion('q1', { questionType: type });
+    const { onChange } = setup(question);
+    toggle(testIdFor.validation('q1', 'switch'), true);
+    expect(onChange).toHaveBeenCalledWith({
+      ...question,
+      settings: { validation: expect.objectContaining({ kind: type === 'short_answer' ? 'number' : 'length' }) },
+    });
+  });
+
+  it('removes validation again', () => {
+    const question = makeQuestion('q1', { settings: { validation: { kind: 'text', operator: 'isEmail' } } });
+    const { onChange } = setup(question);
+    toggle(testIdFor.validation('q1', 'switch'), false);
+    expect(onChange).toHaveBeenCalledWith({ ...question, settings: { validation: undefined } });
+  });
+
+  describe('multiple choice', () => {
+    const question = makeQuestion('q1', { questionType: 'multiple_choice', options, settings: {} });
+
+    it('edits the options', () => {
+      const { onChange } = setup(question);
+      fireEvent.changeText(screen.getByTestId(testIdFor.option('q1', 'o1')), 'Uno');
+      expect(onChange).toHaveBeenCalledWith({ ...question, options: [{ id: 'o1', label: 'Uno' }] });
+    });
+
+    it('toggles the other option and shuffling', () => {
+      const { onChange } = setup(question);
+      toggle(setting('other'), true);
+      expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { hasOtherOption: true } });
+      toggle(setting('shuffle'), true);
+      expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { shuffleOptions: true } });
+    });
+
+    it('does not offer validation', () => {
+      setup(question);
+      expect(screen.queryByTestId(testIdFor.validation('q1', 'switch'))).toBeNull();
+    });
+  });
+
+  describe('checkboxes', () => {
+    const question = makeQuestion('q1', { questionType: 'checkboxes', options, settings: {} });
+
+    it('edits options and both toggles', () => {
+      const { onChange } = setup(question);
+      fireEvent.press(screen.getByTestId(testIdFor.optionAdd('q1')));
+      expect(onChange).toHaveBeenLastCalledWith({ ...question, options: [...options, { id: 'new-id', label: 'Option 2' }] });
+      toggle(setting('other'), true);
+      expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { hasOtherOption: true } });
+      toggle(setting('shuffle'), true);
+      expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { shuffleOptions: true } });
+    });
+
+    it('offers a selection count rule', () => {
+      const { onChange } = setup(question);
+      toggle(testIdFor.validation('q1', 'switch'), true);
+      expect(onChange).toHaveBeenCalledWith({
+        ...question,
+        settings: { validation: { kind: 'checkboxCount', operator: 'atLeast', value: 1 } },
+      });
+    });
+  });
+
+  describe('dropdown', () => {
+    const question = makeQuestion('q1', { questionType: 'dropdown', options, settings: {} });
+
+    it('edits options and shuffling, without an other option', () => {
+      const { onChange } = setup(question);
+      expect(screen.queryByTestId(setting('other'))).toBeNull();
+      fireEvent.changeText(screen.getByTestId(testIdFor.option('q1', 'o1')), 'Uno');
+      expect(onChange).toHaveBeenLastCalledWith({ ...question, options: [{ id: 'o1', label: 'Uno' }] });
+      toggle(setting('shuffle'), true);
+      expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { shuffleOptions: true } });
+    });
+  });
+
+  it('edits the settings of a linear scale', () => {
+    const question = makeQuestion('q1', { questionType: 'linear_scale', settings: { min: 1, max: 5 } });
+    const { onChange } = setup(question);
+    fireEvent.changeText(screen.getByTestId(testIdFor.scale('q1', 'min-label')), 'Low');
+    expect(onChange).toHaveBeenCalledWith({ ...question, settings: { min: 1, max: 5, minLabel: 'Low' } });
+  });
+
+  it('edits the settings of a date question', () => {
+    const question = makeQuestion('q1', { questionType: 'date', settings: {} });
+    const { onChange } = setup(question);
+    expect(screen.getByTestId(setting('include-year')).props.accessibilityState).toMatchObject({ checked: true });
+    toggle(setting('include-year'), false);
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { includeYear: false } });
+    toggle(setting('include-time'), true);
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { includeTime: true } });
+  });
+
+  it.each(['rating', 'multiple_choice_grid', 'checkbox_grid', 'time', 'file_upload'] as const)(
+    'has no type specific settings yet for %s',
+    (type) => {
+      const base = makeQuestion('q1', { questionType: 'short_answer' });
+      const question = (
+        type === 'multiple_choice_grid' || type === 'checkbox_grid'
+          ? { ...base, questionType: type, options: { rows: [], columns: [] }, settings: {} }
+          : { ...base, questionType: type, settings: {} }
+      ) as Question; // test data for types the editor does not support yet
+      const { toJSON } = render(<QuestionTypeEditor question={question} onChange={jest.fn()} />);
+      expect(toJSON()).toBeNull();
+    },
+  );
+});

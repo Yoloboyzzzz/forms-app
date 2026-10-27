@@ -121,6 +121,13 @@ export const testIdFor = {
   questionDescriptionInput: (questionId: string): string => `question-${questionId}-description-input`,
   questionRequiredSwitch: (questionId: string): string => `question-${questionId}-required-switch`,
   questionAction: (questionId: string, action: string): string => `question-${questionId}-${action}-button`,
+  validation: (questionId: string, part: string): string => `question-${questionId}-validation-${part}`,
+  option: (questionId: string, optionId: string): string => `question-${questionId}-option-${optionId}`,
+  optionAction: (questionId: string, optionId: string, action: string): string =>
+    `question-${questionId}-option-${optionId}-${action}-button`,
+  optionAdd: (questionId: string): string => `question-${questionId}-option-add-button`,
+  scale: (questionId: string, part: string): string => `question-${questionId}-scale-${part}`,
+  setting: (questionId: string, setting: string): string => `question-${questionId}-setting-${setting}`,
   formStatusFilter: (status: string): string => `form-status-filter-${status}`,
   languageOption: (language: string): string => `language-option-${language}`,
   formCard: (formId: string): string => `form-card-${formId}`,

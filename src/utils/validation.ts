@@ -81,6 +81,55 @@ export function withOperator(rule: ValidationRule, operator: string): Validation
   }
 }
 
+function parseNumber(text: string): number | undefined {
+  const trimmed = text.trim();
+  if (trimmed === '') return undefined;
+  const parsed = Number(trimmed.replace(',', '.'));
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+/** The rule's main value as text, for an input field. */
+export function valueText(rule: ValidationRule): string {
+  return rule.value === undefined ? '' : String(rule.value);
+}
+
+/** The upper bound of "between" as text. */
+export function maxText(rule: ValidationRule): string {
+  return rule.kind === 'number' && rule.valueMax !== undefined ? String(rule.valueMax) : '';
+}
+
+/**
+ * The rule with the value typed into the field. Numeric kinds that need a value keep the old one
+ * while the field holds something that is not a number.
+ */
+export function withValue(rule: ValidationRule, text: string): ValidationRule {
+  switch (rule.kind) {
+    case 'number':
+      return { ...rule, value: parseNumber(text) };
+    case 'text':
+      return { ...rule, value: text === '' ? undefined : text };
+    case 'length':
+    case 'checkboxCount': {
+      const value = parseNumber(text);
+      return value === undefined ? rule : { ...rule, value };
+    }
+    case 'regex':
+      return { ...rule, value: text };
+    default:
+      return assertNever(rule);
+  }
+}
+
+/** The rule with the upper bound typed into the field (only "between" rules have one). */
+export function withMax(rule: ValidationRule, text: string): ValidationRule {
+  return rule.kind === 'number' ? { ...rule, valueMax: parseNumber(text) } : rule;
+}
+
+/** The rule with a custom error message; an empty text removes it. */
+export function withErrorMessage(rule: ValidationRule, text: string): ValidationRule {
+  return { ...rule, errorMessage: text === '' ? undefined : text };
+}
+
 /** Whether the rule needs a value, and a second value (the upper bound of "between"). */
 export function ruleInputs(rule: ValidationRule): { value: boolean; max: boolean } {
   switch (rule.kind) {
@@ -102,13 +151,6 @@ export function ruleInputs(rule: ValidationRule): { value: boolean; max: boolean
 
 function failure(rule: ValidationRule, params: ValidationFailure['params'] = {}): ValidationFailure {
   return { customMessage: rule.errorMessage, defaultKey: `validation.rule.${rule.kind}.${rule.operator}`, params };
-}
-
-function parseNumber(text: string): number | undefined {
-  const trimmed = text.trim();
-  if (trimmed === '') return undefined;
-  const parsed = Number(trimmed.replace(',', '.'));
-  return Number.isFinite(parsed) ? parsed : undefined;
 }
 
 function checkNumber(rule: Extract<ValidationRule, { kind: 'number' }>, answer: string): ValidationFailure | undefined {
