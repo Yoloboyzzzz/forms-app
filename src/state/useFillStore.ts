@@ -8,14 +8,23 @@ import {
   saveAnswer,
   submitSubmission,
 } from '@/services/submissionService';
-import type { AnswerValue, FormDetail, Question, Submission } from '@/types/models';
+import { deleteFiles, uploadAnswerFile } from '@/services/storageService';
+import type { AnswerValue, FileUploadQuestion, FormDetail, PickedFile, Question, Submission } from '@/types/models';
 import { getNextSection, getSectionPath, type NextStep } from '@/utils/branching';
+import { checkUpload, type UploadError } from '@/utils/uploads';
 import { registerStoreReset } from './storeRegistry';
 
 /** How long answers wait for more typing before they are saved (about a second, like Google Forms). */
 export const FILL_SAVE_DELAY_MS = 1000;
 
 export type FillSaveState = 'idle' | 'dirty' | 'saving' | 'saved' | 'error';
+
+/** What happened to the files of one "attach" action. */
+export interface AttachResult {
+  added: number;
+  /** The first file that was refused (and why); files after it were not uploaded. */
+  refused?: { file: PickedFile; reason: UploadError };
+}
 
 interface FillState {
   /** Undefined while previewing a form that is not assigned to anyone. */
@@ -44,6 +53,10 @@ interface FillState {
   /** Applies the answer at once and saves it after a short pause; undefined clears it. */
   setAnswer: (question: Question, value: AnswerValue | undefined) => void;
   flush: () => Promise<void>;
+  /** Uploads files for a file upload question after checking count, type and size, and adds them to the answer. */
+  attachFiles: (question: FileUploadQuestion, files: PickedFile[], userId: string) => Promise<AttachResult>;
+  /** Deletes an uploaded file and takes it out of the answer. */
+  removeFile: (question: FileUploadQuestion, path: string) => Promise<void>;
   /** Moves to the next section following the branching; returns the step so the screen can submit at the end. */
   goNext: () => NextStep;
   goBack: () => void;
@@ -177,6 +190,39 @@ export const useFillStore = create<FillState>((set, get) => {
         });
         set({ saveState: 'error', saveErrorKey: toServiceError(error).messageKey });
       }
+    },
+
+    attachFiles: async (question, files, userId) => {
+      const { assignmentId, isOnline } = get();
+      if (assignmentId === undefined) {
+        return { added: 0 };
+      }
+      if (!isOnline) {
+        throw new ServiceError('network');
+      }
+      const draft = await ensureDraft(assignmentId);
+      const current = get().answers[question.id];
+      const paths = Array.isArray(current) ? [...current] : [];
+      let added = 0;
+
+      for (const file of files) {
+        const reason = checkUpload(file, paths.length, question.settings);
+        if (reason !== undefined) {
+          if (added > 0) get().setAnswer(question, paths);
+          return { added, refused: { file, reason } };
+        }
+        paths.push(await uploadAnswerFile(userId, draft.id, question.id, file));
+        added += 1;
+      }
+      if (added > 0) get().setAnswer(question, paths);
+      return { added };
+    },
+
+    removeFile: async (question, path) => {
+      const current = get().answers[question.id];
+      const remaining = Array.isArray(current) ? current.filter((item) => item !== path) : [];
+      await deleteFiles('form-uploads', [path]);
+      get().setAnswer(question, remaining.length === 0 ? undefined : remaining);
     },
 
     goNext: () => {

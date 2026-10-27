@@ -7,11 +7,13 @@ import {
   saveAnswer,
   submitSubmission,
 } from '@/services/submissionService';
+import { deleteFiles, uploadAnswerFile } from '@/services/storageService';
 import { makeDetail, makeQuestion, makeSection } from '@/testUtils/factories';
-import type { FormDetail, Submission } from '@/types/models';
+import type { FileUploadQuestion, FormDetail, Submission } from '@/types/models';
 import { resetAllStores } from './storeRegistry';
 import { FILL_SAVE_DELAY_MS, useFillStore } from './useFillStore';
 
+jest.mock('@/services/storageService', () => ({ deleteFiles: jest.fn(), uploadAnswerFile: jest.fn() }));
 jest.mock('@/services/submissionService', () => ({
   deleteAnswer: jest.fn(),
   getFillData: jest.fn(),
@@ -205,6 +207,111 @@ describe('setAnswer and autosave', () => {
     expect(saveAnswer).not.toHaveBeenCalled();
     expect(getOrCreateDraft).not.toHaveBeenCalled();
     expect(state().saveState).toBe('idle');
+  });
+});
+
+describe('file uploads', () => {
+  const upload: FileUploadQuestion = {
+    id: 'up',
+    formId: 'f1',
+    sectionId: 's1',
+    title: 'Upload',
+    isRequired: false,
+    orderIndex: 5,
+    isActive: true,
+    questionType: 'file_upload',
+    settings: { maxFiles: 5, maxFileSizeMb: 1, allowedTypes: ['.pdf'] },
+  };
+  const pdf = (name: string, size = 100) => ({ uri: `file:///${name}`, name, mimeType: 'application/pdf', size });
+
+  beforeEach(() => {
+    jest.mocked(uploadAnswerFile).mockImplementation(async (_user, _submission, _question, file) => `path/${file.name}`);
+    jest.mocked(deleteFiles).mockResolvedValue(undefined);
+  });
+
+  it('uploads files into the draft and adds their paths to the answer', async () => {
+    await loadForm();
+
+    const result = await state().attachFiles(upload, [pdf('a.pdf'), pdf('b.pdf')], 'me');
+
+    expect(result).toEqual({ added: 2 });
+    expect(getOrCreateDraft).toHaveBeenCalledWith('a1');
+    expect(uploadAnswerFile).toHaveBeenCalledWith('me', 'sub1', 'up', expect.objectContaining({ name: 'a.pdf' }));
+    expect(state().answers.up).toEqual(['path/a.pdf', 'path/b.pdf']);
+    expect(state().saveState).toBe('dirty');
+  });
+
+  it('adds to files that are already there', async () => {
+    await loadForm({ submission: draft, answers: { up: ['path/old.pdf'] } });
+    await state().attachFiles(upload, [pdf('a.pdf')], 'me');
+    expect(state().answers.up).toEqual(['path/old.pdf', 'path/a.pdf']);
+  });
+
+  it('stops at the first refused file and keeps the ones that were fine', async () => {
+    await loadForm();
+
+    const result = await state().attachFiles(upload, [pdf('a.pdf'), pdf('big.pdf', 5 * 1024 * 1024), pdf('c.pdf')], 'me');
+
+    expect(result).toMatchObject({ added: 1, refused: { reason: 'tooLarge', file: { name: 'big.pdf' } } });
+    expect(uploadAnswerFile).toHaveBeenCalledTimes(1);
+    expect(state().answers.up).toEqual(['path/a.pdf']);
+  });
+
+  it('refuses a file when nothing was added before it', async () => {
+    await loadForm();
+    const result = await state().attachFiles(upload, [{ ...pdf('x.png'), mimeType: 'image/png' }], 'me');
+    expect(result).toMatchObject({ added: 0, refused: { reason: 'wrongType' } });
+    expect(state().answers.up).toBeUndefined();
+  });
+
+  it('refuses more files than allowed', async () => {
+    await loadForm({ submission: draft, answers: { up: ['1', '2', '3', '4', '5'] } });
+    const result = await state().attachFiles(upload, [pdf('6.pdf')], 'me');
+    expect(result).toMatchObject({ added: 0, refused: { reason: 'tooMany' } });
+  });
+
+  it('cannot upload offline, and does nothing in preview', async () => {
+    await loadForm({ submission: draft });
+    state().setOnline(false);
+    await expect(state().attachFiles(upload, [pdf('a.pdf')], 'me')).rejects.toMatchObject({ code: 'network' });
+
+    state().startPreview(detail());
+    await expect(state().attachFiles(upload, [pdf('a.pdf')], 'me')).resolves.toEqual({ added: 0 });
+  });
+
+  it('rethrows an upload failure and keeps earlier files', async () => {
+    await loadForm();
+    jest.mocked(uploadAnswerFile).mockResolvedValueOnce('path/a.pdf').mockRejectedValueOnce(new ServiceError('network'));
+
+    await expect(state().attachFiles(upload, [pdf('a.pdf'), pdf('b.pdf')], 'me')).rejects.toMatchObject({ code: 'network' });
+  });
+
+  it('removes a file from storage and from the answer', async () => {
+    await loadForm({ submission: draft, answers: { up: ['path/a.pdf', 'path/b.pdf'] } });
+
+    await state().removeFile(upload, 'path/a.pdf');
+
+    expect(deleteFiles).toHaveBeenCalledWith('form-uploads', ['path/a.pdf']);
+    expect(state().answers.up).toEqual(['path/b.pdf']);
+  });
+
+  it('clears the answer when the last file is removed', async () => {
+    await loadForm({ submission: draft, answers: { up: ['path/a.pdf'] } });
+    await state().removeFile(upload, 'path/a.pdf');
+    expect(state().answers.up).toBeUndefined();
+  });
+
+  it('keeps the answer when deleting from storage fails', async () => {
+    await loadForm({ submission: draft, answers: { up: ['path/a.pdf'] } });
+    jest.mocked(deleteFiles).mockRejectedValue(new ServiceError('forbidden'));
+    await expect(state().removeFile(upload, 'path/a.pdf')).rejects.toMatchObject({ code: 'forbidden' });
+    expect(state().answers.up).toEqual(['path/a.pdf']);
+  });
+
+  it('removes a file when the answer is missing without breaking', async () => {
+    await loadForm({ submission: draft });
+    await state().removeFile(upload, 'path/x.pdf');
+    expect(state().answers.up).toBeUndefined();
   });
 });
 

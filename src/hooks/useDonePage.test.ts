@@ -6,6 +6,7 @@ import { useFillStore } from '@/state/useFillStore';
 import { makeDetail, makeForm } from '@/testUtils/factories';
 import type { Submission } from '@/types/models';
 
+jest.mock('@/services/storageService', () => ({ deleteFiles: jest.fn(), uploadAnswerFile: jest.fn() }));
 jest.mock('@/services/submissionService', () => ({
   deleteAnswer: jest.fn(),
   getFillData: jest.fn(),

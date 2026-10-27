@@ -9,6 +9,7 @@ import type { FormDetail, Submission } from '@/types/models';
 let mockOnline = true;
 
 jest.mock('@/hooks/useIsOnline', () => ({ useIsOnline: () => mockOnline }));
+jest.mock('@/services/storageService', () => ({ deleteFiles: jest.fn(), uploadAnswerFile: jest.fn() }));
 jest.mock('@/services/submissionService', () => ({
   deleteAnswer: jest.fn(),
   getFillData: jest.fn(),
