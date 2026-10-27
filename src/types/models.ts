@@ -354,3 +354,17 @@ export interface Submission {
   createdAt: Date;
   updatedAt: Date;
 }
+
+/** An assignment with the user it is for, as an admin sees it. */
+export interface FormAssignee {
+  assignment: Assignment;
+  user: Profile;
+}
+
+/** An assignment with its form and the user's response so far, as the user sees it. */
+export interface MyAssignment {
+  assignment: Assignment;
+  form: Form;
+  /** The draft or submitted response; absent until the user starts. */
+  submission?: Submission;
+}

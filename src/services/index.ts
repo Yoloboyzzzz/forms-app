@@ -5,3 +5,4 @@ export * from './adminUserService';
 export * from './formService';
 export * from './sectionService';
 export * from './questionService';
+export * from './assignmentService';
