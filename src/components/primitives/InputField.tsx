@@ -13,6 +13,7 @@ interface InputFieldProps {
   secureTextEntry?: boolean;
   error?: string;
   disabled?: boolean;
+  multiline?: boolean;
   keyboardType?: TextInputProps['keyboardType'];
   autoComplete?: TextInputProps['autoComplete'];
   textContentType?: TextInputProps['textContentType'];
@@ -32,6 +33,7 @@ export function InputField({
   secureTextEntry = false,
   error,
   disabled = false,
+  multiline = false,
   keyboardType,
   autoComplete,
   textContentType,
@@ -55,13 +57,14 @@ export function InputField({
         placeholderTextColor={theme.colors.textMuted}
         secureTextEntry={secureTextEntry}
         editable={!disabled}
+        multiline={multiline}
         keyboardType={keyboardType}
         autoComplete={autoComplete}
         textContentType={textContentType}
         autoCapitalize={autoCapitalize}
         returnKeyType={returnKeyType}
         onSubmitEditing={onSubmitEditing}
-        style={[styles.input, hasError && styles.inputError, disabled && styles.inputDisabled]}
+        style={[styles.input, multiline && styles.inputMultiline, hasError && styles.inputError, disabled && styles.inputDisabled]}
         accessibilityLabel={label}
         accessibilityHint={accessibilityHint}
         accessibilityState={{ disabled }}
@@ -93,6 +96,7 @@ const createStyles = (theme: Theme) =>
       color: theme.colors.text,
       ...theme.fontSizes.lg,
     },
+    inputMultiline: { minHeight: theme.minTouchTarget * 2, textAlignVertical: 'top' },
     inputError: { borderColor: theme.colors.error },
     inputDisabled: { backgroundColor: theme.colors.surfaceMuted, color: theme.colors.textMuted },
     error: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing.xs },

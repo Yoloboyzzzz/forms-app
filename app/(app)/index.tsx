@@ -3,7 +3,7 @@ import { Screen } from '../../src/components/primitives/Screen';
 import { Stack } from '../../src/components/primitives/Stack';
 import { Text } from '../../src/components/primitives/Text';
 import { EmptyState } from '../../src/components/primitives/EmptyState';
-import { StyledButton } from '../../src/components/StyledButton';
+import { Button } from '../../src/components/primitives/Button';
 import {Badge} from "@/components/primitives";
 
 export default function HomeScreen() {
@@ -21,7 +21,7 @@ export default function HomeScreen() {
           title="No items yet"
           description="Implement getItems() in your itemService to load data."
         />
-        <StyledButton label="Log out" onPress={logout} variant="secondary" />
+        <Button label="Log out" onPress={logout} variant="secondary" />
       </Stack>
     </Screen>
   );

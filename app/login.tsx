@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { useAuthStore } from '../src/state/useAuthStore';
 import { InputField } from '../src/components/primitives/InputField';
-import { StyledButton } from '../src/components/StyledButton';
+import { Button } from '../src/components/primitives/Button';
 import { Stack } from '../src/components/primitives/Stack';
 import { Text } from '../src/components/primitives/Text';
 
@@ -42,7 +42,7 @@ export default function LoginScreen() {
           testID="password-input"
           error={error !== '' ? error : undefined}
         />
-        <StyledButton
+        <Button
           label="Log in"
           onPress={handleLogin}
           isLoading={isLoading}
