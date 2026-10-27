@@ -26,7 +26,12 @@ interface UsersState {
   resetAll: () => void;
 }
 
-const initialState = { users: [], isLoaded: false, isLoading: false, errorKey: undefined } as const;
+const initialState: Pick<UsersState, 'users' | 'isLoaded' | 'isLoading' | 'errorKey'> = {
+  users: [],
+  isLoaded: false,
+  isLoading: false,
+  errorKey: undefined,
+};
 
 export const useUsersStore = create<UsersState>((set, get) => ({
   ...initialState,
@@ -55,7 +60,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
     await get().load();
   },
 
-  resetAll: () => set({ ...initialState, users: [] }),
+  resetAll: () => set({ ...initialState }),
 }));
 
 registerStoreReset(() => useUsersStore.getState().resetAll());
