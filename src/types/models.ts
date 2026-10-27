@@ -38,6 +38,17 @@ export interface Form {
   updatedAt: Date;
 }
 
+export type FormSettings = Pick<
+  Form,
+  | 'isAcceptingResponses'
+  | 'closesAt'
+  | 'limitOneResponse'
+  | 'allowEditAfterSubmit'
+  | 'shuffleQuestionOrder'
+  | 'showProgressBar'
+  | 'confirmationMessage'
+>;
+
 export interface FormSection {
   id: string;
   formId: string;
@@ -278,6 +289,11 @@ export type Question =
   | FileUploadQuestion;
 
 export type QuestionOfType<T extends QuestionType> = Extract<Question, { questionType: T }>;
+
+type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
+
+/** A question that is not stored yet: everything except the generated id. */
+export type QuestionDraft = DistributiveOmit<Question, 'id'>;
 
 // ------------------------------------------------------------------- answers
 
