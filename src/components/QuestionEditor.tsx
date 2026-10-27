@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { QUESTION_TYPE_ICONS } from '@/constants/questionTypes';
 import { testIdFor } from '@/constants/testIds';
 import type { Question } from '@/types/models';
+import { QuestionImageEditor, type QuestionImageControls } from './QuestionImageEditor';
 import { Badge, Card, Icon, IconButton, InputField, Row, Stack, Switch, Text, TextArea } from './primitives';
 
 interface QuestionEditorProps {
@@ -13,6 +14,8 @@ interface QuestionEditorProps {
   canMoveDown: boolean;
   onDuplicate: () => void;
   onDelete: () => void;
+  /** Adds the image section to the card when given. */
+  imageControls?: QuestionImageControls;
   /** Type specific editors (options, scale, validation, ...) rendered below the common fields. */
   children?: React.ReactNode;
 }
@@ -27,6 +30,7 @@ export function QuestionEditor({
   canMoveDown,
   onDuplicate,
   onDelete,
+  imageControls,
   children,
 }: QuestionEditorProps) {
   const { t } = useTranslation();
@@ -85,6 +89,7 @@ export function QuestionEditor({
           disabled={!question.isActive}
           testID={testIdFor.questionDescriptionInput(question.id)}
         />
+        {imageControls !== undefined && <QuestionImageEditor question={question} controls={imageControls} />}
         {children}
         <Switch
           label={t('editor.required')}

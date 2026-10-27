@@ -4,6 +4,7 @@ import type { SectionPatch } from '@/services/mappers/recordMappers';
 import type { FormSection, Question } from '@/types/models';
 import type { MoveDirection } from '@/utils/ordering';
 import { afterActionValue, parseAfterActionValue, type SectionOption } from '@/utils/sectionActions';
+import type { QuestionImageControls } from './QuestionImageEditor';
 import { QuestionEditor } from './QuestionEditor';
 import { QuestionTypeEditor } from './QuestionTypeEditor';
 import { Button, IconButton, InputField, Row, Select, Stack, Text, TextArea } from './primitives';
@@ -35,6 +36,7 @@ interface SectionEditorProps {
   questionHandlers: QuestionHandlers;
   sectionHandlers: SectionHandlers;
   onAddQuestion: (sectionId: string) => void;
+  imageControls?: QuestionImageControls;
   canMoveUp: boolean;
   canMoveDown: boolean;
   /** A form always keeps at least one section. */
@@ -49,6 +51,7 @@ export function SectionEditor({
   questionHandlers,
   sectionHandlers,
   onAddQuestion,
+  imageControls,
   canMoveUp,
   canMoveDown,
   canDelete,
@@ -93,6 +96,7 @@ export function SectionEditor({
           canMoveDown={index < questions.length - 1}
           onDuplicate={() => questionHandlers.onDuplicate(question.id)}
           onDelete={() => questionHandlers.onDelete(question)}
+          imageControls={imageControls}
         >
           <QuestionTypeEditor question={question} onChange={questionHandlers.onChange} sections={sectionOptions} />
         </QuestionEditor>

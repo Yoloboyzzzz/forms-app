@@ -7,11 +7,13 @@ import {
   reorderQuestions,
   updateQuestion,
 } from '@/services/questionService';
+import { deleteFiles, uploadQuestionImage } from '@/services/storageService';
 import { addSection, deleteSection, reorderSections, updateSection } from '@/services/sectionService';
 import type { Form, FormDetail, FormSection, Question } from '@/types/models';
 import { resetAllStores } from './storeRegistry';
 import { SAVE_DELAY_MS, useFormEditorStore } from './useFormEditorStore';
 
+jest.mock('@/services/storageService', () => ({ deleteFiles: jest.fn(), uploadQuestionImage: jest.fn() }));
 jest.mock('@/services/formService', () => ({
   archiveForm: jest.fn(),
   getFormDetail: jest.fn(),
@@ -503,6 +505,70 @@ describe('publish and archive', () => {
     await state().archive();
 
     expect(state().detail?.form.status).toBe('archived');
+  });
+});
+
+describe('question images', () => {
+  const photo = { uri: 'file:///p.png', name: 'p.png', mimeType: 'image/png', size: 1000 };
+
+  beforeEach(() => {
+    jest.mocked(uploadQuestionImage).mockResolvedValue('f1/a/1-p.png');
+    jest.mocked(deleteFiles).mockResolvedValue(undefined);
+    jest.mocked(updateQuestion).mockResolvedValue(question('a', 's1', 0));
+  });
+
+  it('uploads the image and saves its path on the question', async () => {
+    await state().attachImage('a', photo);
+
+    expect(uploadQuestionImage).toHaveBeenCalledWith('f1', 'a', photo);
+    expect(updateQuestion).toHaveBeenCalledWith('a', expect.objectContaining({ imagePath: 'f1/a/1-p.png' }));
+    expect(state().detail?.questions.find((item) => item.id === 'a')?.imagePath).toBe('f1/a/1-p.png');
+    expect(deleteFiles).not.toHaveBeenCalled();
+  });
+
+  it('deletes the previous image when it is replaced, and survives a failing delete', async () => {
+    useFormEditorStore.setState({ detail: { ...detail(), questions: [{ ...question('a', 's1', 0), imagePath: 'old.png' }, question('b', 's1', 1)] } });
+    jest.mocked(deleteFiles).mockRejectedValue(new ServiceError('network'));
+
+    await expect(state().attachImage('a', photo)).resolves.toBeUndefined();
+
+    expect(deleteFiles).toHaveBeenCalledWith('form-media', ['old.png']);
+  });
+
+  it.each([
+    ['not an image', { ...photo, mimeType: 'application/pdf', name: 'a.pdf' }],
+    ['larger than 5 MB', { ...photo, size: 6 * 1024 * 1024 }],
+  ])('refuses a file that is %s', async (_name, file) => {
+    await expect(state().attachImage('a', file)).rejects.toMatchObject({ code: 'invalidInput' });
+    expect(uploadQuestionImage).not.toHaveBeenCalled();
+  });
+
+  it('ignores an unknown question', async () => {
+    await state().attachImage('zzz', photo);
+    await state().removeImage('zzz');
+    expect(uploadQuestionImage).not.toHaveBeenCalled();
+  });
+
+  it('removes the image from storage and from the question', async () => {
+    useFormEditorStore.setState({ detail: { ...detail(), questions: [{ ...question('a', 's1', 0), imagePath: 'x.png' }] } });
+
+    await state().removeImage('a');
+
+    expect(deleteFiles).toHaveBeenCalledWith('form-media', ['x.png']);
+    expect(state().detail?.questions[0].imagePath).toBeUndefined();
+    expect(updateQuestion).toHaveBeenCalledWith('a', expect.objectContaining({ imagePath: undefined }));
+  });
+
+  it('does nothing for a question without an image', async () => {
+    await state().removeImage('a');
+    expect(deleteFiles).not.toHaveBeenCalled();
+  });
+
+  it('keeps the image when deleting the file fails', async () => {
+    useFormEditorStore.setState({ detail: { ...detail(), questions: [{ ...question('a', 's1', 0), imagePath: 'x.png' }] } });
+    jest.mocked(deleteFiles).mockRejectedValue(new ServiceError('forbidden'));
+    await expect(state().removeImage('a')).rejects.toMatchObject({ code: 'forbidden' });
+    expect(state().detail?.questions[0].imagePath).toBe('x.png');
   });
 });
 

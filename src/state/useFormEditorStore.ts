@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { ServiceError, toServiceError } from '@/services/errors';
+import { deleteFiles, uploadQuestionImage } from '@/services/storageService';
 import { archiveForm, getFormDetail, publishForm, updateForm as updateFormService } from '@/services/formService';
 import type { FormPatch, SectionPatch } from '@/services/mappers/recordMappers';
 import {
@@ -16,7 +17,7 @@ import {
   updateSection as updateSectionService,
 } from '@/services/sectionService';
 import type { QuestionType } from '@/types/enums';
-import type { FormDetail, FormSection, Question } from '@/types/models';
+import type { FormDetail, FormSection, PickedFile, Question } from '@/types/models';
 import { moveItem, withOrderIndexes, type MoveDirection } from '@/utils/ordering';
 import {
   createDefaultQuestion,
@@ -24,6 +25,7 @@ import {
   sortedSections,
   toQuestionDraft,
 } from '@/utils/questions';
+import { MAX_QUESTION_IMAGE_MB, checkUpload } from '@/utils/uploads';
 import { registerStoreReset } from './storeRegistry';
 
 /** How long edits wait for more typing before they are saved. */
@@ -67,6 +69,10 @@ interface FormEditorState {
   moveSection: (sectionId: string, direction: MoveDirection) => Promise<void>;
   removeSection: (sectionId: string) => Promise<void>;
   addQuestion: (sectionId: string, questionType: QuestionType, defaults: NewQuestionDefaults) => Promise<Question>;
+  /** Uploads an image for a question (max 5 MB, images only) and saves it on the question. */
+  attachImage: (questionId: string, file: PickedFile) => Promise<void>;
+  /** Removes the image of a question from storage and from the question. */
+  removeImage: (questionId: string) => Promise<void>;
   moveQuestion: (questionId: string, direction: MoveDirection) => Promise<void>;
   duplicateQuestion: (questionId: string) => Promise<void>;
   removeQuestion: (questionId: string) => Promise<'deleted' | 'deactivated'>;
@@ -273,6 +279,31 @@ export const useFormEditorStore = create<FormEditorState>((set, get) => {
       const question = await addQuestionService(draft);
       setQuestions((questions) => [...questions, question]);
       return question;
+    },
+
+    attachImage: async (questionId, file) => {
+      const detail = requireDetail();
+      const question = detail.questions.find((item) => item.id === questionId);
+      if (question === undefined) return;
+      const reason = checkUpload(file, 0, { allowedTypes: ['image/*'], maxFileSizeMb: MAX_QUESTION_IMAGE_MB, maxFiles: 1 });
+      if (reason !== undefined) {
+        throw new ServiceError('invalidInput');
+      }
+      const imagePath = await uploadQuestionImage(detail.form.id, questionId, file);
+      get().updateQuestion({ ...question, imagePath });
+      await get().flush();
+      if (question.imagePath !== undefined) {
+        // The old file is no longer referenced; failing to delete it must not undo the new image.
+        await deleteFiles('form-media', [question.imagePath]).catch(() => undefined);
+      }
+    },
+
+    removeImage: async (questionId) => {
+      const question = requireDetail().questions.find((item) => item.id === questionId);
+      if (question?.imagePath === undefined) return;
+      await deleteFiles('form-media', [question.imagePath]);
+      get().updateQuestion({ ...question, imagePath: undefined });
+      await get().flush();
     },
 
     moveQuestion: async (questionId, direction) => {

@@ -359,6 +359,12 @@
       "allowedTypesHint": "For example image/*, .pdf",
       "maxFiles": "Maximum number of files",
       "maxSize": "Maximum size per file"
+    },
+    "image": {
+      "add": "Add an image",
+      "change": "Change image",
+      "remove": "Remove image",
+      "invalid": "Choose an image of at most 5 MB."
     }
   },
   "settings": {

@@ -31,6 +31,8 @@ interface FormFillViewProps {
   /** i18n key when submitting failed. */
   submitErrorKey?: string;
   fileUpload?: FileUploadControls;
+  /** Temporary image links by storage path. */
+  imageUrls?: Record<string, string>;
 }
 
 /** One section of a form: progress, its questions and back/next/submit. */
@@ -57,6 +59,7 @@ export function FormFillView({
   onCancelSubmit,
   submitErrorKey,
   fileUpload,
+  imageUrls = {},
 }: FormFillViewProps) {
   const { t } = useTranslation();
   const canSubmit = isOnline || isPreview;
@@ -91,6 +94,7 @@ export function FormFillView({
             onChange={(value) => onChangeAnswer(question, value)}
             errorText={errors[question.id]}
             fileUpload={fileUpload}
+            imageUrl={question.imagePath === undefined ? undefined : imageUrls[question.imagePath]}
           />
         ))}
         {submitErrorKey !== undefined && (

@@ -150,6 +150,23 @@ describe('FormFillView', () => {
   });
 });
 
+describe('FormFillView images', () => {
+  it('shows the image of a question that has one', () => {
+    setup({
+      questions: [makeQuestion('a', { title: 'Name', imagePath: 'f1/a/p.png' }), makeQuestion('b', { title: 'Age' })],
+      imageUrls: { 'f1/a/p.png': 'https://x/p.png' },
+    });
+    expect(screen.getByTestId(testIdFor.questionImage('a')).props.source).toEqual({ uri: 'https://x/p.png' });
+    expect(screen.queryByTestId(testIdFor.questionImage('b'))).toBeNull();
+  });
+
+  it('shows the question without its image while the link is not known', () => {
+    setup({ questions: [makeQuestion('a', { imagePath: 'f1/a/p.png' })], imageUrls: {} });
+    expect(screen.queryByTestId(testIdFor.questionImage('a'))).toBeNull();
+    expect(screen.getByTestId(testIdFor.questionInput('a'))).toBeTruthy();
+  });
+});
+
 describe('ProgressHeader', () => {
   const position = { current: 2, total: 4 };
 

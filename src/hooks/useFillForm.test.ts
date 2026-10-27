@@ -21,6 +21,9 @@ jest.mock('@/services/authService', () => ({
 }));
 jest.mock('@/services/profileService', () => ({ getMyProfile: jest.fn(), updateMyName: jest.fn() }));
 const mockPick = jest.fn();
+jest.mock('@/hooks/useSignedUrls', () => ({
+  useSignedUrls: (_bucket: string, paths: string[]) => Object.fromEntries(paths.map((path) => [path, `https://x/${path}`])),
+}));
 jest.mock('@/hooks/usePickFiles', () => ({ usePickFiles: () => mockPick }));
 jest.mock('@/services/submissionService', () => ({
   deleteAnswer: jest.fn(),
@@ -117,6 +120,15 @@ describe('loading', () => {
   it('keeps the model order unless the form asks for shuffling', async () => {
     const { result } = await setup();
     expect(result.current.questions.map((q) => q.id)).toEqual(['a', 'b']);
+  });
+});
+
+describe('question images', () => {
+  it('offers links for the images of the questions on screen only', async () => {
+    const withImage = makeQuestion('a', { imagePath: 'f1/a/p.png' });
+    const otherSection = makeQuestion('c', { sectionId: 's2', imagePath: 'f1/c/q.png' });
+    const { result } = await setup({ questions: [withImage, otherSection] });
+    expect(result.current.imageUrls).toEqual({ 'f1/a/p.png': 'https://x/f1/a/p.png' });
   });
 });
 

@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-native';
+import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { useFormEditor } from '@/hooks/useFormEditor';
 import { ServiceError } from '@/services/errors';
 import { makeDetail, makeQuestion } from '@/testUtils/factories';
@@ -18,6 +18,8 @@ const mockStore = {
   duplicateQuestion: jest.fn(),
   removeQuestion: jest.fn(),
   addQuestion: jest.fn(),
+  attachImage: jest.fn(),
+  removeImage: jest.fn(),
   editSection: jest.fn(),
   updateSection: jest.fn(),
   moveSection: jest.fn(),
@@ -40,6 +42,11 @@ jest.mock('@/state/useFormsStore', () => ({
 jest.mock('@/state/useAuthStore', () => ({
   useAuthStore: (selector: (state: typeof mockAuth) => unknown) => selector(mockAuth),
 }));
+const mockPick = jest.fn();
+jest.mock('@/hooks/usePickFiles', () => ({ usePickFiles: () => mockPick }));
+jest.mock('@/hooks/useSignedUrls', () => ({
+  useSignedUrls: (_bucket: string, paths: string[]) => Object.fromEntries(paths.map((path) => [path, `https://x/${path}`])),
+}));
 jest.mock('expo-crypto', () => ({ randomUUID: () => 'generated-id' }));
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string, options?: { n?: number }) => (options?.n === undefined ? key : `${key}:${options.n}`) }),
@@ -58,6 +65,9 @@ beforeEach(() => {
   mockStore.duplicateQuestion = jest.fn().mockResolvedValue(undefined);
   mockStore.removeQuestion = jest.fn().mockResolvedValue('deleted');
   mockStore.addQuestion = jest.fn().mockResolvedValue(undefined);
+  mockStore.attachImage = jest.fn().mockResolvedValue(undefined);
+  mockStore.removeImage = jest.fn().mockResolvedValue(undefined);
+  mockPick.mockReset();
   mockStore.editSection = jest.fn();
   mockStore.updateSection = jest.fn().mockResolvedValue(undefined);
   mockStore.moveSection = jest.fn().mockResolvedValue(undefined);
@@ -330,6 +340,63 @@ describe('useFormEditor', () => {
       act(() => result.current.requestAction('publish'));
       await act(async () => result.current.confirmAction());
       expect(mockStore.publish).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('question images', () => {
+    const question = makeQuestion('a');
+    const photo = { uri: 'file:///p.png', name: 'p.png' };
+
+    it('offers temporary links for the images of the form', () => {
+      mockStore.detail = makeDetail({ questions: [{ ...question, imagePath: 'f1/a/p.png' }, makeQuestion('b')] });
+      const { result } = renderHook(() => useFormEditor('f1'));
+      expect(result.current.imageControls.urls).toEqual({ 'f1/a/p.png': 'https://x/f1/a/p.png' });
+    });
+
+    it('picks an image and attaches it', async () => {
+      mockPick.mockResolvedValue([photo]);
+      const { result } = renderHook(() => useFormEditor('f1'));
+
+      await act(async () => result.current.imageControls.onPick(question));
+
+      expect(mockPick).toHaveBeenCalledWith({ types: ['image/*'] });
+      expect(mockStore.attachImage).toHaveBeenCalledWith('a', photo);
+      expect(result.current.imageControls.busyQuestionId).toBeUndefined();
+    });
+
+    it('does nothing when the picker was cancelled', async () => {
+      mockPick.mockResolvedValue([]);
+      const { result } = renderHook(() => useFormEditor('f1'));
+      await act(async () => result.current.imageControls.onPick(question));
+      expect(mockStore.attachImage).not.toHaveBeenCalled();
+    });
+
+    it('explains an image that is not allowed', async () => {
+      mockPick.mockResolvedValue([photo]);
+      mockStore.attachImage.mockRejectedValue(new ServiceError('invalidInput'));
+      const { result } = renderHook(() => useFormEditor('f1'));
+
+      await act(async () => result.current.imageControls.onPick(question));
+
+      await waitFor(() => expect(result.current.imageControls.errors.a).toBe('editor.image.invalid'));
+    });
+
+    it('shows other upload errors and clears them on the next try', async () => {
+      mockPick.mockResolvedValue([photo]);
+      mockStore.attachImage.mockRejectedValueOnce(new ServiceError('network')).mockResolvedValueOnce(undefined);
+      const { result } = renderHook(() => useFormEditor('f1'));
+
+      await act(async () => result.current.imageControls.onPick(question));
+      await waitFor(() => expect(result.current.imageControls.errors.a).toBe('errors.network'));
+
+      await act(async () => result.current.imageControls.onPick(question));
+      await waitFor(() => expect(result.current.imageControls.errors.a).toBeUndefined());
+    });
+
+    it('removes an image', async () => {
+      const { result } = renderHook(() => useFormEditor('f1'));
+      await act(async () => result.current.imageControls.onRemove(question));
+      expect(mockStore.removeImage).toHaveBeenCalledWith('a');
     });
   });
 });

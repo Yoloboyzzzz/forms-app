@@ -359,6 +359,12 @@
       "allowedTypesHint": "Bijvoorbeeld image/*, .pdf",
       "maxFiles": "Maximaal aantal bestanden",
       "maxSize": "Maximale grootte per bestand"
+    },
+    "image": {
+      "add": "Afbeelding toevoegen",
+      "change": "Afbeelding wijzigen",
+      "remove": "Afbeelding verwijderen",
+      "invalid": "Kies een afbeelding van hoogstens 5 MB."
     }
   },
   "settings": {

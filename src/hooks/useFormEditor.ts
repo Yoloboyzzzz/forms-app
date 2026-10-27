@@ -1,6 +1,7 @@
 import * as Crypto from 'expo-crypto';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { QuestionImageControls } from '@/components/QuestionImageEditor';
 import type { QuestionHandlers, SectionHandlers } from '@/components/SectionEditor';
 import { ServiceError, toServiceError } from '@/services/errors';
 import type { FormPatch } from '@/services/mappers/recordMappers';
@@ -9,6 +10,8 @@ import { useFormEditorStore } from '@/state/useFormEditorStore';
 import { useFormsStore } from '@/state/useFormsStore';
 import type { QuestionType } from '@/types/enums';
 import type { FormDetail, FormSection, Question } from '@/types/models';
+import { useSignedUrls } from './useSignedUrls';
+import { usePickFiles } from './usePickFiles';
 import type { SaveState } from '@/state/useFormEditorStore';
 
 const MESSAGE_DURATION_MS = 4000;
@@ -31,6 +34,7 @@ interface UseFormEditor {
   changeForm: (patch: FormPatch) => void;
   questionHandlers: QuestionHandlers;
   sectionHandlers: SectionHandlers;
+  imageControls: QuestionImageControls;
   addSection: () => Promise<void>;
   sectionToDelete?: FormSection;
   cancelDeleteSection: () => void;
@@ -66,6 +70,7 @@ export function useFormEditor(formId: string, options: UseFormEditorOptions = {}
   const saveState = useFormEditorStore((state) => state.saveState);
   const saveErrorKey = useFormEditorStore((state) => state.saveErrorKey);
   const store = useFormEditorStore.getState;
+  const pickFiles = usePickFiles();
   const duplicateForm = useFormsStore((state) => state.duplicate);
   const userId = useAuthStore((state) => state.session?.userId);
 
@@ -77,6 +82,12 @@ export function useFormEditor(formId: string, options: UseFormEditorOptions = {}
   const [noticeKey, setNoticeKey] = useState<string | undefined>(undefined);
   const [noticeVariant, setNoticeVariant] = useState<'default' | 'success'>('default');
   const [pendingAction, setPendingAction] = useState<FormAction | undefined>(undefined);
+  const [imageBusyId, setImageBusyId] = useState<string | undefined>(undefined);
+  const [imageErrors, setImageErrors] = useState<Record<string, string>>({});
+  const imageUrls = useSignedUrls(
+    'form-media',
+    (detail?.questions ?? []).flatMap((question) => (question.imagePath === undefined ? [] : [question.imagePath])),
+  );
 
   useEffect(() => {
     void store().open(formId);
@@ -95,6 +106,20 @@ export function useFormEditor(formId: string, options: UseFormEditorOptions = {}
     }, MESSAGE_DURATION_MS);
     return () => clearTimeout(timeout);
   }, [actionErrorKey, noticeKey]);
+
+  async function changeImage(question: Question, action: () => Promise<void>): Promise<void> {
+    setImageErrors(({ [question.id]: _removed, ...rest }) => rest);
+    setImageBusyId(question.id);
+    try {
+      await action();
+    } catch (error) {
+      const service = toServiceError(error);
+      const message = service.code === 'invalidInput' ? t('editor.image.invalid') : t(service.messageKey);
+      setImageErrors((current) => ({ ...current, [question.id]: message }));
+    } finally {
+      setImageBusyId(undefined);
+    }
+  }
 
   async function run(action: () => Promise<void>): Promise<void> {
     setActionErrorKey(undefined);
@@ -123,6 +148,17 @@ export function useFormEditor(formId: string, options: UseFormEditorOptions = {}
       onMove: (questionId, direction) => void run(() => store().moveQuestion(questionId, direction)),
       onDuplicate: (questionId) => void run(() => store().duplicateQuestion(questionId)),
       onDelete: setDeleteTarget,
+    },
+    imageControls: {
+      urls: imageUrls,
+      busyQuestionId: imageBusyId,
+      errors: imageErrors,
+      onPick: (question) =>
+        void pickFiles({ types: ['image/*'] }).then(([file]) => {
+          if (file !== undefined) return changeImage(question, () => store().attachImage(question.id, file));
+          return undefined;
+        }),
+      onRemove: (question) => void changeImage(question, () => store().removeImage(question.id)),
     },
     sectionHandlers: {
       onEdit: (sectionId, patch) => store().editSection(sectionId, patch),

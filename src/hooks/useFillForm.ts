@@ -13,6 +13,7 @@ import { questionsOfSection } from '@/utils/questions';
 import { seedFrom, shuffleWithSeed } from '@/utils/shuffle';
 import { DEFAULT_MAX_FILES, DEFAULT_MAX_FILE_SIZE_MB, type UploadError } from '@/utils/uploads';
 import { useIsOnline } from './useIsOnline';
+import { useSignedUrls } from './useSignedUrls';
 import { usePickFiles } from './usePickFiles';
 
 /** What the screen fills in: an assignment of the signed-in user, or an unsaved admin preview of a form. */
@@ -54,6 +55,8 @@ interface UseFillForm {
   /** True once the preview reached the end of the form. */
   previewFinished: boolean;
   fileUpload: FileUploadControls;
+  /** Temporary links of the question images in the current section, by storage path. */
+  imageUrls: Record<string, string>;
 }
 
 function translateError(error: AnswerError, t: TFunction): string {
@@ -126,6 +129,11 @@ export function useFillForm(source: FillSource): UseFillForm {
       ? shuffleWithSeed(inSection, seedFrom(`${assignmentId ?? 'preview'}-${section.id}`))
       : inSection;
   }
+
+  const imageUrls = useSignedUrls(
+    'form-media',
+    questions.flatMap((question) => (question.imagePath === undefined ? [] : [question.imagePath])),
+  );
 
   const path = detail === undefined ? [] : getSectionPath(detail.sections, detail.questions, answers);
   const index = sectionId === undefined ? -1 : path.indexOf(sectionId);
@@ -231,6 +239,7 @@ export function useFillForm(source: FillSource): UseFillForm {
     submitErrorKey,
     isSubmitted: submission?.status === 'submitted',
     previewFinished,
+    imageUrls,
     fileUpload: {
       onPick: (question) => void pickAndUpload(question),
       onRemove: (question, path) => {

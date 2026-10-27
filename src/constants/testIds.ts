@@ -243,6 +243,7 @@ export const testIdFor = {
   uploadedFile: (questionId: string, path: string): string => `question-${questionId}-file-${path}`,
   removeUploadedFile: (questionId: string, path: string): string => `question-${questionId}-file-${path}-remove-button`,
   openFile: (questionId: string, path: string): string => `response-answer-${questionId}-file-${path}`,
+  questionImage: (questionId: string): string => `question-${questionId}-image`,
   formStatusFilter: (status: string): string => `form-status-filter-${status}`,
   languageOption: (language: string): string => `language-option-${language}`,
   formCard: (formId: string): string => `form-card-${formId}`,

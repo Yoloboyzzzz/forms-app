@@ -57,6 +57,7 @@ export default function FormEditorScreen() {
           onChangeForm={editor.changeForm}
           questionHandlers={editor.questionHandlers}
           sectionHandlers={editor.sectionHandlers}
+          imageControls={editor.imageControls}
           onAddQuestion={editor.openPicker}
           onAddSection={() => void editor.addSection()}
         />

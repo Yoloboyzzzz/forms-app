@@ -5,6 +5,7 @@ import type { FormPatch } from '@/services/mappers/recordMappers';
 import type { FormDetail } from '@/types/models';
 import { questionsOfSection, sortedSections } from '@/utils/questions';
 import { FormStatusBadge } from './FormStatusBadge';
+import type { QuestionImageControls } from './QuestionImageEditor';
 import { SaveIndicator } from './SaveIndicator';
 import { SectionEditor, type QuestionHandlers, type SectionHandlers } from './SectionEditor';
 import { Button, Divider, InputField, Row, Stack, Text, TextArea } from './primitives';
@@ -19,6 +20,7 @@ interface FormEditorViewProps {
   sectionHandlers: SectionHandlers;
   onAddQuestion: (sectionId: string) => void;
   onAddSection: () => void;
+  imageControls?: QuestionImageControls;
 }
 
 /** The editable form: header, save status and every section with its questions. */
@@ -32,6 +34,7 @@ export function FormEditorView({
   sectionHandlers,
   onAddQuestion,
   onAddSection,
+  imageControls,
 }: FormEditorViewProps) {
   const { t } = useTranslation();
   const sections = sortedSections(detail);
@@ -72,6 +75,7 @@ export function FormEditorView({
           questionHandlers={questionHandlers}
           sectionHandlers={sectionHandlers}
           onAddQuestion={onAddQuestion}
+          imageControls={imageControls}
           canMoveUp={index > 0}
           canMoveDown={index < sections.length - 1}
           canDelete={sections.length > 1}
