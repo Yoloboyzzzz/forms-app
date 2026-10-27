@@ -403,7 +403,8 @@ describe('file uploads', () => {
 
   it('does nothing in preview or without a signed-in user', async () => {
     mockPick.mockResolvedValue([pdf]);
-    const preview = renderHook(() => useFillForm({ preview: detail({ questions: [upload], sections: [makeSection('s1', 0)] }) }));
+    const previewDetail = detail({ questions: [upload], sections: [makeSection('s1', 0)] });
+    const preview = renderHook(() => useFillForm({ preview: previewDetail }));
     await waitFor(() => expect(preview.result.current.section).toBeDefined());
     await act(async () => preview.result.current.fileUpload.onPick(upload));
     expect(mockPick).not.toHaveBeenCalled();
