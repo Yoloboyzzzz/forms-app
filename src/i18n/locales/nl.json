@@ -400,6 +400,37 @@
     "clear": "Keuze wissen",
     "choose": "Kies",
     "dateInvalid": "Vul een geldige datum in met het formaat {{pattern}}.",
-    "scaleValue": "{{value}}"
+    "scaleValue": "{{value}}",
+    "sectionOf": "Sectie {{current}} van {{total}}",
+    "next": "Volgende",
+    "back": "Terug",
+    "submit": "Indienen",
+    "submitTitle": "Dit formulier indienen?",
+    "submitMessage": "Na het indienen kun je je antwoorden niet meer wijzigen.",
+    "submitMessageEditable": "Je kunt je antwoorden later nog bewerken.",
+    "offline": "Je bent offline. Je antwoorden blijven bewaard en worden opgeslagen zodra je weer online bent. Indienen kan nu niet.",
+    "saving": "Opslaan…",
+    "saved": "Concept opgeslagen",
+    "unsaved": "Nog niet opgeslagen",
+    "saveFailed": "Opslaan mislukt",
+    "retrySave": "Opnieuw proberen",
+    "closedTitle": "Dit formulier is gesloten",
+    "closedMessage": "Het neemt geen antwoorden meer aan.",
+    "loadError": "Het formulier kon niet worden geladen.",
+    "notFoundTitle": "Formulier niet gevonden",
+    "notFoundMessage": "Dit formulier bestaat niet of is niet aan jou toegewezen.",
+    "backToForms": "Terug naar mijn formulieren",
+    "previewBanner": "Voorbeeld: wat je invult wordt niet opgeslagen.",
+    "previewDone": "Einde van het voorbeeld.",
+    "previewClose": "Terug naar de editor",
+    "untitledSection": "Vragen"
+  },
+  "done": {
+    "title": "Bedankt!",
+    "defaultMessage": "Je antwoord is geregistreerd.",
+    "edit": "Mijn antwoord bewerken",
+    "editFailed": "Je kunt dit antwoord niet bewerken.",
+    "backToForms": "Terug naar mijn formulieren",
+    "alreadySubmitted": "Je hebt dit formulier al ingediend."
   }
 }

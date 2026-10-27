@@ -400,6 +400,37 @@
     "clear": "Clear selection",
     "choose": "Choose",
     "dateInvalid": "Enter a valid date in the format {{pattern}}.",
-    "scaleValue": "{{value}}"
+    "scaleValue": "{{value}}",
+    "sectionOf": "Section {{current}} of {{total}}",
+    "next": "Next",
+    "back": "Back",
+    "submit": "Submit",
+    "submitTitle": "Submit this form?",
+    "submitMessage": "You can no longer change your answers after submitting.",
+    "submitMessageEditable": "You can still edit your answers later.",
+    "offline": "You are offline. Your answers are kept and saved when you are back online. You cannot submit right now.",
+    "saving": "Saving…",
+    "saved": "Draft saved",
+    "unsaved": "Not saved yet",
+    "saveFailed": "Saving failed",
+    "retrySave": "Try again",
+    "closedTitle": "This form is closed",
+    "closedMessage": "It no longer accepts responses.",
+    "loadError": "The form could not be loaded.",
+    "notFoundTitle": "Form not found",
+    "notFoundMessage": "This form does not exist or is not assigned to you.",
+    "backToForms": "Back to my forms",
+    "previewBanner": "Preview: nothing you fill in is saved.",
+    "previewDone": "End of the preview.",
+    "previewClose": "Back to the editor",
+    "untitledSection": "Questions"
+  },
+  "done": {
+    "title": "Thank you!",
+    "defaultMessage": "Your response has been recorded.",
+    "edit": "Edit my response",
+    "editFailed": "You cannot edit this response.",
+    "backToForms": "Back to my forms",
+    "alreadySubmitted": "You already submitted this form."
   }
 }
