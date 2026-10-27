@@ -55,7 +55,7 @@ The PWA scope is tight (8 days). The **P1** set is the smallest version that ful
   `feat: add i18n with dutch and english`
 - [x] **0.10 Constants.** `src/constants/testIds.ts` (static ids + helpers for dynamic ids) and `src/constants/routes.ts`.
   `feat: add test id and route constants`
-- [ ] **0.11 🧑 Henry – Supabase project.** Create the project (EU), put URL + publishable key in `.env`, turn off sign-ups, keep email/password only, minimum password length 8, set the *Reset Password* email template to include `{{ .Token }}` (nl + en text). Also create a second project (or use the same one for now) for E2E tests (AGENTS.md D14).
+- [x] **0.11 🧑 Henry – Supabase project.** Create the project (EU), put URL + publishable key in `.env`, turn off sign-ups, keep email/password only, minimum password length 8, set the *Reset Password* email template to include `{{ .Token }}` (nl + en text). Also create a second project (or use the same one for now) for E2E tests (AGENTS.md D14).
 - [ ] **0.12 Apply database.** Apply `supabase/migrations/*` (CLI `npx supabase db push`, or the SQL editor), deploy both Edge Functions, create the first admin by hand (AGENTS.md §7.1), generate `src/types/supabase.ts`.
   `chore: generate supabase types`
 - [ ] **0.13 Seed + test accounts.** `supabase/seed.sql` with demo forms (no real personal data). Create the E2E test accounts (admin, user, user2) with `must_change_password = false`, fill `cypress.env.json` locally.
