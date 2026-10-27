@@ -6,3 +6,4 @@ export * from './formService';
 export * from './sectionService';
 export * from './questionService';
 export * from './assignmentService';
+export * from './submissionService';

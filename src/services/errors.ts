@@ -12,7 +12,10 @@ export type ServiceErrorCode =
   | 'invalidCode'
   | 'samePassword'
   | 'invalidInput'
-  | 'inUse';
+  | 'inUse'
+  | 'missingRequired'
+  | 'formClosed'
+  | 'alreadySubmitted';
 
 /** Typed error thrown by every service. `messageKey` is an i18n key; the UI translates it. */
 export class ServiceError extends Error {
@@ -45,6 +48,8 @@ const CODE_MAP: Record<string, ServiceErrorCode> = {
   same_password: 'samePassword',
   invalid_input: 'invalidInput',
   '23503': 'inUse',
+  '23514': 'missingRequired',
+  '22023': 'invalidInput',
 };
 
 const NETWORK_PATTERN = /network|failed to fetch|fetch failed/i;

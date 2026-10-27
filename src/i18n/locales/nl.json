@@ -23,7 +23,10 @@
     "invalidCode": "De code is ongeldig of verlopen.",
     "samePassword": "Kies een ander wachtwoord dan je huidige.",
     "invalidInput": "Controleer de ingevulde gegevens.",
-    "inUse": "Dit kan niet, want er zijn al antwoorden of het wordt nog gebruikt."
+    "inUse": "Dit kan niet, want er zijn al antwoorden of het wordt nog gebruikt.",
+    "missingRequired": "Beantwoord eerst alle verplichte vragen.",
+    "formClosed": "Dit formulier is gesloten en neemt geen antwoorden meer aan.",
+    "alreadySubmitted": "Je hebt dit formulier al ingediend."
   },
   "login": {
     "title": "Welkom terug",

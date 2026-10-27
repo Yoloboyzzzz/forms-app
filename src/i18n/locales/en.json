@@ -23,7 +23,10 @@
     "invalidCode": "The code is invalid or has expired.",
     "samePassword": "Choose a different password than your current one.",
     "invalidInput": "Check the details you entered.",
-    "inUse": "This is not possible because it already has answers or is still in use."
+    "inUse": "This is not possible because it already has answers or is still in use.",
+    "missingRequired": "Answer all required questions first.",
+    "formClosed": "This form is closed and no longer accepts responses.",
+    "alreadySubmitted": "You already submitted this form."
   },
   "login": {
     "title": "Welcome back",
