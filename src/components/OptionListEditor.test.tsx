@@ -13,9 +13,9 @@ const options: ChoiceOption[] = [
   { id: 'c', label: 'Gamma' },
 ];
 
-function setup(list: ChoiceOption[] = options) {
+function setup(list: ChoiceOption[] = options, jumpTargets?: { id: string; label: string }[]) {
   const onChange = jest.fn();
-  render(<OptionListEditor questionId="q1" options={list} onChange={onChange} />);
+  render(<OptionListEditor questionId="q1" options={list} onChange={onChange} jumpTargets={jumpTargets} />);
   return { onChange };
 }
 
@@ -69,5 +69,35 @@ describe('OptionListEditor', () => {
     fireEvent.press(screen.getByTestId(action('a', 'move-up')));
     fireEvent.press(screen.getByTestId(action('c', 'move-down')));
     expect(onChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('OptionListEditor jumps', () => {
+  const targets = [{ id: 's2', label: 'Extra' }];
+  const jump = (optionId: string) => testIdFor.optionJump('q1', optionId);
+
+  it('offers no jumps unless targets are given', () => {
+    setup();
+    expect(screen.queryByTestId(jump('a'))).toBeNull();
+  });
+
+  it('shows where each option leads', () => {
+    setup([{ id: 'a', label: 'Alpha', goTo: 's2' }, { id: 'b', label: 'Beta', goTo: 'submit' }, { id: 'c', label: 'Gamma' }], targets);
+    expect(screen.getByTestId(jump('a')).props.accessibilityValue).toEqual({ text: 'Go to Extra' });
+    expect(screen.getByTestId(jump('b')).props.accessibilityValue).toEqual({ text: 'Submit the form' });
+    expect(screen.getByTestId(jump('c')).props.accessibilityValue).toEqual({ text: 'Continue to the next section' });
+  });
+
+  it('sets a jump to a section, to submit, and back to continue', () => {
+    const { onChange } = setup(options, targets);
+    fireEvent.press(screen.getByTestId(jump('b')));
+    fireEvent.press(screen.getByTestId(`${jump('b')}-option-s2`));
+    expect(onChange).toHaveBeenLastCalledWith([options[0], { id: 'b', label: 'Beta', goTo: 's2' }, options[2]]);
+    fireEvent.press(screen.getByTestId(jump('b')));
+    fireEvent.press(screen.getByTestId(`${jump('b')}-option-submit`));
+    expect(onChange).toHaveBeenLastCalledWith([options[0], { id: 'b', label: 'Beta', goTo: 'submit' }, options[2]]);
+    fireEvent.press(screen.getByTestId(jump('b')));
+    fireEvent.press(screen.getByTestId(`${jump('b')}-option-continue`));
+    expect(onChange).toHaveBeenLastCalledWith([options[0], { id: 'b', label: 'Beta', goTo: undefined }, options[2]]);
   });
 });

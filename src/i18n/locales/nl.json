@@ -301,6 +301,22 @@
     "date": {
       "includeYear": "Jaar opnemen",
       "includeTime": "Tijd opnemen"
-    }
+    },
+    "sectionTitle": "Titel van de sectie (optioneel)",
+    "sectionDescription": "Beschrijving van de sectie (optioneel)",
+    "afterSection": "Na deze sectie",
+    "afterNext": "Verder naar de volgende sectie",
+    "afterSubmit": "Het formulier indienen",
+    "afterGoTo": "Ga naar {{name}}",
+    "addSection": "Sectie toevoegen",
+    "deleteSection": "Sectie verwijderen",
+    "moveSectionUp": "Sectie naar boven",
+    "moveSectionDown": "Sectie naar beneden",
+    "deleteSectionTitle": "Sectie verwijderen?",
+    "deleteSectionMessage": "De sectie en al haar vragen worden verwijderd. Dit kan niet als een vraag al antwoorden heeft.",
+    "branching": "Naar een sectie gaan op basis van het antwoord",
+    "jumpContinue": "Verder naar de volgende sectie",
+    "jumpSubmit": "Het formulier indienen",
+    "jumpLabel": "Na \"{{option}}\""
   }
 }

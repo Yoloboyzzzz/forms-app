@@ -98,6 +98,8 @@ export const testIds = {
     addQuestionPrefix: 'form-editor-add-question',
     typePicker: 'question-type-picker',
     deleteDialog: 'form-editor-delete-dialog',
+    deleteSectionDialog: 'form-editor-delete-section-dialog',
+    addSectionButton: 'form-editor-add-section-button',
     notice: 'form-editor-notice',
   },
   newForm: {
@@ -128,6 +130,9 @@ export const testIdFor = {
   optionAdd: (questionId: string): string => `question-${questionId}-option-add-button`,
   scale: (questionId: string, part: string): string => `question-${questionId}-scale-${part}`,
   setting: (questionId: string, setting: string): string => `question-${questionId}-setting-${setting}`,
+  sectionField: (sectionId: string, field: string): string => `section-${sectionId}-${field}`,
+  sectionAction: (sectionId: string, action: string): string => `section-${sectionId}-${action}-button`,
+  optionJump: (questionId: string, optionId: string): string => `question-${questionId}-option-${optionId}-jump`,
   formStatusFilter: (status: string): string => `form-status-filter-${status}`,
   languageOption: (language: string): string => `language-option-${language}`,
   formCard: (formId: string): string => `form-card-${formId}`,

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { testIdFor } from '@/constants/testIds';
 import type { Question } from '@/types/models';
+import type { SectionOption } from '@/utils/sectionActions';
 import { assertNever } from '@/utils/assertNever';
 import { VALIDATION_KINDS_BY_QUESTION } from '@/utils/validation';
 import { OptionListEditor } from './OptionListEditor';
@@ -11,11 +12,14 @@ import { ValidationRuleEditor } from './ValidationRuleEditor';
 interface QuestionTypeEditorProps {
   question: Question;
   onChange: (question: Question) => void;
+  /** All sections of the form; options of choice questions can jump to the others. */
+  sections?: SectionOption[];
 }
 
 /** The settings that belong to one question type, below the common fields. */
-export function QuestionTypeEditor({ question, onChange }: QuestionTypeEditorProps) {
+export function QuestionTypeEditor({ question, onChange, sections = [] }: QuestionTypeEditorProps) {
   const { t } = useTranslation();
+  const otherSections = sections.filter((section) => section.id !== question.sectionId);
 
   switch (question.questionType) {
     case 'short_answer':
@@ -35,6 +39,15 @@ export function QuestionTypeEditor({ question, onChange }: QuestionTypeEditorPro
             questionId={question.id}
             options={question.options}
             onChange={(options) => onChange({ ...question, options })}
+            jumpTargets={question.settings.goToSectionBasedOnAnswer ? otherSections : undefined}
+          />
+          <Switch
+            label={t('editor.branching')}
+            value={question.settings.goToSectionBasedOnAnswer ?? false}
+            onValueChange={(goToSectionBasedOnAnswer) =>
+              onChange({ ...question, settings: { ...question.settings, goToSectionBasedOnAnswer } })
+            }
+            testID={testIdFor.setting(question.id, 'branching')}
           />
           <Switch
             label={t('editor.options.other')}
@@ -85,6 +98,15 @@ export function QuestionTypeEditor({ question, onChange }: QuestionTypeEditorPro
             questionId={question.id}
             options={question.options}
             onChange={(options) => onChange({ ...question, options })}
+            jumpTargets={question.settings.goToSectionBasedOnAnswer ? otherSections : undefined}
+          />
+          <Switch
+            label={t('editor.branching')}
+            value={question.settings.goToSectionBasedOnAnswer ?? false}
+            onValueChange={(goToSectionBasedOnAnswer) =>
+              onChange({ ...question, settings: { ...question.settings, goToSectionBasedOnAnswer } })
+            }
+            testID={testIdFor.setting(question.id, 'branching')}
           />
           <Switch
             label={t('editor.options.shuffle')}

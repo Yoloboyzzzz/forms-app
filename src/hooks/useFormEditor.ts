@@ -1,12 +1,12 @@
 import * as Crypto from 'expo-crypto';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { QuestionHandlers } from '@/components/SectionEditor';
+import type { QuestionHandlers, SectionHandlers } from '@/components/SectionEditor';
 import { toServiceError } from '@/services/errors';
 import type { FormPatch } from '@/services/mappers/recordMappers';
 import { useFormEditorStore } from '@/state/useFormEditorStore';
 import type { QuestionType } from '@/types/enums';
-import type { FormDetail, Question } from '@/types/models';
+import type { FormDetail, FormSection, Question } from '@/types/models';
 import type { SaveState } from '@/state/useFormEditorStore';
 
 const MESSAGE_DURATION_MS = 4000;
@@ -21,6 +21,11 @@ interface UseFormEditor {
   retrySave: () => void;
   changeForm: (patch: FormPatch) => void;
   questionHandlers: QuestionHandlers;
+  sectionHandlers: SectionHandlers;
+  addSection: () => Promise<void>;
+  sectionToDelete?: FormSection;
+  cancelDeleteSection: () => void;
+  confirmDeleteSection: () => Promise<void>;
   /** Section the question type picker is open for. */
   pickerSectionId?: string;
   openPicker: (sectionId: string) => void;
@@ -49,6 +54,7 @@ export function useFormEditor(formId: string): UseFormEditor {
 
   const [pickerSectionId, setPickerSectionId] = useState<string | undefined>(undefined);
   const [deleteTarget, setDeleteTarget] = useState<Question | undefined>(undefined);
+  const [sectionToDelete, setSectionToDelete] = useState<FormSection | undefined>(undefined);
   const [isWorking, setIsWorking] = useState(false);
   const [actionErrorKey, setActionErrorKey] = useState<string | undefined>(undefined);
   const [noticeKey, setNoticeKey] = useState<string | undefined>(undefined);
@@ -98,6 +104,24 @@ export function useFormEditor(formId: string): UseFormEditor {
       onMove: (questionId, direction) => void run(() => store().moveQuestion(questionId, direction)),
       onDuplicate: (questionId) => void run(() => store().duplicateQuestion(questionId)),
       onDelete: setDeleteTarget,
+    },
+    sectionHandlers: {
+      onEdit: (sectionId, patch) => store().editSection(sectionId, patch),
+      onChangeAfter: (sectionId, patch) => void run(() => store().updateSection(sectionId, patch)),
+      onMove: (sectionId, direction) => void run(() => store().moveSection(sectionId, direction)),
+      onDelete: setSectionToDelete,
+    },
+    addSection: () =>
+      run(async () => {
+        await store().addSection();
+      }),
+    sectionToDelete,
+    cancelDeleteSection: () => setSectionToDelete(undefined),
+    confirmDeleteSection: async () => {
+      const target = sectionToDelete;
+      setSectionToDelete(undefined);
+      if (target === undefined) return;
+      await run(() => store().removeSection(target.id));
     },
     pickerSectionId,
     openPicker: setPickerSectionId,

@@ -301,6 +301,22 @@
     "date": {
       "includeYear": "Include year",
       "includeTime": "Include time"
-    }
+    },
+    "sectionTitle": "Section title (optional)",
+    "sectionDescription": "Section description (optional)",
+    "afterSection": "After this section",
+    "afterNext": "Continue to the next section",
+    "afterSubmit": "Submit the form",
+    "afterGoTo": "Go to {{name}}",
+    "addSection": "Add section",
+    "deleteSection": "Delete section",
+    "moveSectionUp": "Move section up",
+    "moveSectionDown": "Move section down",
+    "deleteSectionTitle": "Delete section?",
+    "deleteSectionMessage": "The section and all its questions will be deleted. This is not possible when a question already has answers.",
+    "branching": "Go to section based on answer",
+    "jumpContinue": "Continue to the next section",
+    "jumpSubmit": "Submit the form",
+    "jumpLabel": "After \"{{option}}\""
   }
 }

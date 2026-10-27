@@ -11,7 +11,9 @@ function setup(props: Partial<React.ComponentProps<typeof FormEditorView>> = {})
     onRetrySave: jest.fn(),
     onChangeForm: jest.fn(),
     questionHandlers: { onChange: jest.fn(), onMove: jest.fn(), onDuplicate: jest.fn(), onDelete: jest.fn() },
+    sectionHandlers: { onEdit: jest.fn(), onChangeAfter: jest.fn(), onMove: jest.fn(), onDelete: jest.fn() },
     onAddQuestion: jest.fn(),
+    onAddSection: jest.fn(),
   };
   render(<FormEditorView detail={makeDetail()} saveState="idle" {...handlers} {...props} />);
   return handlers;
@@ -52,6 +54,38 @@ describe('FormEditorView', () => {
     const { onRetrySave } = setup({ saveState: 'error', saveErrorKey: 'errors.network' });
     fireEvent.press(screen.getByTestId(testIds.editor.retrySaveButton));
     expect(onRetrySave).toHaveBeenCalledTimes(1);
+  });
+
+  it('names untitled sections by position and titled ones by title', () => {
+    const detail = makeDetail();
+    detail.sections[1] = { ...detail.sections[1], title: 'Extra' };
+    setup({ detail });
+    fireEvent.press(screen.getByTestId(testIdFor.sectionField('s1', 'after')));
+    expect(screen.getByTestId(`${testIdFor.sectionField('s1', 'after')}-option-goto:s2`)).toBeTruthy();
+    expect(screen.getByText('Go to Extra')).toBeTruthy();
+  });
+
+  it('adds a section', () => {
+    const { onAddSection } = setup();
+    fireEvent.press(screen.getByTestId(testIds.editor.addSectionButton));
+    expect(onAddSection).toHaveBeenCalledTimes(1);
+  });
+
+  it('only lets sections move where there is room and keeps at least one', () => {
+    const { sectionHandlers } = setup();
+    fireEvent.press(screen.getByTestId(testIdFor.sectionAction('s1', 'move-up')));
+    fireEvent.press(screen.getByTestId(testIdFor.sectionAction('s2', 'move-down')));
+    expect(sectionHandlers.onMove).not.toHaveBeenCalled();
+    fireEvent.press(screen.getByTestId(testIdFor.sectionAction('s1', 'move-down')));
+    expect(sectionHandlers.onMove).toHaveBeenCalledWith('s1', 'down');
+  });
+
+  it('cannot delete the only section', () => {
+    const detail = makeDetail();
+    detail.sections = [detail.sections[0]];
+    const { sectionHandlers } = setup({ detail });
+    fireEvent.press(screen.getByTestId(testIdFor.sectionAction('s1', 'delete')));
+    expect(sectionHandlers.onDelete).not.toHaveBeenCalled();
   });
 
   it('adds a question to a section', () => {

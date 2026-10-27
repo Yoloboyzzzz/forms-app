@@ -52,6 +52,8 @@ interface FormEditorState {
   updateForm: (patch: FormPatch) => void;
   /** Applies the change at once and saves it after a short pause. */
   updateQuestion: (question: Question) => void;
+  /** Typing in a section's title or description: applied at once, saved after a short pause. */
+  editSection: (sectionId: string, patch: Pick<SectionPatch, 'title' | 'description'>) => void;
   /** Saves pending edits now (before leaving the screen, publishing, retrying after an error). */
   flush: () => Promise<void>;
   addSection: (title?: string) => Promise<FormSection>;
@@ -78,6 +80,7 @@ const initialState: Pick<FormEditorState, 'detail' | 'isLoading' | 'errorKey' | 
 export const useFormEditorStore = create<FormEditorState>((set, get) => {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const pendingQuestions = new Map<string, Question>();
+  const pendingSections = new Map<string, SectionPatch>();
   let pendingForm: FormPatch = {};
 
   function requireDetail(): FormDetail {
@@ -121,6 +124,7 @@ export const useFormEditorStore = create<FormEditorState>((set, get) => {
     load: async (formId) => {
       set({ ...initialState, isLoading: true });
       pendingQuestions.clear();
+      pendingSections.clear();
       pendingForm = {};
       clearTimeout(timer);
       try {
@@ -145,15 +149,23 @@ export const useFormEditorStore = create<FormEditorState>((set, get) => {
       schedule();
     },
 
+    editSection: (sectionId, patch) => {
+      setSections((sections) => sections.map((section) => (section.id === sectionId ? { ...section, ...patch } : section)));
+      pendingSections.set(sectionId, { ...pendingSections.get(sectionId), ...patch });
+      schedule();
+    },
+
     flush: async () => {
       clearTimeout(timer);
       const questions = [...pendingQuestions.values()];
+      const sectionPatches = [...pendingSections.entries()];
       const formPatch = pendingForm;
       const hasFormPatch = Object.keys(formPatch).length > 0;
       const detail = get().detail;
       pendingQuestions.clear();
+      pendingSections.clear();
       pendingForm = {};
-      if (detail === undefined || (questions.length === 0 && !hasFormPatch)) {
+      if (detail === undefined || (questions.length === 0 && sectionPatches.length === 0 && !hasFormPatch)) {
         return;
       }
 
@@ -161,13 +173,18 @@ export const useFormEditorStore = create<FormEditorState>((set, get) => {
       try {
         await Promise.all([
           ...questions.map((question) => updateQuestionService(question.id, toQuestionDraft(question))),
+          ...sectionPatches.map(([sectionId, patch]) => updateSectionService(sectionId, patch)),
           hasFormPatch ? updateFormService(detail.form.id, formPatch) : Promise.resolve(),
         ]);
-        set({ saveState: pendingQuestions.size > 0 || Object.keys(pendingForm).length > 0 ? 'dirty' : 'saved' });
+        const hasMore = pendingQuestions.size > 0 || pendingSections.size > 0 || Object.keys(pendingForm).length > 0;
+        set({ saveState: hasMore ? 'dirty' : 'saved' });
       } catch (error) {
         // Keep the edits so "retry" can save them; newer edits to the same item win.
         questions.forEach((question) => {
           if (!pendingQuestions.has(question.id)) pendingQuestions.set(question.id, question);
+        });
+        sectionPatches.forEach(([sectionId, patch]) => {
+          pendingSections.set(sectionId, { ...patch, ...pendingSections.get(sectionId) });
         });
         pendingForm = { ...formPatch, ...pendingForm };
         set({ saveState: 'error', saveErrorKey: toServiceError(error).messageKey });
@@ -316,6 +333,7 @@ export const useFormEditorStore = create<FormEditorState>((set, get) => {
     resetAll: () => {
       clearTimeout(timer);
       pendingQuestions.clear();
+      pendingSections.clear();
       pendingForm = {};
       set({ ...initialState });
     },

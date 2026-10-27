@@ -10,9 +10,9 @@ jest.mock('@/hooks/useNewId', () => ({ useNewId: () => () => 'new-id' }));
 
 const options = [{ id: 'o1', label: 'One' }];
 
-function setup(question: Question) {
+function setup(question: Question, sections?: { id: string; label: string }[]) {
   const onChange = jest.fn();
-  render(<QuestionTypeEditor question={question} onChange={onChange} />);
+  render(<QuestionTypeEditor question={question} onChange={onChange} sections={sections} />);
   return { onChange };
 }
 
@@ -61,6 +61,31 @@ describe('QuestionTypeEditor', () => {
     it('does not offer validation', () => {
       setup(question);
       expect(screen.queryByTestId(testIdFor.validation('q1', 'switch'))).toBeNull();
+    });
+  });
+
+  describe.each(['multiple_choice', 'dropdown'] as const)('%s branching', (type) => {
+    const sections = [{ id: 's1', label: 'Section 1' }, { id: 's2', label: 'Extra' }];
+    const question = makeQuestion('q1', { questionType: type, options, settings: {} });
+
+    it('switches branching on', () => {
+      const { onChange } = setup(question, sections);
+      toggle(setting('branching'), true);
+      expect(onChange).toHaveBeenCalledWith({ ...question, settings: { goToSectionBasedOnAnswer: true } });
+    });
+
+    it('shows jump choices only while branching is on, never to its own section', () => {
+      const { onChange } = setup({ ...question, settings: { goToSectionBasedOnAnswer: true } } as Question, sections); // same type, only the setting differs
+      fireEvent.press(screen.getByTestId(testIdFor.optionJump('q1', 'o1')));
+      expect(screen.getByTestId(`${testIdFor.optionJump('q1', 'o1')}-option-s2`)).toBeTruthy();
+      expect(screen.queryByTestId(`${testIdFor.optionJump('q1', 'o1')}-option-s1`)).toBeNull();
+      fireEvent.press(screen.getByTestId(`${testIdFor.optionJump('q1', 'o1')}-option-s2`));
+      expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ options: [{ id: 'o1', label: 'One', goTo: 's2' }] }));
+    });
+
+    it('hides jump choices while branching is off', () => {
+      setup(question, sections);
+      expect(screen.queryByTestId(testIdFor.optionJump('q1', 'o1'))).toBeNull();
     });
   });
 

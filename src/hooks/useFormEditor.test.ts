@@ -17,6 +17,11 @@ const mockStore = {
   duplicateQuestion: jest.fn(),
   removeQuestion: jest.fn(),
   addQuestion: jest.fn(),
+  editSection: jest.fn(),
+  updateSection: jest.fn(),
+  moveSection: jest.fn(),
+  addSection: jest.fn(),
+  removeSection: jest.fn(),
 };
 
 jest.mock('@/state/useFormEditorStore', () => {
@@ -41,6 +46,11 @@ beforeEach(() => {
   mockStore.duplicateQuestion = jest.fn().mockResolvedValue(undefined);
   mockStore.removeQuestion = jest.fn().mockResolvedValue('deleted');
   mockStore.addQuestion = jest.fn().mockResolvedValue(undefined);
+  mockStore.editSection = jest.fn();
+  mockStore.updateSection = jest.fn().mockResolvedValue(undefined);
+  mockStore.moveSection = jest.fn().mockResolvedValue(undefined);
+  mockStore.addSection = jest.fn().mockResolvedValue(undefined);
+  mockStore.removeSection = jest.fn().mockResolvedValue(undefined);
 });
 
 afterEach(() => jest.useRealTimers());
@@ -174,6 +184,57 @@ describe('useFormEditor', () => {
 
       expect(result.current.actionErrorKey).toBe('errors.forbidden');
       expect(result.current.isWorking).toBe(false);
+    });
+  });
+
+  describe('sections', () => {
+    it('passes typing and "after this section" changes to the store', async () => {
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.sectionHandlers.onEdit('s1', { title: 'About' }));
+      await act(async () => result.current.sectionHandlers.onChangeAfter('s1', { afterAction: 'submit' }));
+      expect(mockStore.editSection).toHaveBeenCalledWith('s1', { title: 'About' });
+      expect(mockStore.updateSection).toHaveBeenCalledWith('s1', { afterAction: 'submit' });
+    });
+
+    it('moves and adds sections', async () => {
+      const { result } = renderHook(() => useFormEditor('f1'));
+      await act(async () => result.current.sectionHandlers.onMove('s1', 'down'));
+      await act(async () => result.current.addSection());
+      expect(mockStore.moveSection).toHaveBeenCalledWith('s1', 'down');
+      expect(mockStore.addSection).toHaveBeenCalledTimes(1);
+    });
+
+    it('asks before deleting a section', async () => {
+      const section = { id: 's2', formId: 'f1', orderIndex: 1, afterAction: 'next' as const };
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.sectionHandlers.onDelete(section));
+      expect(result.current.sectionToDelete).toBe(section);
+      expect(mockStore.removeSection).not.toHaveBeenCalled();
+
+      await act(async () => result.current.confirmDeleteSection());
+
+      expect(mockStore.removeSection).toHaveBeenCalledWith('s2');
+      expect(result.current.sectionToDelete).toBeUndefined();
+    });
+
+    it('can cancel deleting a section', async () => {
+      const section = { id: 's2', formId: 'f1', orderIndex: 1, afterAction: 'next' as const };
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.sectionHandlers.onDelete(section));
+      act(() => result.current.cancelDeleteSection());
+      await act(async () => result.current.confirmDeleteSection());
+      expect(mockStore.removeSection).not.toHaveBeenCalled();
+    });
+
+    it('shows why a section could not be deleted', async () => {
+      mockStore.removeSection.mockRejectedValue(new ServiceError('inUse'));
+      const section = { id: 's2', formId: 'f1', orderIndex: 1, afterAction: 'next' as const };
+      const { result } = renderHook(() => useFormEditor('f1'));
+      act(() => result.current.sectionHandlers.onDelete(section));
+
+      await act(async () => result.current.confirmDeleteSection());
+
+      expect(result.current.actionErrorKey).toBe('errors.inUse');
     });
   });
 });

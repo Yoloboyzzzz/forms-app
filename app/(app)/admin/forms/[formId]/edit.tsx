@@ -39,7 +39,9 @@ export default function FormEditorScreen() {
         onRetrySave={editor.retrySave}
         onChangeForm={editor.changeForm}
         questionHandlers={editor.questionHandlers}
+        sectionHandlers={editor.sectionHandlers}
         onAddQuestion={editor.openPicker}
+        onAddSection={() => void editor.addSection()}
       />
     );
   }
@@ -60,6 +62,17 @@ export default function FormEditorScreen() {
         onConfirm={() => void editor.confirmDelete()}
         onCancel={editor.cancelDelete}
         testID={testIds.editor.deleteDialog}
+      />
+      <ConfirmDialog
+        visible={editor.sectionToDelete !== undefined}
+        title={t('editor.deleteSectionTitle')}
+        message={t('editor.deleteSectionMessage')}
+        confirmLabel={t('editor.deleteSection')}
+        cancelLabel={t('common.cancel')}
+        destructive
+        onConfirm={() => void editor.confirmDeleteSection()}
+        onCancel={editor.cancelDeleteSection}
+        testID={testIds.editor.deleteSectionDialog}
       />
       <Toast
         message={messageKey === undefined ? '' : t(messageKey)}

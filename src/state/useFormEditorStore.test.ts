@@ -236,6 +236,52 @@ describe('debounced saving', () => {
   });
 });
 
+describe('editing section text', () => {
+  it('applies the text at once and saves it once after the pause', async () => {
+    jest.mocked(updateSection).mockResolvedValue(section('s1', 0));
+
+    state().editSection('s1', { title: 'A' });
+    state().editSection('s1', { description: 'About you' });
+    state().editSection('s1', { title: 'About' });
+
+    expect(state().detail?.sections.find((item) => item.id === 's1')).toMatchObject({ title: 'About', description: 'About you' });
+    expect(updateSection).not.toHaveBeenCalled();
+
+    await jest.advanceTimersByTimeAsync(SAVE_DELAY_MS);
+
+    expect(updateSection).toHaveBeenCalledTimes(1);
+    expect(updateSection).toHaveBeenCalledWith('s1', { title: 'About', description: 'About you' });
+    expect(state().saveState).toBe('saved');
+  });
+
+  it('keeps the text for a retry when saving fails', async () => {
+    jest.mocked(updateSection).mockRejectedValueOnce(new ServiceError('network')).mockResolvedValueOnce(section('s1', 0));
+    state().editSection('s1', { title: 'Keep me' });
+
+    await state().flush();
+    expect(state().saveState).toBe('error');
+
+    await state().flush();
+    expect(updateSection).toHaveBeenLastCalledWith('s1', { title: 'Keep me' });
+    expect(state().saveState).toBe('saved');
+  });
+
+  it('prefers text typed during a failing save', async () => {
+    let fail: (error: Error) => void = () => undefined;
+    jest.mocked(updateSection).mockReturnValueOnce(new Promise((_, reject) => (fail = reject)));
+    jest.mocked(updateSection).mockResolvedValue(section('s1', 0));
+    state().editSection('s1', { title: 'Old' });
+    const flushing = state().flush();
+
+    state().editSection('s1', { title: 'Newer' });
+    fail(new Error('boom'));
+    await flushing;
+    await state().flush();
+
+    expect(updateSection).toHaveBeenLastCalledWith('s1', { title: 'Newer' });
+  });
+});
+
 describe('sections', () => {
   it('adds a section at the end', async () => {
     jest.mocked(addSection).mockResolvedValue(section('s3', 2, { title: 'More' }));
