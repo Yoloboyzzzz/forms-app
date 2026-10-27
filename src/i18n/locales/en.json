@@ -43,7 +43,85 @@
     "emailInvalid": "Enter a valid email address.",
     "passwordTooShort": "The password must be at least 8 characters.",
     "passwordsDoNotMatch": "The passwords do not match.",
-    "codeInvalid": "The code has 6 digits."
+    "codeInvalid": "The code has 6 digits.",
+    "kind": {
+      "number": "Number",
+      "text": "Text",
+      "length": "Length",
+      "regex": "Regular expression",
+      "checkboxCount": "Number of selections"
+    },
+    "operator": {
+      "number": {
+        "gt": "Greater than",
+        "gte": "Greater than or equal to",
+        "lt": "Less than",
+        "lte": "Less than or equal to",
+        "eq": "Equal to",
+        "neq": "Not equal to",
+        "between": "Between",
+        "notBetween": "Not between",
+        "isNumber": "Is a number",
+        "isWholeNumber": "Is a whole number"
+      },
+      "text": {
+        "contains": "Contains",
+        "notContains": "Does not contain",
+        "isEmail": "Is an email address",
+        "isUrl": "Is a web address"
+      },
+      "length": {
+        "max": "Maximum length",
+        "min": "Minimum length"
+      },
+      "regex": {
+        "matches": "Matches",
+        "notMatches": "Does not match",
+        "contains": "Contains",
+        "notContains": "Does not contain"
+      },
+      "checkboxCount": {
+        "atLeast": "Select at least",
+        "atMost": "Select at most",
+        "exactly": "Select exactly"
+      }
+    },
+    "rule": {
+      "number": {
+        "notANumber": "Enter a number.",
+        "gt": "Enter a number greater than {{value}}.",
+        "gte": "Enter a number of at least {{value}}.",
+        "lt": "Enter a number less than {{value}}.",
+        "lte": "Enter a number of at most {{value}}.",
+        "eq": "Enter the number {{value}}.",
+        "neq": "Enter a number other than {{value}}.",
+        "between": "Enter a number between {{value}} and {{max}}.",
+        "notBetween": "Enter a number that is not between {{value}} and {{max}}.",
+        "isNumber": "Enter a number.",
+        "isWholeNumber": "Enter a whole number."
+      },
+      "text": {
+        "contains": "The answer must contain \"{{value}}\".",
+        "notContains": "The answer must not contain \"{{value}}\".",
+        "isEmail": "Enter a valid email address.",
+        "isUrl": "Enter a valid web address starting with http:// or https://."
+      },
+      "length": {
+        "max": "Use at most {{value}} characters.",
+        "min": "Use at least {{value}} characters."
+      },
+      "regex": {
+        "matches": "The answer does not have the required format.",
+        "notMatches": "The answer has a format that is not allowed.",
+        "contains": "The answer does not have the required format.",
+        "notContains": "The answer contains something that is not allowed."
+      },
+      "checkboxCount": {
+        "atLeast": "Select at least {{value}}.",
+        "atMost": "Select at most {{value}}.",
+        "exactly": "Select exactly {{value}}."
+      }
+    }
   },
   "changePassword": {
     "titleForced": "Choose a new password",
@@ -194,6 +272,35 @@
     "deleteTitle": "Delete question?",
     "deleteMessage": "This question will be deleted. If it already has answers, it is deactivated instead and the answers are kept.",
     "deactivatedNotice": "The question already has answers and was deactivated instead of deleted.",
-    "section": "Section {{n}}"
+    "section": "Section {{n}}",
+    "validation": {
+      "title": "Response validation",
+      "enable": "Validate the answer",
+      "kind": "Rule type",
+      "operator": "Condition",
+      "value": "Value",
+      "max": "Upper value",
+      "errorMessage": "Custom error message (optional)"
+    },
+    "options": {
+      "title": "Options",
+      "label": "Option {{n}}",
+      "add": "Add option",
+      "remove": "Remove option",
+      "moveUp": "Move option up",
+      "moveDown": "Move option down",
+      "other": "Add an \"Other\" option",
+      "shuffle": "Shuffle the order of the options"
+    },
+    "scale": {
+      "min": "Lowest value",
+      "max": "Highest value",
+      "minLabel": "Label for the lowest value (optional)",
+      "maxLabel": "Label for the highest value (optional)"
+    },
+    "date": {
+      "includeYear": "Include year",
+      "includeTime": "Include time"
+    }
   }
 }

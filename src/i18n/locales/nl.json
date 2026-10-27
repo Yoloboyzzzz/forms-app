@@ -43,7 +43,85 @@
     "emailInvalid": "Vul een geldig e-mailadres in.",
     "passwordTooShort": "Het wachtwoord moet minstens 8 tekens bevatten.",
     "passwordsDoNotMatch": "De wachtwoorden komen niet overeen.",
-    "codeInvalid": "De code bestaat uit 6 cijfers."
+    "codeInvalid": "De code bestaat uit 6 cijfers.",
+    "kind": {
+      "number": "Getal",
+      "text": "Tekst",
+      "length": "Lengte",
+      "regex": "Reguliere expressie",
+      "checkboxCount": "Aantal selecties"
+    },
+    "operator": {
+      "number": {
+        "gt": "Groter dan",
+        "gte": "Groter dan of gelijk aan",
+        "lt": "Kleiner dan",
+        "lte": "Kleiner dan of gelijk aan",
+        "eq": "Gelijk aan",
+        "neq": "Niet gelijk aan",
+        "between": "Tussen",
+        "notBetween": "Niet tussen",
+        "isNumber": "Is een getal",
+        "isWholeNumber": "Is een geheel getal"
+      },
+      "text": {
+        "contains": "Bevat",
+        "notContains": "Bevat niet",
+        "isEmail": "Is een e-mailadres",
+        "isUrl": "Is een webadres"
+      },
+      "length": {
+        "max": "Maximale lengte",
+        "min": "Minimale lengte"
+      },
+      "regex": {
+        "matches": "Komt overeen met",
+        "notMatches": "Komt niet overeen met",
+        "contains": "Bevat",
+        "notContains": "Bevat niet"
+      },
+      "checkboxCount": {
+        "atLeast": "Selecteer minstens",
+        "atMost": "Selecteer hoogstens",
+        "exactly": "Selecteer precies"
+      }
+    },
+    "rule": {
+      "number": {
+        "notANumber": "Vul een getal in.",
+        "gt": "Vul een getal in dat groter is dan {{value}}.",
+        "gte": "Vul een getal in van minstens {{value}}.",
+        "lt": "Vul een getal in dat kleiner is dan {{value}}.",
+        "lte": "Vul een getal in van hoogstens {{value}}.",
+        "eq": "Vul het getal {{value}} in.",
+        "neq": "Vul een ander getal in dan {{value}}.",
+        "between": "Vul een getal in tussen {{value}} en {{max}}.",
+        "notBetween": "Vul een getal in dat niet tussen {{value}} en {{max}} ligt.",
+        "isNumber": "Vul een getal in.",
+        "isWholeNumber": "Vul een geheel getal in."
+      },
+      "text": {
+        "contains": "Het antwoord moet \"{{value}}\" bevatten.",
+        "notContains": "Het antwoord mag \"{{value}}\" niet bevatten.",
+        "isEmail": "Vul een geldig e-mailadres in.",
+        "isUrl": "Vul een geldig webadres in dat begint met http:// of https://."
+      },
+      "length": {
+        "max": "Gebruik hoogstens {{value}} tekens.",
+        "min": "Gebruik minstens {{value}} tekens."
+      },
+      "regex": {
+        "matches": "Het antwoord heeft niet het vereiste formaat.",
+        "notMatches": "Het antwoord heeft een formaat dat niet is toegestaan.",
+        "contains": "Het antwoord heeft niet het vereiste formaat.",
+        "notContains": "Het antwoord bevat iets dat niet is toegestaan."
+      },
+      "checkboxCount": {
+        "atLeast": "Selecteer er minstens {{value}}.",
+        "atMost": "Selecteer er hoogstens {{value}}.",
+        "exactly": "Selecteer er precies {{value}}."
+      }
+    }
   },
   "changePassword": {
     "titleForced": "Kies een nieuw wachtwoord",
@@ -194,6 +272,35 @@
     "deleteTitle": "Vraag verwijderen?",
     "deleteMessage": "Deze vraag wordt verwijderd. Heeft ze al antwoorden, dan wordt ze gedeactiveerd en blijven de antwoorden bewaard.",
     "deactivatedNotice": "De vraag heeft al antwoorden en is gedeactiveerd in plaats van verwijderd.",
-    "section": "Sectie {{n}}"
+    "section": "Sectie {{n}}",
+    "validation": {
+      "title": "Antwoordvalidatie",
+      "enable": "Het antwoord controleren",
+      "kind": "Soort regel",
+      "operator": "Voorwaarde",
+      "value": "Waarde",
+      "max": "Bovengrens",
+      "errorMessage": "Eigen foutmelding (optioneel)"
+    },
+    "options": {
+      "title": "Opties",
+      "label": "Optie {{n}}",
+      "add": "Optie toevoegen",
+      "remove": "Optie verwijderen",
+      "moveUp": "Optie naar boven",
+      "moveDown": "Optie naar beneden",
+      "other": "Een optie \"Anders\" toevoegen",
+      "shuffle": "De volgorde van de opties door elkaar halen"
+    },
+    "scale": {
+      "min": "Laagste waarde",
+      "max": "Hoogste waarde",
+      "minLabel": "Label voor de laagste waarde (optioneel)",
+      "maxLabel": "Label voor de hoogste waarde (optioneel)"
+    },
+    "date": {
+      "includeYear": "Jaar opnemen",
+      "includeTime": "Tijd opnemen"
+    }
   }
 }
