@@ -1,5 +1,6 @@
 import type { AnswerValue, Question, ResponseAnswer } from '@/types/models';
 import { assertNever } from './assertNever';
+import { fileNameOf } from './uploads';
 import { readCheckboxes, readChoice, readGrid, readNumber, readText } from './answers';
 
 export interface OptionCount {
@@ -145,7 +146,7 @@ export function describeAnswer(question: Question, value: AnswerValue | undefine
     case 'time':
       return readText(value);
     case 'file_upload':
-      return Array.isArray(value) ? value.join(', ') : '';
+      return Array.isArray(value) ? value.map(fileNameOf).join(', ') : '';
     case 'multiple_choice_grid':
     case 'checkbox_grid': {
       const picked = readGrid(value);

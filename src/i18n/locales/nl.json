@@ -353,6 +353,12 @@
       "requireEachRow": "Een antwoord in elke rij verplichten",
       "limitOnePerColumn": "Beperken tot één antwoord per kolom",
       "shuffleRows": "De volgorde van de rijen door elkaar halen"
+    },
+    "upload": {
+      "allowedTypes": "Toegestane bestandstypes (optioneel)",
+      "allowedTypesHint": "Bijvoorbeeld image/*, .pdf",
+      "maxFiles": "Maximaal aantal bestanden",
+      "maxSize": "Maximale grootte per bestand"
     }
   },
   "settings": {
@@ -454,7 +460,15 @@
     "timeInvalid": "Vul een geldige tijd in met het formaat {{pattern}}.",
     "ratingValue": "{{value}} van {{max}}",
     "gridEachRow": "Beantwoord elke rij.",
-    "gridOnePerColumn": "Gebruik elke kolom maar één keer."
+    "gridOnePerColumn": "Gebruik elke kolom maar één keer.",
+    "upload": {
+      "add": "Een bestand toevoegen",
+      "remove": "{{name}} verwijderen",
+      "tooLarge": "Dit bestand is groter dan {{mb}} MB.",
+      "wrongType": "Dit type bestand is niet toegestaan. Toegestaan: {{types}}.",
+      "tooMany": "Je kunt hooguit {{count}} bestand(en) toevoegen.",
+      "failed": "Het bestand kon niet worden geüpload."
+    }
   },
   "done": {
     "title": "Bedankt!",
@@ -488,6 +502,7 @@
     "noSummary": "Voor dit vraagtype is er nog geen overzicht.",
     "unanswered": "Geen antwoord",
     "detailTitle": "Antwoord van {{name}}",
-    "deactivatedQuestion": "(gedeactiveerde vraag)"
+    "deactivatedQuestion": "(gedeactiveerde vraag)",
+    "openFile": "{{name}} openen"
   }
 }

@@ -151,3 +151,21 @@ describe('SubmissionDetail', () => {
     expect(screen.getByText('Response of u-a1@b.c')).toBeTruthy();
   });
 });
+
+describe('SubmissionDetail uploaded files', () => {
+  const upload = makeQuestion('up', { title: 'CV', questionType: 'file_upload', settings: {} });
+  const path = 'u1/s1/up/1700000000000-cv.pdf';
+
+  it('offers each uploaded file as a button that opens it', () => {
+    const onOpenFile = jest.fn();
+    render(<SubmissionDetail row={row('a1', 'Ann', 'submitted')} questions={[upload]} answers={{ up: [path] }} onOpenFile={onOpenFile} />);
+    fireEvent.press(screen.getByTestId(testIdFor.openFile('up', path)));
+    expect(onOpenFile).toHaveBeenCalledWith(path);
+    expect(screen.getByText('Open cv.pdf')).toBeTruthy();
+  });
+
+  it('shows file names as text without an opener', () => {
+    render(<SubmissionDetail row={row('a1', 'Ann', 'submitted')} questions={[upload]} answers={{ up: [path] }} />);
+    expect(screen.getByTestId(testIdFor.detailAnswer('up'))).toHaveTextContent(/cv[.]pdf/);
+  });
+});

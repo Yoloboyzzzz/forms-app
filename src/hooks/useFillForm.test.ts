@@ -2,14 +2,18 @@ import { act, renderHook, waitFor } from '@testing-library/react-native';
 import { useFillForm } from '@/hooks/useFillForm';
 import { ServiceError } from '@/services/errors';
 import { getFillData, getOrCreateDraft, saveAnswer, submitSubmission } from '@/services/submissionService';
+import { deleteFiles, uploadAnswerFile } from '@/services/storageService';
+import { useAuthStore } from '@/state/useAuthStore';
 import { useFillStore } from '@/state/useFillStore';
 import { makeDetail, makeForm, makeQuestion, makeSection } from '@/testUtils/factories';
-import type { FormDetail, Submission } from '@/types/models';
+import type { FileUploadQuestion, FormDetail, Submission } from '@/types/models';
 
 let mockOnline = true;
 
 jest.mock('@/hooks/useIsOnline', () => ({ useIsOnline: () => mockOnline }));
 jest.mock('@/services/storageService', () => ({ deleteFiles: jest.fn(), uploadAnswerFile: jest.fn() }));
+const mockPick = jest.fn();
+jest.mock('@/hooks/usePickFiles', () => ({ usePickFiles: () => mockPick }));
 jest.mock('@/services/submissionService', () => ({
   deleteAnswer: jest.fn(),
   getFillData: jest.fn(),
@@ -293,5 +297,127 @@ describe('connection and saving', () => {
     act(() => result.current.setAnswer(required, 'Ann'));
     unmount();
     await waitFor(() => expect(saveAnswer).toHaveBeenCalledWith('sub1', 'a', 'Ann'));
+  });
+});
+
+describe('file uploads', () => {
+  const upload: FileUploadQuestion = {
+    id: 'up',
+    formId: 'f1',
+    sectionId: 's1',
+    title: 'CV',
+    isRequired: false,
+    orderIndex: 0,
+    isActive: true,
+    questionType: 'file_upload',
+    settings: { maxFiles: 5, maxFileSizeMb: 1, allowedTypes: ['.pdf'] },
+  };
+  const pdf = { uri: 'file:///a.pdf', name: 'a.pdf', mimeType: 'application/pdf', size: 100 };
+
+  async function setupUpload(extra: Partial<FormDetail> = {}) {
+    useAuthStore.setState({ session: { userId: 'me', email: 'a@b.c' } });
+    return setup({ questions: [upload], sections: [makeSection('s1', 0)], ...extra }, draft);
+  }
+
+  beforeEach(() => {
+    mockPick.mockReset();
+    jest.mocked(uploadAnswerFile).mockImplementation(async (_u, _s, _q, file) => `path/${file.name}`);
+    jest.mocked(deleteFiles).mockResolvedValue(undefined);
+  });
+
+  afterEach(() => useAuthStore.getState().resetAll());
+
+  it('picks files with the question limits and uploads them', async () => {
+    mockPick.mockResolvedValue([pdf]);
+    const { result } = await setupUpload();
+
+    await act(async () => result.current.fileUpload.onPick(upload));
+
+    expect(mockPick).toHaveBeenCalledWith({ types: ['.pdf'], multiple: true });
+    expect(uploadAnswerFile).toHaveBeenCalledWith('me', 'sub1', 'up', expect.objectContaining({ name: 'a.pdf' }));
+    expect(result.current.answers.up).toEqual(['path/a.pdf']);
+    expect(result.current.fileUpload.uploadingQuestionId).toBeUndefined();
+  });
+
+  it('picks one file at a time when only one is allowed', async () => {
+    mockPick.mockResolvedValue([]);
+    const single = { ...upload, settings: {} };
+    const { result } = await setupUpload({ questions: [single] });
+    await act(async () => result.current.fileUpload.onPick(single));
+    expect(mockPick).toHaveBeenCalledWith({ types: undefined, multiple: false });
+  });
+
+  it('does nothing when the picker was cancelled', async () => {
+    mockPick.mockResolvedValue([]);
+    const { result } = await setupUpload();
+    await act(async () => result.current.fileUpload.onPick(upload));
+    expect(uploadAnswerFile).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [{ ...pdf, size: 5 * 1024 * 1024 }, 'fill.upload.tooLarge'],
+    [{ ...pdf, name: 'a.png', mimeType: 'image/png' }, 'fill.upload.wrongType'],
+  ])('explains a refused file (%#)', async (file, key) => {
+    mockPick.mockResolvedValue([file]);
+    const { result } = await setupUpload();
+    await act(async () => result.current.fileUpload.onPick(upload));
+    expect(result.current.fileUpload.errors.up).toBe(key);
+  });
+
+  it('explains when too many files were added', async () => {
+    mockPick.mockResolvedValue([pdf]);
+    const limited = { ...upload, settings: { maxFiles: 1 as const } };
+    const { result } = await setupUpload({ questions: [limited] });
+    act(() => result.current.setAnswer(limited, ['path/1.pdf']));
+    await act(async () => result.current.fileUpload.onPick(limited));
+    expect(result.current.fileUpload.errors.up).toBe('fill.upload.tooMany');
+  });
+
+  it('shows a failed upload and clears the message on the next try', async () => {
+    mockPick.mockResolvedValue([pdf]);
+    jest.mocked(uploadAnswerFile).mockRejectedValueOnce(new ServiceError('network')).mockResolvedValueOnce('path/a.pdf');
+    const { result } = await setupUpload();
+
+    await act(async () => result.current.fileUpload.onPick(upload));
+    expect(result.current.fileUpload.errors.up).toBe('errors.network');
+
+    await act(async () => result.current.fileUpload.onPick(upload));
+    expect(result.current.fileUpload.errors.up).toBeUndefined();
+  });
+
+  it('uses a generic message for unexpected upload errors', async () => {
+    mockPick.mockResolvedValue([pdf]);
+    jest.mocked(uploadAnswerFile).mockRejectedValueOnce(new Error('boom'));
+    const { result } = await setupUpload();
+    await act(async () => result.current.fileUpload.onPick(upload));
+    expect(result.current.fileUpload.errors.up).toBe('fill.upload.failed');
+  });
+
+  it('does nothing in preview or without a signed-in user', async () => {
+    mockPick.mockResolvedValue([pdf]);
+    const preview = renderHook(() => useFillForm({ preview: detail({ questions: [upload], sections: [makeSection('s1', 0)] }) }));
+    await waitFor(() => expect(preview.result.current.section).toBeDefined());
+    await act(async () => preview.result.current.fileUpload.onPick(upload));
+    expect(mockPick).not.toHaveBeenCalled();
+
+    useFillStore.getState().resetAll();
+    useAuthStore.getState().resetAll();
+    const { result } = await setup({ questions: [upload], sections: [makeSection('s1', 0)] }, draft);
+    await act(async () => result.current.fileUpload.onPick(upload));
+    expect(mockPick).not.toHaveBeenCalled();
+  });
+
+  it('removes a file and shows why it could not be removed', async () => {
+    const { result } = await setupUpload();
+    act(() => result.current.setAnswer(upload, ['path/a.pdf']));
+
+    await act(async () => result.current.fileUpload.onRemove(upload, 'path/a.pdf'));
+    await waitFor(() => expect(deleteFiles).toHaveBeenCalledWith('form-uploads', ['path/a.pdf']));
+    expect(result.current.answers.up).toBeUndefined();
+
+    act(() => result.current.setAnswer(upload, ['path/b.pdf']));
+    jest.mocked(deleteFiles).mockRejectedValueOnce(new ServiceError('forbidden'));
+    await act(async () => result.current.fileUpload.onRemove(upload, 'path/b.pdf'));
+    await waitFor(() => expect(result.current.fileUpload.errors.up).toBe('errors.forbidden'));
   });
 });

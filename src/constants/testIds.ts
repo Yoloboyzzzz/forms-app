@@ -238,6 +238,11 @@ export const testIdFor = {
   gridLineAction: (questionId: string, kind: 'row' | 'column', lineId: string, action: string): string =>
     `question-${questionId}-${kind}-${lineId}-${action}-button`,
   gridAdd: (questionId: string, kind: 'row' | 'column'): string => `question-${questionId}-${kind}-add-button`,
+  uploadButton: (questionId: string): string => `question-${questionId}-upload-button`,
+  uploadError: (questionId: string): string => `question-${questionId}-upload-error`,
+  uploadedFile: (questionId: string, path: string): string => `question-${questionId}-file-${path}`,
+  removeUploadedFile: (questionId: string, path: string): string => `question-${questionId}-file-${path}-remove-button`,
+  openFile: (questionId: string, path: string): string => `response-answer-${questionId}-file-${path}`,
   formStatusFilter: (status: string): string => `form-status-filter-${status}`,
   languageOption: (language: string): string => `language-option-${language}`,
   formCard: (formId: string): string => `form-card-${formId}`,

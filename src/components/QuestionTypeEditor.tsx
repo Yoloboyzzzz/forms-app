@@ -4,6 +4,7 @@ import type { Question } from '@/types/models';
 import type { SectionOption } from '@/utils/sectionActions';
 import { assertNever } from '@/utils/assertNever';
 import { VALIDATION_KINDS_BY_QUESTION } from '@/utils/validation';
+import { FileUploadEditor } from './FileUploadEditor';
 import { GridEditor } from './GridEditor';
 import { OptionListEditor } from './OptionListEditor';
 import { RatingEditor } from './RatingEditor';
@@ -171,9 +172,14 @@ export function QuestionTypeEditor({ question, onChange, sections = [] }: Questi
           onChangeSettings={(settings) => onChange({ ...question, settings })}
         />
       );
-    // The editor for file uploads follows in plan phase 8.
     case 'file_upload':
-      return null;
+      return (
+        <FileUploadEditor
+          questionId={question.id}
+          settings={question.settings}
+          onChange={(settings) => onChange({ ...question, settings })}
+        />
+      );
     default:
       return assertNever(question);
   }

@@ -1,15 +1,19 @@
 import type { TFunction } from 'i18next';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { toServiceError } from '@/services/errors';
+import { ServiceError, toServiceError } from '@/services/errors';
+import type { FileUploadControls } from '@/components/QuestionRenderer';
+import { useAuthStore } from '@/state/useAuthStore';
 import { useFillStore, type FillSaveState } from '@/state/useFillStore';
-import type { AnswerValue, Form, FormDetail, FormSection, Question } from '@/types/models';
+import type { AnswerValue, FileUploadQuestion, Form, FormDetail, FormSection, Question } from '@/types/models';
 import { getSectionErrors, type AnswerError } from '@/utils/answers';
 import { getNextSection, getSectionPath } from '@/utils/branching';
 import { isFormOpen } from '@/utils/formAvailability';
 import { questionsOfSection } from '@/utils/questions';
 import { seedFrom, shuffleWithSeed } from '@/utils/shuffle';
+import { DEFAULT_MAX_FILES, DEFAULT_MAX_FILE_SIZE_MB, type UploadError } from '@/utils/uploads';
 import { useIsOnline } from './useIsOnline';
+import { usePickFiles } from './usePickFiles';
 
 /** What the screen fills in: an assignment of the signed-in user, or an unsaved admin preview of a form. */
 export type FillSource = { assignmentId: string } | { preview: FormDetail };
@@ -49,6 +53,7 @@ interface UseFillForm {
   isSubmitted: boolean;
   /** True once the preview reached the end of the form. */
   previewFinished: boolean;
+  fileUpload: FileUploadControls;
 }
 
 function translateError(error: AnswerError, t: TFunction): string {
@@ -77,12 +82,16 @@ export function useFillForm(source: FillSource): UseFillForm {
   const isSubmitting = useFillStore((state) => state.isSubmitting);
   const isPreview = useFillStore((state) => state.isPreview);
   const isOnline = useIsOnline();
+  const pickFiles = usePickFiles();
+  const userId = useAuthStore((state) => state.session?.userId);
 
   const [rawErrors, setRawErrors] = useState<Record<string, AnswerError>>({});
   const [showErrors, setShowErrors] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const [submitErrorKey, setSubmitErrorKey] = useState<string | undefined>(undefined);
   const [previewFinished, setPreviewFinished] = useState(false);
+  const [uploadingQuestionId, setUploadingQuestionId] = useState<string | undefined>(undefined);
+  const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({});
 
   const assignmentId = 'assignmentId' in source ? source.assignmentId : undefined;
   const preview = 'preview' in source ? source.preview : undefined;
@@ -128,6 +137,37 @@ export function useFillForm(source: FillSource): UseFillForm {
   const errors: Record<string, string> = {};
   if (showErrors) {
     for (const [questionId, error] of Object.entries(rawErrors)) errors[questionId] = translateError(error, t);
+  }
+
+  function uploadMessage(question: FileUploadQuestion, reason: UploadError): string {
+    const { settings } = question;
+    if (reason === 'tooLarge') return t('fill.upload.tooLarge', { mb: settings.maxFileSizeMb ?? DEFAULT_MAX_FILE_SIZE_MB });
+    if (reason === 'tooMany') return t('fill.upload.tooMany', { count: settings.maxFiles ?? DEFAULT_MAX_FILES });
+    return t('fill.upload.wrongType', { types: (settings.allowedTypes ?? []).join(', ') });
+  }
+
+  function setUploadError(questionId: string, message: string | undefined): void {
+    setUploadErrors((current) => {
+      const { [questionId]: _removed, ...rest } = current;
+      return message === undefined ? rest : { ...rest, [questionId]: message };
+    });
+  }
+
+  async function pickAndUpload(question: FileUploadQuestion): Promise<void> {
+    if (userId === undefined || isPreview) return;
+    setUploadError(question.id, undefined);
+    const maxFiles = question.settings.maxFiles ?? DEFAULT_MAX_FILES;
+    const files = await pickFiles({ types: question.settings.allowedTypes, multiple: maxFiles > 1 });
+    if (files.length === 0) return;
+    setUploadingQuestionId(question.id);
+    try {
+      const result = await store().attachFiles(question, files, userId);
+      if (result.refused !== undefined) setUploadError(question.id, uploadMessage(question, result.refused.reason));
+    } catch (error) {
+      setUploadError(question.id, error instanceof ServiceError ? t(error.messageKey) : t('fill.upload.failed'));
+    } finally {
+      setUploadingQuestionId(undefined);
+    }
   }
 
   function next(): void {
@@ -191,5 +231,16 @@ export function useFillForm(source: FillSource): UseFillForm {
     submitErrorKey,
     isSubmitted: submission?.status === 'submitted',
     previewFinished,
+    fileUpload: {
+      onPick: (question) => void pickAndUpload(question),
+      onRemove: (question, path) => {
+        setUploadError(question.id, undefined);
+        void store()
+          .removeFile(question, path)
+          .catch((error: unknown) => setUploadError(question.id, t(toServiceError(error).messageKey)));
+      },
+      uploadingQuestionId,
+      errors: uploadErrors,
+    },
   };
 }

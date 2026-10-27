@@ -353,6 +353,12 @@
       "requireEachRow": "Require a response in each row",
       "limitOnePerColumn": "Limit to one response per column",
       "shuffleRows": "Shuffle the order of the rows"
+    },
+    "upload": {
+      "allowedTypes": "Allowed file types (optional)",
+      "allowedTypesHint": "For example image/*, .pdf",
+      "maxFiles": "Maximum number of files",
+      "maxSize": "Maximum size per file"
     }
   },
   "settings": {
@@ -454,7 +460,15 @@
     "timeInvalid": "Enter a valid time in the format {{pattern}}.",
     "ratingValue": "{{value}} of {{max}}",
     "gridEachRow": "Answer every row.",
-    "gridOnePerColumn": "Use each column only once."
+    "gridOnePerColumn": "Use each column only once.",
+    "upload": {
+      "add": "Add a file",
+      "remove": "Remove {{name}}",
+      "tooLarge": "This file is larger than {{mb}} MB.",
+      "wrongType": "This type of file is not allowed. Allowed: {{types}}.",
+      "tooMany": "You can add at most {{count}} file(s).",
+      "failed": "The file could not be uploaded."
+    }
   },
   "done": {
     "title": "Thank you!",
@@ -488,6 +502,7 @@
     "noSummary": "No summary for this question type yet.",
     "unanswered": "No answer",
     "detailTitle": "Response of {{name}}",
-    "deactivatedQuestion": "(deactivated question)"
+    "deactivatedQuestion": "(deactivated question)",
+    "openFile": "Open {{name}}"
   }
 }

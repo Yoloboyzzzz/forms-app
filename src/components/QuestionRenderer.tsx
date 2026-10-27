@@ -1,14 +1,25 @@
-import type { AnswerValue, Question } from '@/types/models';
+import type { AnswerValue, FileUploadQuestion, Question } from '@/types/models';
 import { assertNever } from '@/utils/assertNever';
 import { CheckboxesField } from './CheckboxesField';
 import { ChoiceGridField } from './ChoiceGridField';
 import { DateField } from './DateField';
 import { DropdownField } from './DropdownField';
+import { FileUploadField } from './FileUploadField';
 import { LinearScaleField } from './LinearScaleField';
 import { MultipleChoiceField } from './MultipleChoiceField';
 import { ParagraphField, ShortAnswerField } from './ShortAnswerField';
 import { RatingField } from './RatingField';
 import { TimeField } from './TimeField';
+
+/** What the fill-in screen provides for file upload questions. */
+export interface FileUploadControls {
+  onPick: (question: FileUploadQuestion) => void;
+  onRemove: (question: FileUploadQuestion, path: string) => void;
+  /** The question whose files are being uploaded right now. */
+  uploadingQuestionId?: string;
+  /** Translated upload problems by question id. */
+  errors: Record<string, string>;
+}
 
 interface QuestionRendererProps {
   question: Question;
@@ -17,10 +28,12 @@ interface QuestionRendererProps {
   onChange: (value: AnswerValue | undefined) => void;
   /** Translated error shown under the answer. */
   errorText?: string;
+  /** Needed for file upload questions; they show nothing without it. */
+  fileUpload?: FileUploadControls;
 }
 
 /** Shows the right input for a question's type. */
-export function QuestionRenderer({ question, value, onChange, errorText }: QuestionRendererProps) {
+export function QuestionRenderer({ question, value, onChange, errorText, fileUpload }: QuestionRendererProps) {
   switch (question.questionType) {
     case 'short_answer':
       return <ShortAnswerField question={question} value={value} onChange={onChange} errorText={errorText} />;
@@ -43,9 +56,18 @@ export function QuestionRenderer({ question, value, onChange, errorText }: Quest
     case 'multiple_choice_grid':
     case 'checkbox_grid':
       return <ChoiceGridField question={question} value={value} onChange={onChange} errorText={errorText} />;
-    // File uploads are not offered in the editor yet (plan phase 8), so there is nothing to show.
     case 'file_upload':
-      return null;
+      return fileUpload === undefined ? null : (
+        <FileUploadField
+          question={question}
+          value={value}
+          onPick={() => fileUpload.onPick(question)}
+          onRemove={(path) => fileUpload.onRemove(question, path)}
+          isUploading={fileUpload.uploadingQuestionId === question.id}
+          uploadErrorText={fileUpload.errors[question.id]}
+          errorText={errorText}
+        />
+      );
     default:
       return assertNever(question);
   }

@@ -45,6 +45,7 @@ function PreviewBody({ detail, formId }: { detail: FormDetail; formId: string })
         position={fill.position}
         canGoBack={fill.canGoBack}
         isLastSection={fill.isLastSection}
+        fileUpload={fill.fileUpload}
         onNext={fill.next}
         onBack={fill.back}
         isPreview

@@ -1,16 +1,18 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Button, EmptyState, Screen, Skeleton, Stack } from '@/components/primitives';
+import { Button, EmptyState, Screen, Skeleton, Stack, Text } from '@/components/primitives';
 import { SubmissionDetail } from '@/components/SubmissionDetail';
 import { routes } from '@/constants/routes';
 import { testIds } from '@/constants/testIds';
 import { useResponseDetail } from '@/hooks/useFormResponses';
+import { useOpenFile } from '@/hooks/useOpenFile';
 import { questionsOfSection, sortedSections } from '@/utils/questions';
 
 export default function ResponseDetailScreen() {
   const { t } = useTranslation();
   const { formId, submissionId } = useLocalSearchParams<{ formId: string; submissionId: string }>();
   const response = useResponseDetail(submissionId);
+  const file = useOpenFile();
 
   function renderContent() {
     if (response.errorKey !== undefined) {
@@ -32,7 +34,14 @@ export default function ResponseDetailScreen() {
     }
     const { detail, row, answers } = response.data;
     const questions = sortedSections(detail).flatMap((section) => questionsOfSection(detail, section.id));
-    return <SubmissionDetail row={row} questions={questions} answers={answers} />;
+    return (
+      <SubmissionDetail
+        row={row}
+        questions={questions}
+        answers={answers}
+        onOpenFile={(path) => void file.open('form-uploads', path)}
+      />
+    );
   }
 
   return (
@@ -45,6 +54,7 @@ export default function ResponseDetailScreen() {
           testID={testIds.responses.detailBack}
         />
         {renderContent()}
+        {file.errorKey !== undefined && <Text color="error" live>{t(file.errorKey)}</Text>}
       </Stack>
     </Screen>
   );

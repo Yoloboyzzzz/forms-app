@@ -66,6 +66,7 @@ export default function FillFormScreen() {
         position={fill.position}
         canGoBack={fill.canGoBack}
         isLastSection={fill.isLastSection}
+        fileUpload={fill.fileUpload}
         onNext={fill.next}
         onBack={fill.back}
         isOnline={fill.isOnline}

@@ -3,7 +3,7 @@ import { testIds } from '@/constants/testIds';
 import type { FillSaveState } from '@/state/useFillStore';
 import type { AnswerValue, Form, FormSection, Question } from '@/types/models';
 import { ProgressHeader } from './ProgressHeader';
-import { QuestionRenderer } from './QuestionRenderer';
+import { QuestionRenderer, type FileUploadControls } from './QuestionRenderer';
 import { Button, ConfirmDialog, Icon, OfflineBanner, Row, Stack, Text } from './primitives';
 
 interface FormFillViewProps {
@@ -30,6 +30,7 @@ interface FormFillViewProps {
   onCancelSubmit: () => void;
   /** i18n key when submitting failed. */
   submitErrorKey?: string;
+  fileUpload?: FileUploadControls;
 }
 
 /** One section of a form: progress, its questions and back/next/submit. */
@@ -55,6 +56,7 @@ export function FormFillView({
   onConfirmSubmit,
   onCancelSubmit,
   submitErrorKey,
+  fileUpload,
 }: FormFillViewProps) {
   const { t } = useTranslation();
   const canSubmit = isOnline || isPreview;
@@ -88,6 +90,7 @@ export function FormFillView({
             value={answers[question.id]}
             onChange={(value) => onChangeAnswer(question, value)}
             errorText={errors[question.id]}
+            fileUpload={fileUpload}
           />
         ))}
         {submitErrorKey !== undefined && (

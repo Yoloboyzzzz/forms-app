@@ -166,13 +166,35 @@ describe('QuestionTypeEditor', () => {
     expect(onChange).toHaveBeenCalledWith({ ...question, settings: { isDuration: true } });
   });
 
-  it.each(['file_upload'] as const)(
-    'has no type specific settings yet for %s',
-    (type) => {
-      const base = makeQuestion('q1', { questionType: 'short_answer' });
-      const question: Question = { ...base, questionType: type, settings: {} };
-      const { toJSON } = render(<QuestionTypeEditor question={question} onChange={jest.fn()} />);
-      expect(toJSON()).toBeNull();
-    },
-  );
+  it('edits the limits of a file upload question', () => {
+    const question = makeQuestion('q1', { questionType: 'file_upload', settings: { maxFiles: 1, maxFileSizeMb: 10 } });
+    const { onChange } = setup(question);
+    fireEvent.changeText(screen.getByTestId(setting('allowed-types')), 'image/*, .pdf');
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { maxFiles: 1, maxFileSizeMb: 10, allowedTypes: ['image/*', '.pdf'] } });
+    fireEvent.press(screen.getByTestId(setting('max-files')));
+    fireEvent.press(screen.getByTestId(`${setting('max-files')}-option-5`));
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { maxFiles: 5, maxFileSizeMb: 10 } });
+    fireEvent.press(screen.getByTestId(setting('max-size')));
+    fireEvent.press(screen.getByTestId(`${setting('max-size')}-option-2`));
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { maxFiles: 1, maxFileSizeMb: 2 } });
+  });
+
+  it('allows all file types when the list is emptied', () => {
+    const question = makeQuestion('q1', { questionType: 'file_upload', settings: { allowedTypes: ['.pdf'] } });
+    const { onChange } = setup(question);
+    expect(screen.getByTestId(setting('allowed-types')).props.value).toBe('.pdf');
+    fireEvent.changeText(screen.getByTestId(setting('allowed-types')), ' , ');
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { allowedTypes: undefined } });
+  });
+
+  it('can pick all three file counts', () => {
+    const question = makeQuestion('q1', { questionType: 'file_upload', settings: {} });
+    const { onChange } = setup(question);
+    fireEvent.press(screen.getByTestId(setting('max-files')));
+    fireEvent.press(screen.getByTestId(`${setting('max-files')}-option-10`));
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { maxFiles: 10 } });
+    fireEvent.press(screen.getByTestId(setting('max-files')));
+    fireEvent.press(screen.getByTestId(`${setting('max-files')}-option-1`));
+    expect(onChange).toHaveBeenLastCalledWith({ ...question, settings: { maxFiles: 1 } });
+  });
 });
