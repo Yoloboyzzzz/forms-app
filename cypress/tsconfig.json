@@ -4,8 +4,12 @@
     "lib": ["es2015", "dom"],
     "types": ["cypress"],
     "strict": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["**/*.ts", "../src/constants/**/*.ts"]
+  "include": ["**/*.ts", "../src/constants/**/*.ts", "../src/i18n/locales/*.json"]
 }
