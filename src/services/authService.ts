@@ -1,6 +1,5 @@
 import type { Session } from '@supabase/supabase-js';
 import type { AuthSession } from '../types/models';
-import type { User } from '../types/User';
 import { ServiceError, throwIfError, toServiceError } from './errors';
 import { supabase } from './supabase/client';
 
@@ -9,15 +8,6 @@ function toAuthSession(session: Session | null): AuthSession | undefined {
     return undefined;
   }
   return { userId: session.user.id, email: session.user.email ?? '' };
-}
-
-// Starter placeholders; replaced by the Supabase-backed store in step 2.2.
-export async function login(_email: string, _password: string): Promise<User> {
-  throw new Error('Not yet implemented — connect your Supabase auth here');
-}
-
-export async function logout(): Promise<void> {
-  throw new Error('Not yet implemented — connect your Supabase auth here');
 }
 
 /**

@@ -11,12 +11,13 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login, isLoading } = useAuthStore();
+  const signIn = useAuthStore((state) => state.signIn);
+  const isLoading = useAuthStore((state) => state.isLoading);
 
   const handleLogin = async () => {
     setError('');
     try {
-      await login(email, password);
+      await signIn(email, password);
       router.replace('/');
     } catch {
       setError('Login failed. Check your credentials.');
