@@ -35,25 +35,25 @@ The PWA scope is tight (8 days). The **P1** set is the smallest version that ful
 
 ## Phase 0 – Project setup (P1)
 
-- [ ] **0.1 Git.** `git init` if needed. Create `.gitignore` (node_modules, .expo, dist, web-build, coverage, .env*, !.env.example, cypress.env.json, cypress/videos, cypress/screenshots, ios/, android/). Commit the starter as-is first.
+- [x] **0.1 Git.** `git init` if needed. Create `.gitignore` (node_modules, .expo, dist, web-build, coverage, .env*, !.env.example, cypress.env.json, cypress/videos, cypress/screenshots, ios/, android/). Commit the starter as-is first.
   `chore: initialise repository with course starter`
-- [ ] **0.2 Add AGENTS.md and this plan** to the repo (if they are not in it yet).
+- [x] **0.2 Add AGENTS.md and this plan** to the repo (if they are not in it yet).
   `docs: add agent guidelines and implementation plan`
-- [ ] **0.3 Fix starter issues.** Rename `public/icons/sw,js` to `public/sw.js` and fix `waitUntill` → `waitUntil`. Remove the `console.log` in `app/(app)/details/[id].tsx`. Fix the `README.md` title.
+- [x] **0.3 Fix starter issues.** Rename `public/icons/sw,js` to `public/sw.js` and fix `waitUntill` → `waitUntil`. Remove the `console.log` in `app/(app)/details/[id].tsx`. Fix the `README.md` title.
   `fix: correct service worker file name and typo`
-- [ ] **0.4 Dependencies.** With `npx expo install`: `@supabase/supabase-js`, `@react-native-async-storage/async-storage`, `expo-secure-store`, `expo-localization`, `expo-splash-screen`, `@react-native-community/netinfo`, `react-native-url-polyfill` (only if the current Supabase Expo guide still needs it). With npm: `i18next`, `react-i18next`, `aes-js` (for the encrypted session store; check the current Supabase docs). Dev: `jest`, `jest-expo`, `@testing-library/react-native`, `@types/jest`.
+- [x] **0.4 Dependencies.** With `npx expo install`: `@supabase/supabase-js`, `@react-native-async-storage/async-storage`, `expo-secure-store`, `expo-localization`, `expo-splash-screen`, `@react-native-community/netinfo`, `react-native-url-polyfill` (only if the current Supabase Expo guide still needs it). With npm: `i18next`, `react-i18next`, `aes-js` (for the encrypted session store; check the current Supabase docs). Dev: `jest`, `jest-expo`, `@testing-library/react-native`, `@types/jest`.
   `chore: add supabase, i18n and test dependencies`
-- [ ] **0.5 Jest.** `jest.config.js` with the `jest-expo` preset, `@/` alias, coverage from `src/**`, thresholds from AGENTS.md §8.2 (80% overall; 90% for `src/utils`, `src/services`, `src/state`). Add scripts `test`, `test:watch`, `test:coverage`, `typecheck`. One sample test to prove the setup.
+- [x] **0.5 Jest.** `jest.config.js` with the `jest-expo` preset, `@/` alias, coverage from `src/**`, thresholds from AGENTS.md §8.2 (80% overall; 90% for `src/utils`, `src/services`, `src/state`). Add scripts `test`, `test:watch`, `test:coverage`, `typecheck`. One sample test to prove the setup.
   `test: configure jest with coverage thresholds`
-- [ ] **0.6 Cypress.** Add `cy.getByTestId` to `cypress/support/commands.ts` (+ type declaration), `cypress.env.example.json` (adminEmail, adminPassword, userEmail, userPassword, user2Email, user2Password). Make Cypress able to import `src/constants/testIds.ts`.
+- [x] **0.6 Cypress.** Add `cy.getByTestId` to `cypress/support/commands.ts` (+ type declaration), `cypress.env.example.json` (adminEmail, adminPassword, userEmail, userPassword, user2Email, user2Password). Make Cypress able to import `src/constants/testIds.ts`.
   `test: add cypress getByTestId command and env example`
-- [ ] **0.7 Env config.** `.env.example`, `src/config/env.ts` (AGENTS.md §6) + unit test for the missing-variable error.
+- [x] **0.7 Env config.** `.env.example`, `src/config/env.ts` (AGENTS.md §6) + unit test for the missing-variable error.
   `feat: add validated environment config`
-- [ ] **0.8 Theme tokens.** `src/theme/` with colors (light + dark), spacing, typography, radii, and a `useTheme()` hook based on `useColorScheme()`. Unit tests.
+- [x] **0.8 Theme tokens.** `src/theme/` with colors (light + dark), spacing, typography, radii, and a `useTheme()` hook based on `useColorScheme()`. Unit tests.
   `feat: add theme tokens with light and dark mode`
-- [ ] **0.9 i18n.** `src/i18n/` with `i18next` + `react-i18next`, `locales/nl.json` + `locales/en.json`, device language detection, fallback `nl`, and a unit test that fails when a key is missing in either file. Init it in `app/_layout.tsx`.
+- [x] **0.9 i18n.** `src/i18n/` with `i18next` + `react-i18next`, `locales/nl.json` + `locales/en.json`, device language detection, fallback `nl`, and a unit test that fails when a key is missing in either file. Init it in `app/_layout.tsx`.
   `feat: add i18n with dutch and english`
-- [ ] **0.10 Constants.** `src/constants/testIds.ts` (static ids + helpers for dynamic ids) and `src/constants/routes.ts`.
+- [x] **0.10 Constants.** `src/constants/testIds.ts` (static ids + helpers for dynamic ids) and `src/constants/routes.ts`.
   `feat: add test id and route constants`
 - [ ] **0.11 🧑 Henry – Supabase project.** Create the project (EU), put URL + publishable key in `.env`, turn off sign-ups, keep email/password only, minimum password length 8, set the *Reset Password* email template to include `{{ .Token }}` (nl + en text). Also create a second project (or use the same one for now) for E2E tests (AGENTS.md D14).
 - [ ] **0.12 Apply database.** Apply `supabase/migrations/*` (CLI `npx supabase db push`, or the SQL editor), deploy both Edge Functions, create the first admin by hand (AGENTS.md §7.1), generate `src/types/supabase.ts`.
