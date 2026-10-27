@@ -120,27 +120,27 @@ The PWA scope is tight (8 days). The **P1** set is the smallest version that ful
 
 Core question types for the PWA: `short_answer`, `paragraph`, `multiple_choice`, `checkboxes`, `dropdown`, `linear_scale`, `date`. The rest is Phase 8.
 
-- [ ] **4.1 Services**: `formService` (list, get with sections + questions, create, update title/description/settings, publish, archive, duplicate), `sectionService`, `questionService` (add, update, reorder, duplicate, deactivate/delete when no answers). Tests.
+- [x] **4.1 Services**: `formService` (list, get with sections + questions, create, update title/description/settings, publish, archive, duplicate), `sectionService`, `questionService` (add, update, reorder, duplicate, deactivate/delete when no answers). Tests.
   `feat: add form, section and question services`
-- [ ] **4.2 useFormsStore** (admin list) and **useFormEditorStore** (the form being edited, across editor/settings/preview pages; debounced save; dirty/saving/saved state). Tests.
+- [x] **4.2 useFormsStore** (admin list) and **useFormEditorStore** (the form being edited, across editor/settings/preview pages; debounced save; dirty/saving/saved state). Tests.
   `feat: add form stores`
-- [ ] **4.3 Admin forms list** (`admin/forms/index.tsx`): `FormCard`, `FormStatusBadge`, filter by status, create button, empty state.
+- [x] **4.3 Admin forms list** (`admin/forms/index.tsx`): `FormCard`, `FormStatusBadge`, filter by status, create button, empty state.
   `feat: add admin forms list`
-- [ ] **4.4 New form** (`admin/forms/new.tsx`): title + description, creates a draft and opens the editor.
+- [x] **4.4 New form** (`admin/forms/new.tsx`): title + description, creates a draft and opens the editor.
   `feat: create new forms`
-- [ ] **4.5 Editor shell** (`admin/forms/[formId]/edit.tsx`): form header, list of sections and questions, add question, `QuestionTypePicker` (modal), reorder (up/down buttons; drag is optional), duplicate, delete/deactivate with confirm, required toggle.
+- [x] **4.5 Editor shell** (`admin/forms/[formId]/edit.tsx`): form header, list of sections and questions, add question, `QuestionTypePicker` (modal), reorder (up/down buttons; drag is optional), duplicate, delete/deactivate with confirm, required toggle.
   `feat: add form editor shell`
-- [ ] **4.6 QuestionEditor per core type**, one commit per type or small group: text types (+ validation rules), choice types (`OptionListEditor` with "Other" option and shuffle), `ScaleEditor`, date settings. Pure validation helpers in `src/utils/validation.ts` with full unit tests.
+- [x] **4.6 QuestionEditor per core type**, one commit per type or small group: text types (+ validation rules), choice types (`OptionListEditor` with "Other" option and shuffle), `ScaleEditor`, date settings. Pure validation helpers in `src/utils/validation.ts` with full unit tests.
   `feat: add editors for text questions` / `feat: add editors for choice questions` / …
-- [ ] **4.7 Sections and branching**: add/rename/delete sections, "after section" action, "go to section based on answer" per option. Pure `getNextSection()` / `getSectionPath()` in `src/utils/branching.ts`, mirroring the SQL function, with full unit tests (including loops and deleted sections).
+- [x] **4.7 Sections and branching**: add/rename/delete sections, "after section" action, "go to section based on answer" per option. Pure `getNextSection()` / `getSectionPath()` in `src/utils/branching.ts`, mirroring the SQL function, with full unit tests (including loops and deleted sections).
   `feat: add sections and branching`
-- [ ] **4.8 Settings page** (`settings.tsx`): accepting responses, close date, limit to 1 response, edit after submit, shuffle question order, progress bar, confirmation message.
+- [x] **4.8 Settings page** (`settings.tsx`): accepting responses, close date, limit to 1 response, edit after submit, shuffle question order, progress bar, confirmation message.
   `feat: add form settings`
-- [ ] **4.9 Preview** (`preview.tsx`): renders the fill-in components (Phase 6) without saving. Wire it up after 6.3 if needed.
+- [ ] **4.9 Preview** *(waits for the fill-in components, step 6.3)* (`preview.tsx`): renders the fill-in components (Phase 6) without saving. Wire it up after 6.3 if needed.
   `feat: add form preview`
-- [ ] **4.10 Publish / archive / duplicate** actions with confirmations and feedback.
+- [x] **4.10 Publish / archive / duplicate** actions with confirmations and feedback.
   `feat: publish, archive and duplicate forms`
-- [ ] **4.11 E2E**: create a form with each core type, sections + branching, settings, publish, archive, duplicate.
+- [x] **4.11 E2E** *(written, not yet run)*: create a form with each core type, sections + branching, settings, publish, archive, duplicate.
   `test: add form builder e2e tests`
 
 ## Phase 5 – Assignments (P1)

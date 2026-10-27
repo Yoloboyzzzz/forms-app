@@ -11,5 +11,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["**/*.ts", "../src/constants/testIds.ts", "../src/i18n/locales/*.json"]
+  "include": ["**/*.ts", "../src/constants/testIds.ts", "../src/types/enums.ts", "../src/types/supabase.ts", "../src/i18n/locales/*.json"]
 }
