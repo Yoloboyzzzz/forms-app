@@ -368,3 +368,34 @@ export interface MyAssignment {
   /** The draft or submitted response; absent until the user starts. */
   submission?: Submission;
 }
+
+/** One person's standing on a form, as an admin sees it. */
+export interface ResponseRow {
+  assignment: Assignment;
+  user: Profile;
+  /** The submitted response, else the draft; absent when the person has not started. */
+  submission?: Submission;
+}
+
+/** A saved answer together with the response it belongs to. */
+export interface ResponseAnswer {
+  submissionId: string;
+  questionId: string;
+  value: AnswerValue;
+}
+
+/** Everything the responses screen shows for one form. */
+export interface FormResponses {
+  detail: FormDetail;
+  rows: ResponseRow[];
+  /** Answers of submitted responses only. */
+  answers: ResponseAnswer[];
+}
+
+/** One response with its answers, for the detail screen. */
+export interface ResponseDetail {
+  detail: FormDetail;
+  row: ResponseRow;
+  /** Answers by question id. */
+  answers: Record<string, AnswerValue>;
+}
