@@ -352,5 +352,26 @@
     "publish": "Publish",
     "archive": "Archive",
     "duplicate": "Duplicate"
+  },
+  "assign": {
+    "title": "Assign form",
+    "back": "Back to the editor",
+    "assigned": "Assigned to",
+    "noneAssigned": "Not assigned to anyone yet.",
+    "dueOn": "Due on {{date}}",
+    "noDueDate": "No due date",
+    "unassign": "Unassign",
+    "unassignTitle": "Unassign {{name}}?",
+    "unassignMessage": "{{name}} will no longer see this form. Their response to it is deleted.",
+    "addPeople": "Add people",
+    "search": "Search by name or email",
+    "noCandidates": "Everyone is already assigned.",
+    "noMatches": "Nobody matches your search.",
+    "dueDate": "Due date (optional)",
+    "dueDateInvalid": "Use the format 2026-11-04 or 2026-11-04 14:30.",
+    "submit": "Assign {{count}} selected",
+    "submitNone": "Select people to assign",
+    "done": "Assigned.",
+    "loadError": "The assignments could not be loaded."
   }
 }

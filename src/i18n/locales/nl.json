@@ -352,5 +352,26 @@
     "publish": "Publiceren",
     "archive": "Archiveren",
     "duplicate": "Dupliceren"
+  },
+  "assign": {
+    "title": "Formulier toewijzen",
+    "back": "Terug naar de editor",
+    "assigned": "Toegewezen aan",
+    "noneAssigned": "Nog aan niemand toegewezen.",
+    "dueOn": "Af tegen {{date}}",
+    "noDueDate": "Geen deadline",
+    "unassign": "Toewijzing ongedaan maken",
+    "unassignTitle": "{{name}} niet meer toewijzen?",
+    "unassignMessage": "{{name}} ziet dit formulier niet meer. Het antwoord van deze persoon wordt verwijderd.",
+    "addPeople": "Mensen toevoegen",
+    "search": "Zoek op naam of e-mail",
+    "noCandidates": "Iedereen is al toegewezen.",
+    "noMatches": "Niemand komt overeen met je zoekopdracht.",
+    "dueDate": "Deadline (optioneel)",
+    "dueDateInvalid": "Gebruik het formaat 2026-11-04 of 2026-11-04 14:30.",
+    "submit": "{{count}} geselecteerde toewijzen",
+    "submitNone": "Selecteer mensen om toe te wijzen",
+    "done": "Toegewezen.",
+    "loadError": "De toewijzingen konden niet worden geladen."
   }
 }
