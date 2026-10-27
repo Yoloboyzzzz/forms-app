@@ -10,6 +10,12 @@ import type {
 /** `goTo` value that ends the form; any other value is a section id. */
 export const GO_TO_SUBMIT = 'submit';
 
+/** The signed-in auth identity; everything else about the user lives in Profile. */
+export interface AuthSession {
+  userId: string;
+  email: string;
+}
+
 export interface Profile {
   id: string;
   email: string;
