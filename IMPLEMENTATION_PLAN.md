@@ -80,38 +80,38 @@ The PWA scope is tight (8 days). The **P1** set is the smallest version that ful
 
 ## Phase 2 – Authentication (P1)
 
-- [ ] **2.1 authService + profileService** (signIn, signOut, changePassword, requestPasswordReset, resetPasswordWithCode, getSession, onAuthStateChange, getMyProfile, updateMyName). Unit tests with a mocked client.
+- [x] **2.1 authService + profileService** (signIn, signOut, changePassword, requestPasswordReset, resetPasswordWithCode, getSession, onAuthStateChange, getMyProfile, updateMyName). Unit tests with a mocked client.
   `feat: add auth and profile services`
-- [ ] **2.2 useAuthStore** rewritten for Supabase: session, profile (with `mustChangePassword`, role), loading/error, `resetAll()`. Plus `useSettingsStore` (language, persisted). Tests.
+- [x] **2.2 useAuthStore** rewritten for Supabase: session, profile (with `mustChangePassword`, role), loading/error, `resetAll()`. Plus `useSettingsStore` (language, persisted). Tests.
   `feat: connect auth store to supabase`
-- [ ] **2.3 Bootstrap.** `app/_layout.tsx`: i18n, keep the splash screen until the session + profile are loaded, subscribe to auth changes.
+- [x] **2.3 Bootstrap.** `app/_layout.tsx`: i18n, keep the splash screen until the session + profile are loaded, subscribe to auth changes.
   `feat: restore session on app start`
-- [ ] **2.4 Guards.** `(app)/_layout.tsx`: no session → `/login`; `mustChangePassword` → `/change-password`; role redirect in `(app)/index.tsx`; admin guard in `(app)/admin/_layout.tsx`.
+- [x] **2.4 Guards.** `(app)/_layout.tsx`: no session → `/login`; `mustChangePassword` → `/change-password`; role redirect in `(app)/index.tsx`; admin guard in `(app)/admin/_layout.tsx`.
   `feat: add auth, password and role guards`
-- [ ] **2.5 Login screen** with `LoginForm` component (move the styles out of the page), translated, new testIDs; update `cypress/e2e/login.cy.ts` (no hardcoded credentials).
+- [x] **2.5 Login screen** with `LoginForm` component (move the styles out of the page), translated, new testIDs; update `cypress/e2e/login.cy.ts` (no hardcoded credentials).
   `feat: build login screen`
-- [ ] **2.6 Change password** screen + `ChangePasswordForm` (forced mode: only "save" and "log out").
+- [x] **2.6 Change password** screen + `ChangePasswordForm` (forced mode: only "save" and "log out").
   `feat: force password change on first login`
-- [ ] **2.7 Forgot password** screen + `ForgotPasswordForm` (email step, code + new password step, neutral message, resend).
+- [x] **2.7 Forgot password** screen + `ForgotPasswordForm` (email step, code + new password step, neutral message, resend).
   `feat: add forgot password with email code`
-- [ ] **2.8 Profile** screen: name, language switcher, change password, logout. Tab layout for user and admin areas.
+- [x] **2.8 Profile** screen: name, language switcher, change password, logout. Tab layout for user and admin areas.
   `feat: add profile screen and tab layouts`
-- [ ] **2.9 E2E auth.** Cypress specs: login valid/invalid, logout, role redirect, forced password change (using an account created in Phase 3; mark as pending until then), forgot-password screen states, language switch.
+- [x] **2.9 E2E auth.** *(Specs written, not yet run: needs the first admin and the E2E accounts, steps 0.12/0.13.)* Cypress specs: login valid/invalid, logout, role redirect, forced password change (using an account created in Phase 3; mark as pending until then), forgot-password screen states, language switch.
   `test: add auth e2e tests`
 
 **Done when:** an admin and a user can log in, they land on their own area, logout works, and the forced change works for a fresh account.
 
 ## Phase 3 – Admin user management (P1)
 
-- [ ] **3.1 adminUserService**: listUsers, createUser / resetPassword (`supabase.functions.invoke`), setUserRole (RPC). Map function error codes to i18n keys. Tests.
+- [x] **3.1 adminUserService**: listUsers, createUser / resetPassword (`supabase.functions.invoke`), setUserRole (RPC). Map function error codes to i18n keys. Tests.
   `feat: add admin user service`
-- [ ] **3.2 useUsersStore** (admin user list). Tests.
+- [x] **3.2 useUsersStore** (admin user list). Tests.
   `feat: add users store`
-- [ ] **3.3 Users list** (`admin/users/index.tsx`) with `UserListItem` (role badge, reset password action with `ConfirmDialog` and a generated temporary password to copy), role change.
+- [x] **3.3 Users list** (`admin/users/index.tsx`) with `UserListItem` (role badge, reset password action with `ConfirmDialog` and a generated temporary password to copy), role change.
   `feat: add admin users list`
-- [ ] **3.4 Create user** (`admin/users/new.tsx`) with `CreateUserForm` (name, email, role, generated or typed first-time password, copy button).
+- [x] **3.4 Create user** (`admin/users/new.tsx`) with `CreateUserForm` (name, email, role, generated or typed first-time password, copy button).
   `feat: let admins create accounts`
-- [ ] **3.5 E2E**: create user → log in as that user → forced change → can log in with the new password; admin reset → forced change again. Enable the pending test from 2.9.
+- [x] **3.5 E2E** *(written, not yet run, same reason as 2.9; the forced-change spec lives in `admin-users.cy.ts`)*: create user → log in as that user → forced change → can log in with the new password; admin reset → forced change again. Enable the pending test from 2.9.
   `test: add admin user management e2e tests`
 
 🏁 **Milestone A (≈ 30.10): accounts work end to end.** Show Henry.

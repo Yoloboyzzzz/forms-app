@@ -58,22 +58,7 @@ describe('Logout', () => {
   });
 });
 
-describe('Forced password change', () => {
-  // Needs an account created by an admin (Phase 3). Enabled together with the admin user management specs (plan step 3.5).
-  it.skip('forces a new user to choose a password before anything else, deep links included', () => {
-    cy.login(Cypress.env('newUserEmail'), Cypress.env('newUserPassword'));
-    cy.getByTestId(testIds.changePassword.screen).should('exist');
-
-    cy.visit('/user/forms');
-    cy.getByTestId(testIds.changePassword.screen).should('exist');
-    cy.getByTestId(testIds.userForms.screen).should('not.exist');
-
-    cy.getByTestId(testIds.changePassword.newPasswordInput).type('a-brand-new-password-1');
-    cy.getByTestId(testIds.changePassword.confirmPasswordInput).type('a-brand-new-password-1');
-    cy.getByTestId(testIds.changePassword.submitButton).click();
-    cy.getByTestId(testIds.userForms.screen).should('exist');
-  });
-});
+// The forced password change is covered end to end in admin-users.cy.ts, where the account is created by an admin.
 
 describe('Forgot password', () => {
   beforeEach(() => {
