@@ -24,6 +24,12 @@ export function addQuestion(type: string): void {
   cy.getByTestId(testIdFor.questionTypeOption(type)).click();
 }
 
+/** Adds a question of the given type to the n-th section (0-based) of the open editor. */
+export function addQuestionToSection(sectionIndex: number, type: string): void {
+  cy.get('[data-testid^="form-editor-add-question-"]').eq(sectionIndex).click();
+  cy.getByTestId(testIdFor.questionTypeOption(type)).click();
+}
+
 /** The id of the last question card in the open editor. */
 export function lastQuestionId(): Cypress.Chainable<string> {
   return cy

@@ -168,7 +168,7 @@ Core question types for the PWA: `short_answer`, `paragraph`, `multiple_choice`,
   `feat: fill in forms section by section`
 - [x] **6.5 Confirmation page** (`done.tsx`) with the form's confirmation message; "edit response" when allowed; "submit another" never (limit one) unless the setting is off.
   `feat: add submission confirmation`
-- [ ] **6.6 E2E**: fill every core type, draft survives reload, branching skips a section, required/validation errors, submit, cannot submit twice, edit after submit when allowed, closed form blocked.
+- [x] **6.6 E2E** *(written, not yet run)*: fill every core type, draft survives reload, branching skips a section, required/validation errors, submit, cannot submit twice, edit after submit when allowed, closed form blocked.
   `test: add fill-in e2e tests`
 
 ## Phase 7 – Responses (basic) and PWA delivery (P1)
