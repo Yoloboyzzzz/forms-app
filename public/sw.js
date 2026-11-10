@@ -1,7 +1,9 @@
 // Service worker for the PWA: keeps the app shell available when the connection drops.
 // Supabase requests (another origin) are never cached; answers are saved through the app itself.
 const CACHE = 'forms-shell-v1';
-const STATIC_PREFIXES = ['/_expo/static/', '/icons/', '/assets/'];
+// The app may be hosted under a sub path (GitHub Pages), so every path is relative to the scope the worker was registered with.
+const BASE = new URL(self.registration.scope).pathname.replace(/\/$/, '');
+const STATIC_PREFIXES = [`${BASE}/_expo/static/`, `${BASE}/icons/`, `${BASE}/assets/`];
 
 self.addEventListener('install', () => self.skipWaiting());
 
@@ -30,7 +32,7 @@ self.addEventListener('fetch', (event) => {
           void caches.open(CACHE).then((cache) => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match('/'))),
+        .catch(() => caches.match(request).then((cached) => cached || caches.match(`${BASE}/`))),
     );
     return;
   }

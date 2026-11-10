@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-native';
-import { canRegisterServiceWorker, useRegisterServiceWorker } from './useRegisterServiceWorker.web';
+import { canRegisterServiceWorker, serviceWorkerUrl, useRegisterServiceWorker } from './useRegisterServiceWorker.web';
 
 const worker = { register: jest.fn() } as unknown as ServiceWorkerContainer; // only `register` is used
 
@@ -17,6 +17,17 @@ describe('canRegisterServiceWorker', () => {
   it('does nothing without service worker support', () => {
     expect(canRegisterServiceWorker('production', undefined)).toBe(false);
     expect(canRegisterServiceWorker('production', {} as Navigator)).toBe(false); // a browser without the property
+  });
+});
+
+describe('serviceWorkerUrl', () => {
+  it('sits at the root without a base path', () => {
+    expect(serviceWorkerUrl(undefined)).toBe('/sw.js');
+  });
+
+  it('follows the base path of a sub path deployment', () => {
+    expect(serviceWorkerUrl('/forms')).toBe('/forms/sw.js');
+    expect(serviceWorkerUrl('/forms/')).toBe('/forms/sw.js');
   });
 });
 
