@@ -2,8 +2,8 @@
 
 A forms app in the style of Google Forms, for forms that are **assigned** to people. Built with Expo (React Native), TypeScript, Expo Router, Zustand and Supabase. Runs as a PWA first; the native Android/iOS app follows from the same code.
 
-**Live app (PWA):** `https://<github-username>.github.io/<repository-name>/`
-*(fill in once GitHub Pages is switched on, see [Deploying](#deploying-to-github-pages))*
+**Live app (PWA):** `https://yoloboyzzzz.github.io/forms-app/`
+
 
 ## Two views
 
