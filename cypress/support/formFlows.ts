@@ -60,7 +60,7 @@ export function assignOpenFormTo(emailKey: 'userEmail' | 'user2Email'): void {
 export function createPublishedFormFor(emailKey: 'userEmail' | 'user2Email'): Cypress.Chainable<string> {
   return createForm().then((title) => {
     addQuestion('short_answer');
-    cy.getByTestId(testIds.editor.saveIndicator).should('exist');
+    cy.get('[data-testid^="question-"][data-testid$="-title-input"]').should('exist');
     publishOpenForm();
     assignOpenFormTo(emailKey);
     return cy.wrap(title);

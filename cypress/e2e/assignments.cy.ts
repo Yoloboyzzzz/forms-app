@@ -13,7 +13,7 @@ describe('Assigning forms', () => {
   it('assigns a form with a due date and lists the assignee', () => {
     createForm().then(() => {
       addQuestion('short_answer');
-      cy.getByTestId(testIds.editor.saveIndicator).should('exist');
+      cy.get('[data-testid^="question-"][data-testid$="-title-input"]').should('exist');
       assignOpenFormTo('userEmail');
     });
   });
@@ -29,7 +29,7 @@ describe('Assigning forms', () => {
   it('unassigns after confirmation', () => {
     createForm().then(() => {
       addQuestion('short_answer');
-      cy.getByTestId(testIds.editor.saveIndicator).should('exist');
+      cy.get('[data-testid^="question-"][data-testid$="-title-input"]').should('exist');
       assignOpenFormTo('userEmail');
       cy.get('[data-testid^="assignee-"][data-testid$="-unassign-button"]').first().click();
       cy.getByTestId(`${testIds.assign.unassignDialog}-confirm`).click();
@@ -56,7 +56,7 @@ describe('What users see', () => {
   it('does not show a draft form even when it is assigned', () => {
     createForm().then((title) => {
       addQuestion('short_answer');
-      cy.getByTestId(testIds.editor.saveIndicator).should('exist');
+      cy.get('[data-testid^="question-"][data-testid$="-title-input"]').should('exist');
       assignOpenFormTo('userEmail');
       signOut(testIds.tabs.adminProfile);
 
