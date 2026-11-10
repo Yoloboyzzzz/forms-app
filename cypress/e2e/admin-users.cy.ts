@@ -32,7 +32,7 @@ function createUserViaUi(role: 'user' | 'admin' = 'user'): Cypress.Chainable<Cre
     .invoke('text')
     .then((temporaryPassword) => {
       cy.getByTestId(testIds.tempPassword.closeButton).click();
-      return { email, name, temporaryPassword };
+      return cy.wrap({ email, name, temporaryPassword });
     });
 }
 
@@ -83,7 +83,7 @@ describe('Admin users', () => {
 
   it('forces a new user to choose a password, deep links included, then lets them in', () => {
     createUserViaUi().then(({ email, temporaryPassword }) => {
-      signOutViaProfile(testIds.tabs.adminUsers);
+      signOutViaProfile(testIds.tabs.adminProfile);
 
       cy.login(email, temporaryPassword);
       cy.getByTestId(testIds.changePassword.screen).should('exist');
@@ -107,7 +107,7 @@ describe('Admin users', () => {
 
   it('does not accept the temporary password after it was changed', () => {
     createUserViaUi().then(({ email, temporaryPassword }) => {
-      signOutViaProfile(testIds.tabs.adminUsers);
+      signOutViaProfile(testIds.tabs.adminProfile);
       cy.login(email, temporaryPassword);
       cy.getByTestId(testIds.changePassword.newPasswordInput).type(NEW_PASSWORD);
       cy.getByTestId(testIds.changePassword.confirmPasswordInput).type(NEW_PASSWORD);
@@ -123,7 +123,7 @@ describe('Admin users', () => {
   it('resets a password and forces another change', () => {
     createUserViaUi().then(({ email, temporaryPassword }) => {
       // the user activates the account first
-      signOutViaProfile(testIds.tabs.adminUsers);
+      signOutViaProfile(testIds.tabs.adminProfile);
       cy.login(email, temporaryPassword);
       cy.getByTestId(testIds.changePassword.newPasswordInput).type(NEW_PASSWORD);
       cy.getByTestId(testIds.changePassword.confirmPasswordInput).type(NEW_PASSWORD);

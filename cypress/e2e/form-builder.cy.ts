@@ -42,8 +42,10 @@ describe('Creating a form', () => {
 describe('Editing a form', () => {
   it('adds a question of every core type', () => {
     createForm().then(() => {
-      CORE_QUESTION_TYPES.forEach((type) => {
+      CORE_QUESTION_TYPES.forEach((type, index) => {
         addQuestion(type);
+        // wait for the new card, otherwise the previous one is still the last
+        cy.get('[data-testid^="question-"][data-testid$="-title-input"]').should('have.length', index + 1);
         lastQuestionId().then((questionId) => {
           cy.getByTestId(testIdFor.question(questionId)).should('contain.text', en.questionType[type]);
         });
@@ -106,7 +108,7 @@ describe('Editing a form', () => {
       lastQuestionId().then((questionId) => {
         cy.getByTestId(testIdFor.setting(questionId, 'branching')).click();
         cy.get(`[data-testid^="question-${questionId}-option-"][data-testid$="-jump"]`).first().click();
-        cy.get(`[data-testid^="question-${questionId}-option-"][data-testid*="-jump-option-"]`).first().click();
+        cy.get(`[data-testid^="question-${questionId}-option-"][data-testid$="-jump-option-submit"]`).first().click();
         cy.get(`[data-testid^="question-${questionId}-option-"][data-testid$="-jump"]`)
           .first()
           .should('not.contain.text', en.editor.jumpContinue);
@@ -126,6 +128,7 @@ describe('Form settings', () => {
       cy.getByTestId(testIds.settings.closesAt).clear().type('not a date');
       cy.getByTestId(`${testIds.settings.closesAt}-error`).should('exist');
       cy.getByTestId(testIds.settings.closesAt).clear().type('2030-01-31');
+      cy.getByTestId(testIds.editor.saveIndicator).should('contain.text', en.editor.saved);
       cy.reload();
       cy.getByTestId(testIds.settings.confirmationMessage).should('have.value', 'Thanks for your answers');
       cy.getByTestId(testIds.settings.closesAt).should('have.value', '2030-01-31 23:59');
@@ -145,7 +148,7 @@ describe('Publishing, duplicating and archiving', () => {
   it('publishes, duplicates and archives a form', () => {
     createForm().then((title) => {
       addQuestion('short_answer');
-      cy.getByTestId(testIds.editor.saveIndicator).should('exist');
+      cy.get('[data-testid^="question-"][data-testid$="-title-input"]').should('have.length', 1);
 
       cy.getByTestId(testIds.editorActions.publish).click();
       cy.getByTestId(`${testIds.editorActions.confirmDialog}-confirm`).click();

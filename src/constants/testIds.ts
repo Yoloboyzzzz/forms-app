@@ -111,7 +111,6 @@ export const testIds = {
     shuffleQuestionOrder: 'form-settings-shuffle-switch',
     showProgressBar: 'form-settings-progress-switch',
     confirmationMessage: 'form-settings-confirmation-input',
-    saveIndicator: 'form-settings-save-indicator',
     backButton: 'form-settings-back-button',
   },
   editorActions: {
