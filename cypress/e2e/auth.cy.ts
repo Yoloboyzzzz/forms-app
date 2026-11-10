@@ -81,7 +81,7 @@ describe('Forgot password', () => {
   it('shows the same neutral message for an address without an account', () => {
     cy.getByTestId(testIds.forgotPassword.emailInput).type(`nobody+${Date.now()}@example.com`);
     cy.getByTestId(testIds.forgotPassword.sendCodeButton).click();
-    cy.getByTestId(testIds.forgotPassword.neutralMessage).should('contain.text', nl.forgotPassword.neutralMessage);
+    cy.getByTestId(testIds.forgotPassword.neutralMessage).should('contain.text', en.forgotPassword.neutralMessage);
     cy.getByTestId(testIds.forgotPassword.codeInput).should('exist');
   });
 
